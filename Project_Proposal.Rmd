@@ -7,6 +7,8 @@ output: github_document
 
 
 # Motivation for this project
+As Covid restrictions and policies have become less stringent, we have seen a significant decrease in the number of people wearing masks. We were curious to explore how people wearing masks have an effect on disease prevalence such as influenza and Covid-19. 
+
 
 #Tentative project title
 
