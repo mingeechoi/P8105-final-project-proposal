@@ -1,0 +1,21 @@
+---
+title: "Final Project Proposal"
+author: "Mingee Choi(mlc2287)", 
+date: 11/11/2022
+output: github_document
+---
+
+
+# Motivation for this project
+
+#Tentative project title
+
+#Intended final products
+
+#Anticipated data sources
+
+#Planned analyses/visualizations/coding challenges
+
+#The planned timeline
+
+
