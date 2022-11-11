@@ -1,6 +1,6 @@
 ---
 title: "Final Project Proposal"
-author: "Mingee Choi(mlc2287)", 
+author: "Mingee Choi(mlc2287)", "Barry Chiu (pc2979)", "Junyu Qi (jq2342)", "Soungbin Yim (sy3019)", "Troy Zhou (zz2901)"
 date: 11/11/2022
 output: github_document
 ---
