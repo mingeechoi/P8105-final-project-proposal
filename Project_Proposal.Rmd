@@ -40,12 +40,12 @@ Temporal comparison of influenza cases vs mask wearing trends between period of 
 ** Merging datasets of the disease outcome with the masking rate dataset could be complex due to difficulties in finding appropriate matching variables 
 
 #The planned timeline
-11/15 - 11/18: project review meeting
-11/19 - 11/23: data collection and clearing
-11/24 - 11/30: data analysis & Graphics Output
-12/1 - 12/5: producing Written Report
-12/6 - 12/9: producing screencast video
-12/10: Written report & webpage and screencast; peer assessment DUE
-12/15: in class discussion
+* 11/15 - 11/18: project review meeting
+* 11/19 - 11/23: data collection and clearing
+* 11/24 - 11/30: data analysis & Graphics Output
+* 12/1 - 12/5: producing Written Report
+* 12/6 - 12/9: producing screencast video
+* 12/10: Written report & webpage and screencast; peer assessment DUE
+* 12/15: in class discussion
 
 
