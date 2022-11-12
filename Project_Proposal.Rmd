@@ -38,7 +38,7 @@ Temporal comparison of influenza cases vs mask wearing trends between period of 
 
   * Exploratory analysis of trends of the main outcome of interest, the influenza cases, by various covariates in NYC(e.g., race, age, etc) 
 
-** Interactive maps of mask wearing rate by various covariates in NYC (e.g., race, age, etc) 
+  * Interactive maps of mask wearing rate by various covariates in NYC (e.g., race, age, etc) 
 
 * Coding challenges:
 
