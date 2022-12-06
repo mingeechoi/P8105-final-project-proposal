@@ -5,26 +5,45 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+library(tidyverse)
 ```
 
-## R Markdown
+## Merge Datasets
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+e_mask=
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor:: clean_names()  %>%
+  select (geo_value, time_value, value, sample_size, stderr) %>%
+  rename(maskwearing_value=value, maskwearing_stderr=stderr )
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+o_admission=
+read_csv("./Data/Confirmed_admission.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value )%>%
+  rename(admission_value=value)
 
-```{r cars}
-summary(cars)
+o_symptoms=
+read_csv("./Data/Flu_like_symptoms.csv") %>%
+  janitor:: clean_names()  %>%
+  select (geo_value, time_value, value, sample_size, stderr) %>%
+  rename(symptom_value=value, symptoms_stderr=stderr )
+
+merged_delphi=
+  left_join(
+  x = e_mask,
+  y = o_symptoms,
+  by = c("geo_value", "time_value", "sample_size"),
+  all.x = TRUE) %>%
+  rename(delphi_samplesize=sample_size)
+
+merged_all=
+  left_join(
+  x = o_admission,
+  y = merged_delphi,
+  by = c("geo_value", "time_value"),
+  all.x = TRUE)
+
+
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
