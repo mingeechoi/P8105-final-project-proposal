@@ -3,10 +3,10 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Resume"
-      href: resume.html
     - text: "Dashboard"
       href: dashboard.html
+    - text: "Final Report"
+      href: final_report.html
     - icon: fa-github fa-lg
 output:
   html_document:
