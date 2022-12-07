@@ -1,0 +1,10 @@
+---
+title: "The association between decrease in mask-wearing and the prevalence of seasonal influenza in 2022 "
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+##### *MPH in Epidemiology @ Columbia Mailman School of Public Health*
+Find my resume and most recent analysis. Connect with me over GitHub, Linkedin, or email!
+

@@ -1,0 +1,19 @@
+name: "Personal Site"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "Resume"
+      href: resume.html
+    - text: "Dashboard"
+      href: dashboard.html
+    - icon: fa-github fa-lg
+      href: http://github.com/bachu1503/
+    - icon: fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/barryprchiu/
+    - icon: fa-envelope fa-lg
+      href: mailto:<barryprchiu@gmail.com>
+output:
+  html_document:
+    css: bootstrap.css
+    
