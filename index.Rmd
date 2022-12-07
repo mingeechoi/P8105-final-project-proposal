@@ -1,5 +1,5 @@
 ---
-title: "The association between decrease in mask-wearing and the prevalence of seasonal influenza in 2022 "
+title: "The association between decrease in mask-wearing and the prevalence of seasonal influenza in 2022"
 output: 
   html_document:
     toc: true
