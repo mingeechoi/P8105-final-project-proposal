@@ -3,11 +3,16 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Dashboard"
+    - text: "Data Processing"
+      href: dashboard.html
+    - text: "Exploratory Analysis"
+      href: dashboard.html
+    - text: "Interactive Map"
+      href: dashboard.html
+    - text: "Model Building"
       href: dashboard.html
     - text: "Final Report"
       href: final_report.html
-    - icon: fa-github fa-lg
 output:
   html_document:
     css: bootstrap.css

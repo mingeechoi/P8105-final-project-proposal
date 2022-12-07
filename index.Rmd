@@ -5,6 +5,6 @@ output:
     toc: true
     toc_float: true
 ---
-##### *MPH in Epidemiology @ Columbia Mailman School of Public Health*
+#####
 Find my resume and most recent analysis. Connect with me over GitHub, Linkedin, or email!
 
