@@ -1,5 +1,5 @@
 ---
-title: "Final Project Proposal"
+title: "dashboard_template"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns

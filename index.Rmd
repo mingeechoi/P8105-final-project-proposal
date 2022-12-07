@@ -6,5 +6,4 @@ output:
     toc_float: true
 ---
 #####
-Find my resume and most recent analysis. Connect with me over GitHub, Linkedin, or email!
 

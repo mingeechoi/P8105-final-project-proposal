@@ -45,8 +45,5 @@ merged_all=
   by = c("geo_value", "time_value"),
   all.x = TRUE) %>%
   rename(state=geo_value, date=time_value) 
-  
-
-
 
 ```
