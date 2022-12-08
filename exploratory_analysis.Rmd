@@ -14,8 +14,8 @@ library(dplyr)
 
 
 ```{r, message=FALSE}
-merged=
-read_csv("./Data/merged.csv") 
+final=
+read_csv("./Data/final_avg.csv") 
 ```
 
 On this page, we will explore overall trends for our exposure, people wearing masks, and our outcomes, confirmed Influenza admissions per day (7-day average) and Flu-like symptoms in the past 7 days (weighted), across states in the U.S.
