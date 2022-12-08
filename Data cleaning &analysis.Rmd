@@ -36,33 +36,31 @@ o_finances <-
   read_csv("data/worried_finances.csv") %>%
   janitor::clean_names() %>%
   select(-x1) %>%
-  select(geo_value, signal, time_value, value, sample_size, stderr) %>%
-  rename(symptom = value, symtpoms_stderr = stderr, symptom_samplesize = sample_size,     state=geo_value, date=time_value)
+  select(geo_value, time_value, value, sample_size, stderr) %>%
+  rename(symptom = value, finances_stderr = stderr, finances_samplesize = sample_size,     state=geo_value, date=time_value)
 
 merge1=
   left_join(
   x = e_mask,
-  y = o_symptoms,
+  y = o_admission,
   by = c("state", "date"),
   all.x = TRUE) 
 
 merge2 <-
   left_join(
-    x = o_admission,
-    y = merged_delphi,
+    x = o_symptoms,
+    y = merge1,
     by = c("state", "date"),
     all.x = TRUE)
   
-
 merge3 =
   left_join(
   x = o_finances,
   y = merge2,
   by = c("state", "date"),
-  all.x = TRUE) %>%
-  rename(state=geo_value, date=time_value) 
+  all.x = TRUE)
 
-write.csv(merged,"merged.csv" )
+write.csv(merge3,"merged.csv" )
 
 
 ```
