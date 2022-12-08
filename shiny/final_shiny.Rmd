@@ -1,5 +1,5 @@
 ---
-title: "Customized Models"
+title: "Customizable Map & Model"
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
@@ -19,6 +19,84 @@ library(shiny)
 library(plotly)
 ```
 
+
+Map
+=========================================
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+  
+Please select a variable's annual average to be mapped by state. 
+
+#### Variable of Interest
+```{r}
+avg_df <- read.csv("https://raw.githubusercontent.com/mingeechoi/P8105-final-project-proposal/main/Data/final_avg.csv") %>% select(everything(), - X)
+
+var_list <- colnames(avg_df)[3:7]
+
+selectInput(
+  "var_choice","Select variable of interest",
+  choices = var_list, selected = "avg_mask")
+
+```
+
+
+
+Column 
+-----------------------------------------------------------------------
+  
+### Plotly Map for Variable of Interest
+
+```{r}
+
+
+renderPlotly({ 
+
+final_avg <- avg_df %>% select(1,2,input$var_choice)
+colnames(final_avg)[3] <- "selected_v"
+  
+final_avg$hover1 <- with(final_avg, paste(state_full, '<br>'))
+
+# give state boundaries a white border
+l1 <- list(color = toRGB("white"), width = 2)
+# specify some map projection/options
+g1 <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+title_var <- data.frame(matrix(ncol = 2, nrow = 5))
+title_var[,1]<-var_list
+title_var[,2]<-c("Annual Average Estimated Percentage of Wear a Mask Most or All of the Time in public for the Past 7 Days",
+                 "Annual Average Estimated Percentage of Adult and Pediatric Hospital Admissions with Confirmed Influenza for the Past 7 Days",
+                 "Annual Average Estimated Percentage of Self-Reporting Influenza-like Symptoms for the Past 7 Days",
+                 "Annual Average Estimated Percentage of Being very or somewhat Worried about Household Finances for the Next Month",
+                 "Annual Average Estimated Percentage of Feeling Depressed for Most or All of the Past 7 Days")
+colnames(title_var) <- c('var_in', 'title_in')
+
+title_cust <- as.character(title_var %>% filter(var_in==input$var_choice) %>% select(title_in))
+
+
+fig1 <- plot_geo(final_avg, locationmode = 'USA-states')
+fig1 <- fig1 %>% add_trace(
+    z = ~selected_v, text = ~hover1, locations = ~state,
+    color = ~selected_v, colors = 'Blues'
+  )
+fig1 <- fig1 %>% colorbar(title = "Percentage %")
+fig1 <- fig1 %>% layout(
+    title = paste0('May 2021 - May 2022 ', title_cust,' <br> (Hover for breakdown)'),
+    geo = g1
+  )
+})
+
+```
+
+
+Model with selected outcome
+=========================================
+
 Column {.sidebar}
 -----------------------------------------------------------------------
   
@@ -27,13 +105,9 @@ Please feel free to explore the association variations in different states
 #### Model Parameter Input
 
 ```{r import}
-comp_df <- read.csv("https://raw.githubusercontent.com/zz2901/zz2901_final_test/main/data/merged.csv")
+comp_df <- read.csv("https://raw.githubusercontent.com/mingeechoi/P8105-final-project-proposal/main/Data/final_long.csv")
 
-ex_df<-comp_df %>% filter(is.na(maskwearing))
-comp_df<-comp_df %>% filter(!is.na(maskwearing))
-
-exclude_states <- unique(ex_df$state)
-states <- unique(comp_df$state)
+states <- unique(comp_df$state_full)
 ```
 
 
@@ -44,7 +118,7 @@ selectInput(
 
 selectInput(
   "state_choice","Select states of interest",
-  choices = states, selected = c("ak","ca","ny"),multiple=TRUE)
+  choices = states, selected = c("Alaska","Colorado","New York"),multiple=TRUE)
 
 dateRangeInput("input_date", "Date range",
                start = "2021-05-01",end = "2022-05-01",
@@ -56,10 +130,11 @@ dateRangeInput("input_date", "Date range",
 Column 
 -----------------------------------------------------------------------
   
-### Scatter plot of exposure vs outcome based on input {data-height=800}
+### Scatter plot of exposure vs outcome based on input {data-height=600}
   
 ```{r}
-analysis_df <- comp_df %>% mutate(date=as.Date(date),state=as.factor(state)) %>% arrange(state,date) %>% select(state,date,maskwearing,symptom,admission,everything())
+analysis_df <- comp_df %>% mutate(date=as.Date(date),state=as.factor(state_full)) %>% arrange(state,date) %>% 
+  select(- X,- state_full,everything())
 
 renderPlotly({ 
   
@@ -72,44 +147,42 @@ renderPlotly({
   
   if(input$outcome_choice=="admission"){
     plot_df %>% plot_ly(
-      x = ~maskwearing, y = ~admission, type = "scatter", mode = "markers",
+      x = ~maskwearing_prop, y = ~admission_prop, type = "scatter", mode = "markers",
     alpha = 0.5, color = ~state, text = ~text_label)%>%
   layout(title = 'Maskwearing Rate vs. Influenza Admission',  xaxis = list(title = 'Maskwearing Rate (%)'), 
-         yaxis = list(title = 'Influenza Admission'), legend = list(title=list(text='<b> State of Interest </b>')))
+         yaxis = list(title = 'Influenza Admission (%)'), legend = list(title=list(text='<b> State of Interest </b>')))
   }else if (input$outcome_choice=="symptom"){
         plot_df %>% plot_ly(
-      x = ~maskwearing, y = ~symptom, type = "scatter", mode = "markers",
+      x = ~maskwearing_prop, y = ~symptom_prop, type = "scatter", mode = "markers",
     alpha = 0.5, color = ~state, text = ~text_label)%>%
   layout(title = 'Maskwearing Rate vs. Influenza Symptom',  xaxis = list(title = 'Maskwearing Rate (%)'), 
-         yaxis = list(title = 'Influenza Symptom'), legend = list(title=list(text='<b> State of Interest </b>')))
+         yaxis = list(title = 'Influenza Symptom (%)'), legend = list(title=list(text='<b> State of Interest </b>')))
   }
   
-
-
-    
-
 })
 ```
 
-### Model Estimates {data-height=200}
+### Model Estimates {data-height=400}
 
 ```{r}
 
 shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
   
   if (outcome=="admission"){
-    model_formula <- formula(admission ~ maskwearing)
+    model_formula <- formula(admission_prop ~ maskwearing_prop + finances_prop + depression_prop)
   }else if (outcome=="symptom"){
-    model_formula <- formula(symptom ~ maskwearing)
+    model_formula <- formula(symptom_prop ~ maskwearing_prop + finances_prop + depression_prop)
   }
   
   if (b_nation=="state"){
-    temp_df<-analysis_df %>% filter(state %in% s_state & date>=as.Date(l_date) & date<=as.Date(u_date))
-    out_table <- geeglm(formula=model_formula, data=temp_df, id=state, family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
+    temp_df<-analysis_df %>% filter(state_full %in% s_state & date>=as.Date(l_date) & date<=as.Date(u_date))
+    out_table <- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
       broom::tidy() 
   } else if (b_nation=="nation"){
     temp_df<-analysis_df %>% filter(date>=as.Date(l_date) & date<=as.Date(u_date))
-    out_table <- geeglm(formula=model_formula, data=temp_df, id=state, family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
+    out_table <- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
       broom::tidy() 
   }
 
@@ -119,5 +192,5 @@ shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
 
 renderTable({
   shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, b_nation="state")
-})
+},digits=5)
 ```
