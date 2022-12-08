@@ -38,12 +38,15 @@ merged_delphi=
   all.x = TRUE) %>%
   rename(delphi_samplesize=sample_size)
 
-merged_all=
+merged=
   left_join(
   x = o_admission,
   y = merged_delphi,
   by = c("geo_value", "time_value"),
   all.x = TRUE) %>%
   rename(state=geo_value, date=time_value) 
+  
+write.csv(merged,"merged.csv" )
+
 
 ```
