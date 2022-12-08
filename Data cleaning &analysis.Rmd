@@ -74,6 +74,16 @@ merge4 <-
   by = c("state", "date"),
   all.x = TRUE)
 
+state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
+  as.tibble() %>%
+  pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
+
+merge5 <- merge4 %>%
+  full_join(state, by = "state") %>%
+  relocate(state_full, .after = state) %>%
+  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full),
+         state = toupper(state))
+
 # write.csv(merge4,"merged.csv" )
 
 ```
@@ -149,11 +159,14 @@ merge4_avg <-
 
 state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
   as.tibble() %>%
-  pivot_longer(AL:WY, names_to = "state_abb", values_to = "state")
+  pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
 
-merge4_avg %>%
-  distinct(state) %>%
-  left_join()
+merge5_avg <- merge4_avg %>%
+  full_join(state, by = "state") %>%
+  relocate(state_full, .after = state) %>%
+  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full))
+
+str(state$state_abb)
+str(merge4_avg$state)
 
 ```
-
