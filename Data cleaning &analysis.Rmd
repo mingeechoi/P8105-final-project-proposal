@@ -19,8 +19,6 @@ read_csv("./Data/People_wearing_masks.csv") %>%
   rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size,
          state=geo_value, date=time_value)
 
-view(e_mask)
-
 e_mask <-
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor::clean_names()  %>%
@@ -46,17 +44,13 @@ o_finances <-
   janitor::clean_names() %>%
   select(-x1) %>%
   select(geo_value, time_value, value, sample_size, stderr) %>%
-  rename(symptom = value, finances_stderr = stderr, finances_samplesize = sample_size,     state=geo_value, date=time_value) %>%
-  group_by(state) %>%
-  summarize(mean_symptom = mean(symptom))
-  
-  
-avg_depression <- read.csv("Data/depression.csv") %>% 
-  janitor:: clean_names()  %>% select (geo_value, time_value, value, sample_size, stderr) %>% 
-  group_by(geo_value) %>% summarise(avg_depression = mean(value))
+  rename(symptom = value, finances_stderr = stderr, finances_samplesize = sample_size,     state=geo_value, date=time_value)
 
-long_depression <- read.csv("Data/depression.csv") %>% 
-  janitor:: clean_names()  %>% select (geo_value, time_value, value) %>% rename(depression=value) 
+o_depression <- 
+  read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names() %>% 
+  select (geo_value, time_value, value) %>% 
+  rename(depression=value) 
   
 
 merge1 <-
@@ -100,5 +94,60 @@ read_csv("./Data/Confirmed_admission.csv") %>%
   select (geo_value, time_value, value) %>%
   group_by(geo_value) %>%
   summarize(avg_admission = mean(value))
+
+o_symptoms_avg <-
+read_csv("./Data/Flu_like_symptoms.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_symptom = mean(value))
+
+o_finances_avg <-
+  read_csv("data/worried_finances.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_finances = mean(value))
+
+  
+o_depression_avg <- read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names()  %>% 
+  select (geo_value, time_value, value) %>% 
+  group_by(geo_value) %>% 
+  summarize(avg_depression = mean(value))
+
+merge1_avg <-
+  inner_join(
+  x = e_mask_avg,
+  y = o_admission_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge2_avg <-
+  inner_join(
+  x = merge1_avg,
+  y = o_symptoms_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge3_avg <-
+  inner_join(
+  x = merge2_avg,
+  y = o_finances_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge4_avg <-
+  inner_join(
+  x = merge3_avg,
+  y = o_depression_avg,
+  by = c("geo_value"),
+  all.x = TRUE) %>%
+  mutate(state = toupper(geo_value)) %>%
+  relocate(state, .before = avg_mask) %>%
+  select(-geo_value)
+
+
+
 ```
 
