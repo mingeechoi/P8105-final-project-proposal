@@ -12,6 +12,24 @@ library(tidyverse)
 ## Create Final Dataset - Longitudinal
 
 ```{r}
+e_mask=
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor:: clean_names()  %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_mask = mean(value))
+
+view(e_mask)
+
+o_admission =
+read_csv("./Data/Confirmed_admission.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_admission = mean(value))
+
+view(o_admission)  
+
 e_mask <-
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor::clean_names()  %>%
@@ -40,6 +58,14 @@ o_finances <-
   rename(symptom = value, finances_stderr = stderr, finances_samplesize = sample_size,     state=geo_value, date=time_value) %>%
   group_by(state) %>%
   summarize(mean_symptom = mean(symptom))
+  
+  
+avg_depression <- read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names()  %>% select (geo_value, time_value, value, sample_size, stderr) %>% 
+  group_by(geo_value) %>% summarise(avg_depression = mean(value))
+
+long_depression <- read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names()  %>% select (geo_value, time_value, value) %>% rename(depression=value) 
   
 
 merge1 <-
