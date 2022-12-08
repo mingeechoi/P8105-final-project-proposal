@@ -16,39 +16,52 @@ e_mask=
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor:: clean_names()  %>%
   select (geo_value, time_value, value, sample_size, stderr) %>%
-  rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size )
+  rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size,
+         state=geo_value, date=time_value)
 
-o_admission=
-read_csv("./Data/Confirmed_admission.csv") %>%
-  janitor:: clean_names() %>%
-  select (geo_value, time_value, value )%>%
-  rename(admission=value)
-
-o_symptoms=
+o_symptoms =
 read_csv("./Data/Flu_like_symptoms.csv") %>%
   janitor:: clean_names()  %>%
-  select (geo_value, time_value, value, sample_size, stderr) %>%
-  rename(symptom=value, symptoms_stderr=stderr, symptom_samplesize=sample_size )
+  select(geo_value, time_value, value, sample_size, stderr) %>%
+  rename(symptom=value, symptoms_stderr=stderr, symptom_samplesize=sample_size,state=geo_value, date=time_value)
+
+o_admission =
+read_csv("./Data/influenza_admissions.csv") %>%
+  janitor:: clean_names() %>%
+  select(-x1) %>%
+  select (geo_value, time_value, value) %>%
+  rename(admission=value, state=geo_value, date=time_value) 
 
 o_finances <-
-  read_csv("data/worried.finances.csv") %>%
+  read_csv("data/worried_finances.csv") %>%
   janitor::clean_names() %>%
-  select()
+  select(-x1) %>%
+  select(geo_value, signal, time_value, value, sample_size, stderr) %>%
+  rename(symptom = value, symtpoms_stderr = stderr, symptom_samplesize = sample_size,     state=geo_value, date=time_value)
 
-merged_delphi=
+merge1=
   left_join(
   x = e_mask,
   y = o_symptoms,
-  by = c("geo_value", "time_value"),
+  by = c("state", "date"),
   all.x = TRUE) 
 
-merged=
+merge2 <-
   left_join(
-  x = o_admission,
-  y = merged_delphi,
-  by = c("geo_value", "time_value"),
+    x = o_admission,
+    y = merged_delphi,
+    by = c("state", "date"),
+    all.x = TRUE)
+  
+
+merge3 =
+  left_join(
+  x = o_finances,
+  y = merge2,
+  by = c("state", "date"),
   all.x = TRUE) %>%
   rename(state=geo_value, date=time_value) 
+
 write.csv(merged,"merged.csv" )
 
 
