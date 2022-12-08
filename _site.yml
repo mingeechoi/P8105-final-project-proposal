@@ -6,7 +6,7 @@ navbar:
     - text: "Data Processing"
       href: Data-cleaning--analysis.html
     - text: "Exploratory Analysis"
-      href: dashboard.html
+      href: exploratory_analysis.html
     - text: "Interactive Map"
       href: dashboard.html
     - text: "Model Building"

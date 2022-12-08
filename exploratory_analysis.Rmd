@@ -14,7 +14,7 @@ library(dplyr)
 
 
 ```{r, message=FALSE}
-final=
+fina_avgl=
 read_csv("./Data/final_avg.csv") 
 ```
 
