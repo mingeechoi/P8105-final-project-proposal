@@ -12,64 +12,57 @@ library(tidyverse)
 ## Create Final Dataset - Longitudinal
 
 ```{r}
-e_mask <-
+e_mask_prop <-
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor::clean_names()  %>%
-  select (geo_value, time_value, value, sample_size, stderr) %>%
-  rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size,
-         state=geo_value, date=time_value)
+  select (geo_value, time_value, value) %>%
+  rename(maskwearing_prop=value, state=geo_value, date=time_value)
 
-e_mask <-
-read_csv("./Data/People_wearing_masks.csv") %>%
-  janitor::clean_names()  %>%
-  select (geo_value, time_value, value, sample_size, stderr) %>%
-  rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size,
-         state=geo_value, date=time_value)
-
-o_symptoms <-
+o_symptoms_prop <-
 read_csv("./Data/Flu_like_symptoms.csv") %>%
   janitor:: clean_names()  %>%
-  select(geo_value, time_value, value, sample_size, stderr) %>%
-  rename(symptom=value, symptoms_stderr=stderr, symptom_samplesize=sample_size,state=geo_value, date=time_value)
+  select(geo_value, time_value, value) %>%
+  rename(symptom_prop=value,state=geo_value, date=time_value)
 
-o_admission <-
+o_admission_prop <-
 read_csv("./Data/influenza_admissions.csv") %>%
   janitor:: clean_names() %>%
   select(-x1) %>%
   select (geo_value, time_value, value) %>%
-  rename(admission=value, state=geo_value, date=time_value) 
+  rename(admission_prop = value, state=geo_value, date=time_value) 
 
-o_finances <-
+o_finances_prop <-
   read_csv("data/worried_finances.csv") %>%
   janitor::clean_names() %>%
   select(-x1) %>%
-  select(geo_value, time_value, value, sample_size, stderr) %>%
-  rename(symptom = value, finances_stderr = stderr, finances_samplesize = sample_size,     state=geo_value, date=time_value)
+  select(geo_value, time_value, value) %>%
+  rename(finances_prop = value, state=geo_value, date=time_value)
 
-o_depression <- 
+o_depression_prop <- 
   read.csv("Data/depression.csv") %>% 
   janitor:: clean_names() %>% 
   select (geo_value, time_value, value) %>% 
-  rename(depression=value) 
+  rename(depression_prop =value, state = geo_value, date = time_value) %>%
+  mutate(date = as.Date(date))
   
 
 merge1 <-
   inner_join(
-  x = e_mask,
-  y = o_admission,
+  x = e_mask_prop,
+  y = o_admission_prop,
   by = c("state", "date"),
   all.x = TRUE) 
 
 merge2 <-
   inner_join(
-    x = o_symptoms,
+    x = o_symptoms_prop,
     y = merge1,
     by = c("state", "date"),
     all.x = TRUE)
   
 merge3 <-
   inner_join(
-  x = o_finances,
+  x = o_finances_prop,
   y = merge2,
   by = c("state", "date"),
   all.x = TRUE)
@@ -77,10 +70,11 @@ merge3 <-
 merge4 <-
   inner_join(
     x = merge3,
-    y
-  )
+    y = o_depression_prop,
+  by = c("state", "date"),
+  all.x = TRUE)
 
-write.csv(merge3,"merged.csv" )
+# write.csv(merge4,"merged.csv" )
 
 ```
 
@@ -153,7 +147,13 @@ merge4_avg <-
   relocate(state, .before = avg_mask) %>%
   select(-geo_value)
 
+state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
+  as.tibble() %>%
+  pivot_longer(AL:WY, names_to = "state_abb", values_to = "state")
 
+merge4_avg %>%
+  distinct(state) %>%
+  left_join()
 
 ```
 
