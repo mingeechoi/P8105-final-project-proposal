@@ -9,23 +9,23 @@ output: html_document
 library(tidyverse)
 ```
 
-## Merge Datasets
+## Merge Datasets - Longitudinal
 
 ```{r}
-e_mask=
+e_mask <-
 read_csv("./Data/People_wearing_masks.csv") %>%
-  janitor:: clean_names()  %>%
+  janitor::clean_names()  %>%
   select (geo_value, time_value, value, sample_size, stderr) %>%
   rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size,
          state=geo_value, date=time_value)
 
-o_symptoms =
+o_symptoms <-
 read_csv("./Data/Flu_like_symptoms.csv") %>%
   janitor:: clean_names()  %>%
   select(geo_value, time_value, value, sample_size, stderr) %>%
   rename(symptom=value, symptoms_stderr=stderr, symptom_samplesize=sample_size,state=geo_value, date=time_value)
 
-o_admission =
+o_admission <-
 read_csv("./Data/influenza_admissions.csv") %>%
   janitor:: clean_names() %>%
   select(-x1) %>%
@@ -37,30 +37,32 @@ o_finances <-
   janitor::clean_names() %>%
   select(-x1) %>%
   select(geo_value, time_value, value, sample_size, stderr) %>%
-  rename(symptom = value, finances_stderr = stderr, finances_samplesize = sample_size,     state=geo_value, date=time_value)
+  rename(symptom = value, finances_stderr = stderr, finances_samplesize = sample_size,     state=geo_value, date=time_value) %>%
+  group_by(state) %>%
+  summarize(mean_symptom = mean(symptom))
+  
 
-merge1=
-  left_join(
+merge1 <-
+  inner_join(
   x = e_mask,
   y = o_admission,
   by = c("state", "date"),
   all.x = TRUE) 
 
 merge2 <-
-  left_join(
+  inner_join(
     x = o_symptoms,
     y = merge1,
     by = c("state", "date"),
     all.x = TRUE)
   
-merge3 =
-  left_join(
+merge3 <-
+  inner_join(
   x = o_finances,
   y = merge2,
   by = c("state", "date"),
   all.x = TRUE)
 
 write.csv(merge3,"merged.csv" )
-
 
 ```
