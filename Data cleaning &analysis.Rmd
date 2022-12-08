@@ -74,6 +74,12 @@ merge3 <-
   by = c("state", "date"),
   all.x = TRUE)
 
+merge4 <-
+  inner_join(
+    x = merge3,
+    y
+  )
+
 write.csv(merge3,"merged.csv" )
 
 ```
@@ -147,7 +153,6 @@ merge4_avg <-
   relocate(state, .before = avg_mask) %>%
   select(-geo_value)
 
-states <- setNames(as.list(datasets::state.name), datasets::state.abb)
 
 
 ```
