@@ -9,11 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Junyu QI" />
 
 <meta name="date" content="2022-12-08" />
 
-<title>Data Cleaning &amp; Analysis</title>
+<title>Data Processing</title>
 
 <script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -272,8 +271,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Data Cleaning &amp; Analysis</h1>
-<h4 class="author">Junyu QI</h4>
+<h1 class="title toc-ignore">Data Processing</h1>
 <h4 class="date">2022-12-08</h4>
 
 </div>
@@ -355,7 +353,6 @@ read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   rename(depression_prop =value, state = geo_value, date = time_value) %&gt;%
   mutate(date = as.Date(date))
   
-
 merge1 &lt;-
   inner_join(
   x = e_mask_prop,
@@ -382,7 +379,8 @@ merge4 &lt;-
     x = merge3,
     y = o_depression_prop,
   by = c(&quot;state&quot;, &quot;date&quot;),
-  all.x = TRUE)
+  all.x = TRUE) %&gt;%
+  mutate(state = toupper(state))
 
 state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
   as.tibble() %&gt;%
@@ -393,10 +391,9 @@ state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;%
 <pre class="r"><code>merge5 &lt;- merge4 %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
-  mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full),
-         state = toupper(state))
+  mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
 
-# write.csv(merge4,&quot;merged.csv&quot; )</code></pre>
+write.csv(merge5,&quot;data/final_long.csv&quot; )</code></pre>
 </div>
 <div id="create-final-dataset---annual-average" class="section level2">
 <h2>Create Final Dataset - Annual Average</h2>
@@ -497,7 +494,7 @@ merge4_avg &lt;-
   relocate(state, .before = avg_mask) %&gt;%
   select(-geo_value)
 
-state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
+state &lt;- setNames(as.list(datasets::state.name), datasets::state.abb) %&gt;% 
   as.tibble() %&gt;%
   pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
 
@@ -506,11 +503,7 @@ merge5_avg &lt;- merge4_avg %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
 
-str(state$state_abb)</code></pre>
-<pre><code>## Warning: Unknown or uninitialised column: `state_abb`.</code></pre>
-<pre><code>##  NULL</code></pre>
-<pre class="r"><code>str(merge4_avg$state)</code></pre>
-<pre><code>##  chr [1:51] &quot;AK&quot; &quot;AL&quot; &quot;AR&quot; &quot;AZ&quot; &quot;CA&quot; &quot;CO&quot; &quot;CT&quot; &quot;DC&quot; &quot;DE&quot; &quot;FL&quot; &quot;GA&quot; &quot;HI&quot; ...</code></pre>
+write.csv(merge5_avg,&quot;data/final_avg.csv&quot; )</code></pre>
 </div>
 
 

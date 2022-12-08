@@ -1,6 +1,5 @@
 ---
-title: "Data Cleaning & Analysis"
-author: "Junyu QI"
+title: "Data Processing"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -45,7 +44,6 @@ o_depression_prop <-
   rename(depression_prop =value, state = geo_value, date = time_value) %>%
   mutate(date = as.Date(date))
   
-
 merge1 <-
   inner_join(
   x = e_mask_prop,
