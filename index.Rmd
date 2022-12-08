@@ -1,9 +1,36 @@
 ---
-title: "The association between decrease in mask-wearing and the prevalence of seasonal influenza in 2022"
+title: "Mask Wearing and Influenza Admissions (2021-2022)"
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
-#####
+
+```{css, echo = FALSE}
+h1, h2, h3 {
+  text-align: center;
+}
+```
+
+<br>
+
+***
+
+<div class="vid_container">
+  <iframe 
+    src="https://www.youtube.com/embed/nOIp6J8Uas4"
+    frameborder="0" allowfullscreen class="video">
+  </iframe>
+</div>
+
+***
+
+## Motivation
+
+adfasf
+
+## Website Overview
+
+asdfadsf
+
 

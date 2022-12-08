@@ -28,9 +28,7 @@ read_csv("./Data/influenza_admissions.csv") %>%
   janitor:: clean_names() %>%
   select(-x1) %>%
   select (geo_value, time_value, value) %>%
-  rename(admission_prop = value, state=geo_value, date=time_value) %>%
-  mutate(admission_prop = admission_prop * 100) # per 100 people
-
+  rename(admission_prop = value, state=geo_value, date=time_value)
 o_finances_prop <-
   read_csv("data/worried_finances.csv") %>%
   janitor::clean_names() %>%
