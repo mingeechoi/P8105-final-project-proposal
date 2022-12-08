@@ -12,6 +12,24 @@ library(tidyverse)
 ## Merge Datasets - Longitudinal
 
 ```{r}
+e_mask=
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor:: clean_names()  %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_mask = mean(value))
+
+view(e_mask)
+
+o_admission =
+read_csv("./Data/Confirmed_admission.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_admission = mean(value))
+
+view(o_admission)  
+
 e_mask <-
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor::clean_names()  %>%
