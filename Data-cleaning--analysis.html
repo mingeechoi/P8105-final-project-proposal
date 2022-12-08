@@ -11,7 +11,7 @@
 
 <meta name="author" content="Junyu QI" />
 
-<meta name="date" content="2022-12-07" />
+<meta name="date" content="2022-12-08" />
 
 <title>Data Cleaning &amp; Analysis</title>
 
@@ -249,7 +249,7 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="dashboard.html">Data Processing</a>
+  <a href="Data-cleaning--analysis.html">Data Processing</a>
 </li>
 <li>
   <a href="dashboard.html">Exploratory Analysis</a>
@@ -274,7 +274,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Data Cleaning &amp; Analysis</h1>
 <h4 class="author">Junyu QI</h4>
-<h4 class="date">2022-12-07</h4>
+<h4 class="date">2022-12-08</h4>
 
 </div>
 
@@ -288,13 +288,13 @@ $(document).ready(function () {
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<div id="merge-datasets" class="section level2">
-<h2>Merge Datasets</h2>
-<pre class="r"><code>e_mask=
+<div id="create-final-dataset---longitudinal" class="section level2">
+<h2>Create Final Dataset - Longitudinal</h2>
+<pre class="r"><code>e_mask_prop &lt;-
 read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
-  janitor:: clean_names()  %&gt;%
-  select (geo_value, time_value, value, sample_size, stderr) %&gt;%
-  rename(maskwearing=value, maskwearing_stderr=stderr )</code></pre>
+  janitor::clean_names()  %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  rename(maskwearing_prop=value, state=geo_value, date=time_value)</code></pre>
 <pre><code>## New names:
 ## Rows: 18666 Columns: 11
 ## ── Column specification
@@ -304,11 +304,26 @@ read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
 ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_admission=
-read_csv(&quot;./Data/Confirmed_admission.csv&quot;) %&gt;%
+<pre class="r"><code>o_symptoms_prop &lt;-
+read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
+  janitor:: clean_names()  %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  rename(symptom_prop=value,state=geo_value, date=time_value)</code></pre>
+<pre><code>## New names:
+## Rows: 18666 Columns: 11
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (4): geo_value, signal, geo_type, data_source dbl (5): ...1, lag, value,
+## stderr, sample_size date (2): time_value, issue
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>o_admission_prop &lt;-
+read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
-  select (geo_value, time_value, value )%&gt;%
-  rename(admission=value)</code></pre>
+  select(-x1) %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  rename(admission_prop = value, state=geo_value, date=time_value) </code></pre>
 <pre><code>## New names:
 ## Rows: 19650 Columns: 11
 ## ── Column specification
@@ -318,11 +333,79 @@ read_csv(&quot;./Data/Confirmed_admission.csv&quot;) %&gt;%
 ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_symptoms=
-read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
+<pre class="r"><code>o_finances_prop &lt;-
+  read_csv(&quot;data/worried_finances.csv&quot;) %&gt;%
+  janitor::clean_names() %&gt;%
+  select(-x1) %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  rename(finances_prop = value, state=geo_value, date=time_value)</code></pre>
+<pre><code>## New names:
+## Rows: 18743 Columns: 11
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (4): geo_value, signal, geo_type, data_source dbl (5): ...1, lag, value,
+## stderr, sample_size date (2): time_value, issue
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>o_depression_prop &lt;- 
+  read.csv(&quot;Data/depression.csv&quot;) %&gt;% 
+  janitor:: clean_names() %&gt;% 
+  select (geo_value, time_value, value) %&gt;% 
+  rename(depression_prop =value, state = geo_value, date = time_value) %&gt;%
+  mutate(date = as.Date(date))
+  
+
+merge1 &lt;-
+  inner_join(
+  x = e_mask_prop,
+  y = o_admission_prop,
+  by = c(&quot;state&quot;, &quot;date&quot;),
+  all.x = TRUE) 
+
+merge2 &lt;-
+  inner_join(
+    x = o_symptoms_prop,
+    y = merge1,
+    by = c(&quot;state&quot;, &quot;date&quot;),
+    all.x = TRUE)
+  
+merge3 &lt;-
+  inner_join(
+  x = o_finances_prop,
+  y = merge2,
+  by = c(&quot;state&quot;, &quot;date&quot;),
+  all.x = TRUE)
+
+merge4 &lt;-
+  inner_join(
+    x = merge3,
+    y = o_depression_prop,
+  by = c(&quot;state&quot;, &quot;date&quot;),
+  all.x = TRUE)
+
+state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
+  as.tibble() %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
+<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
+## ℹ Please use `as_tibble()` instead.
+## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
+<pre class="r"><code>merge5 &lt;- merge4 %&gt;%
+  full_join(state, by = &quot;state&quot;) %&gt;%
+  relocate(state_full, .after = state) %&gt;%
+  mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full),
+         state = toupper(state))
+
+# write.csv(merge4,&quot;merged.csv&quot; )</code></pre>
+</div>
+<div id="create-final-dataset---annual-average" class="section level2">
+<h2>Create Final Dataset - Annual Average</h2>
+<pre class="r"><code>e_mask_avg &lt;- 
+read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
   janitor:: clean_names()  %&gt;%
-  select (geo_value, time_value, value, sample_size, stderr) %&gt;%
-  rename(symptom=value, symptoms_stderr=stderr )</code></pre>
+  select (geo_value, time_value, value) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_mask = mean(value))</code></pre>
 <pre><code>## New names:
 ## Rows: 18666 Columns: 11
 ## ── Column specification
@@ -332,21 +415,102 @@ read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
 ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>merged_delphi=
-  left_join(
-  x = e_mask,
-  y = o_symptoms,
-  by = c(&quot;geo_value&quot;, &quot;time_value&quot;, &quot;sample_size&quot;),
-  all.x = TRUE) %&gt;%
-  rename(delphi_samplesize=sample_size)
+<pre class="r"><code>o_admission_avg &lt;-
+read_csv(&quot;./Data/Confirmed_admission.csv&quot;) %&gt;%
+  janitor:: clean_names() %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_admission = mean(value))</code></pre>
+<pre><code>## New names:
+## Rows: 19650 Columns: 11
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (4): geo_value, signal, geo_type, data_source dbl (3): ...1, lag, value lgl
+## (2): stderr, sample_size date (2): time_value, issue
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>o_symptoms_avg &lt;-
+read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
+  janitor:: clean_names() %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_symptom = mean(value))</code></pre>
+<pre><code>## New names:
+## Rows: 18666 Columns: 11
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (4): geo_value, signal, geo_type, data_source dbl (5): ...1, lag, value,
+## stderr, sample_size date (2): time_value, issue
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>o_finances_avg &lt;-
+  read_csv(&quot;data/worried_finances.csv&quot;) %&gt;%
+  janitor:: clean_names() %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_finances = mean(value))</code></pre>
+<pre><code>## New names:
+## Rows: 18743 Columns: 11
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (4): geo_value, signal, geo_type, data_source dbl (5): ...1, lag, value,
+## stderr, sample_size date (2): time_value, issue
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>o_depression_avg &lt;- read.csv(&quot;Data/depression.csv&quot;) %&gt;% 
+  janitor:: clean_names()  %&gt;% 
+  select (geo_value, time_value, value) %&gt;% 
+  group_by(geo_value) %&gt;% 
+  summarize(avg_depression = mean(value))
 
-merged_all=
-  left_join(
-  x = o_admission,
-  y = merged_delphi,
-  by = c(&quot;geo_value&quot;, &quot;time_value&quot;),
+merge1_avg &lt;-
+  inner_join(
+  x = e_mask_avg,
+  y = o_admission_avg,
+  by = c(&quot;geo_value&quot;),
+  all.x = TRUE) 
+
+merge2_avg &lt;-
+  inner_join(
+  x = merge1_avg,
+  y = o_symptoms_avg,
+  by = c(&quot;geo_value&quot;),
+  all.x = TRUE) 
+
+merge3_avg &lt;-
+  inner_join(
+  x = merge2_avg,
+  y = o_finances_avg,
+  by = c(&quot;geo_value&quot;),
+  all.x = TRUE) 
+
+merge4_avg &lt;-
+  inner_join(
+  x = merge3_avg,
+  y = o_depression_avg,
+  by = c(&quot;geo_value&quot;),
   all.x = TRUE) %&gt;%
-  rename(state=geo_value, date=time_value) </code></pre>
+  mutate(state = toupper(geo_value)) %&gt;%
+  relocate(state, .before = avg_mask) %&gt;%
+  select(-geo_value)
+
+state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
+  as.tibble() %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
+
+merge5_avg &lt;- merge4_avg %&gt;%
+  full_join(state, by = &quot;state&quot;) %&gt;%
+  relocate(state_full, .after = state) %&gt;%
+  mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
+
+str(state$state_abb)</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `state_abb`.</code></pre>
+<pre><code>##  NULL</code></pre>
+<pre class="r"><code>str(merge4_avg$state)</code></pre>
+<pre><code>##  chr [1:51] &quot;AK&quot; &quot;AL&quot; &quot;AR&quot; &quot;AZ&quot; &quot;CA&quot; &quot;CO&quot; &quot;CT&quot; &quot;DC&quot; &quot;DE&quot; &quot;FL&quot; &quot;GA&quot; &quot;HI&quot; ...</code></pre>
 </div>
 
 
