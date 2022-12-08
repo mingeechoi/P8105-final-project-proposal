@@ -5,6 +5,7 @@ output:
     orientation: columns
     vertical_layout: fill
     source_code: embed
+runtime: shiny
 ---
 
 # Interactive map over time (5/2021 - 5/2022) across US: 1. mask wearing 2. influenza admissions
@@ -15,49 +16,31 @@ output:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(viridis)
-library(p8105.datasets)
 library(plotly)
 ```
 
-The code below loads and cleans the data, and selects only a few of the variables. 
+Import data
 
 ```{r import_data}
-data("nyc_airbnb")
-nyc_airbnb = 
-  nyc_airbnb %>% 
-  mutate(rating = review_scores_location / 2) %>%
-  rename(latitude = lat, longitude = long) %>%
-  select(
-    boro = neighbourhood_group, neighbourhood, rating, price, room_type,
-    latitude, longitude) %>%
-  filter(!is.na(rating))
+
+merged_all <- 
+read_csv("data/merged.csv") %>%
+  janitor:: clean_names()  %>%
+  select(-x1) %>%
+  mutate(state = toupper(state))
+  
 ```
 
 Column {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r}
-boroughs = nyc_airbnb %>% distinct(boro) %>% pull()
-
-selectInput(
-  inputId = "borough_choice",
-  label = "Borough Choice",
-  choices = boroughs,
-  selected = "Manhattan"
-)
+date <- merged_all %>% distinct(date) %>% pull()
 
 sliderInput(
-  inputId = "price_range",
-  label = h3("Price Range"),
-  min = 50, max = 1000, value = c(100, 250)
-)
-
-room_types = nyc_airbnb %>% distinct(room_type) %>% pull()
-
-radioButtons(
-  inputId = "room_choice",
-  label = h3("Room Type"),
-  choices = room_types
+  inputId = "date",
+  label = h3("Date"),
+  min = "2021-05-01" , max = "2022-05-01" , value = "2021-05-01"
 )
 ```
 
@@ -83,6 +66,34 @@ renderPlotly({
 renderPrint({
   input[["borough_choice"]]
 })
+
+# df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
+
+
+merged_all$hover <- with(merged_all, paste(state, '<br>'))
+
+# give state boundaries a white border
+l <- list(color = toRGB("white"), width = 2)
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+fig <- plot_geo(merged_all, locationmode = 'USA-states')
+fig <- fig %>% add_trace(
+    z = ~admission, text = ~hover, locations = ~state,
+    color = ~admission, colors = 'Purples'
+  )
+fig <- fig %>% colorbar(title = "Confirmed Cases per day (7-day average)")
+fig <- fig %>% layout(
+    title = 'Confirmed Influenza Admissions per day (7-day average) <br>(Hover for breakdown)',
+    geo = g
+  )
+
+fig
 ```
 
 Column {data-width=350}

@@ -30,6 +30,11 @@ read_csv("./Data/Flu_like_symptoms.csv") %>%
   select (geo_value, time_value, value, sample_size, stderr) %>%
   rename(symptom=value, symptoms_stderr=stderr, symptom_samplesize=sample_size )
 
+o_finances <-
+  read_csv("data/worried.finances.csv") %>%
+  janitor::clean_names() %>%
+  select()
+
 merged_delphi=
   left_join(
   x = e_mask,
