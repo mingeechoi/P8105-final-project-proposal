@@ -12,23 +12,14 @@ library(tidyverse)
 ## Create Final Dataset - Longitudinal
 
 ```{r}
-e_mask=
+e_mask <-
 read_csv("./Data/People_wearing_masks.csv") %>%
-  janitor:: clean_names()  %>%
-  select (geo_value, time_value, value) %>%
-  group_by(geo_value) %>%
-  summarize(avg_mask = mean(value))
+  janitor::clean_names()  %>%
+  select (geo_value, time_value, value, sample_size, stderr) %>%
+  rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size,
+         state=geo_value, date=time_value)
 
 view(e_mask)
-
-o_admission =
-read_csv("./Data/Confirmed_admission.csv") %>%
-  janitor:: clean_names() %>%
-  select (geo_value, time_value, value) %>%
-  group_by(geo_value) %>%
-  summarize(avg_admission = mean(value))
-
-view(o_admission)  
 
 e_mask <-
 read_csv("./Data/People_wearing_masks.csv") %>%
@@ -95,4 +86,19 @@ write.csv(merge3,"merged.csv" )
 
 ## Create Final Dataset - Annual Average
 
+```{r}
+e_mask_avg <- 
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor:: clean_names()  %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_mask = mean(value))
+
+o_admission_avg <-
+read_csv("./Data/Confirmed_admission.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_admission = mean(value))
+```
 
