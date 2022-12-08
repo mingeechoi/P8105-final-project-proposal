@@ -84,7 +84,7 @@ merge5 <- merge4 %>%
   mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full),
          state = toupper(state))
 
-# write.csv(merge4,"merged.csv" )
+write.csv(merge5,"data/long_final.csv" )
 
 ```
 
@@ -166,7 +166,6 @@ merge5_avg <- merge4_avg %>%
   relocate(state_full, .after = state) %>%
   mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full))
 
-str(state$state_abb)
-str(merge4_avg$state)
+write.csv(merge5_avg,"data/final_avg.csv" )
 
 ```
