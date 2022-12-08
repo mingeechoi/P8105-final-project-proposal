@@ -16,7 +16,7 @@ e_mask=
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor:: clean_names()  %>%
   select (geo_value, time_value, value, sample_size, stderr) %>%
-  rename(maskwearing=value, maskwearing_stderr=stderr )
+  rename(maskwearing=value, maskwearing_stderr=stderr, maskwearing_samplesize=sample_size )
 
 o_admission=
 read_csv("./Data/Confirmed_admission.csv") %>%
@@ -28,15 +28,14 @@ o_symptoms=
 read_csv("./Data/Flu_like_symptoms.csv") %>%
   janitor:: clean_names()  %>%
   select (geo_value, time_value, value, sample_size, stderr) %>%
-  rename(symptom=value, symptoms_stderr=stderr )
+  rename(symptom=value, symptoms_stderr=stderr, symptom_samplesize=sample_size )
 
 merged_delphi=
   left_join(
   x = e_mask,
   y = o_symptoms,
-  by = c("geo_value", "time_value", "sample_size"),
-  all.x = TRUE) %>%
-  rename(delphi_samplesize=sample_size)
+  by = c("geo_value", "time_value"),
+  all.x = TRUE) 
 
 merged=
   left_join(
@@ -45,7 +44,6 @@ merged=
   by = c("geo_value", "time_value"),
   all.x = TRUE) %>%
   rename(state=geo_value, date=time_value) 
-  
 write.csv(merged,"merged.csv" )
 
 
