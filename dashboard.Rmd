@@ -70,7 +70,7 @@ renderPrint({
 # df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
 
 
-merged_all$hover <- with(merged_all, paste(state, '<br>'))
+final_avg$hover <- with(merged_all, paste(state, '<br>'))
 
 # give state boundaries a white border
 l <- list(color = toRGB("white"), width = 2)

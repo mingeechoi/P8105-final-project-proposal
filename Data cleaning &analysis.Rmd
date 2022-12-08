@@ -72,7 +72,8 @@ merge4 <-
     x = merge3,
     y = o_depression_prop,
   by = c("state", "date"),
-  all.x = TRUE)
+  all.x = TRUE) %>%
+  mutate(state = toupper(state))
 
 state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
   as.tibble() %>%
@@ -81,10 +82,9 @@ state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>%
 merge5 <- merge4 %>%
   full_join(state, by = "state") %>%
   relocate(state_full, .after = state) %>%
-  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full),
-         state = toupper(state))
+  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full))
 
-write.csv(merge5,"data/long_final.csv" )
+write.csv(merge5,"data/final_long.csv" )
 
 ```
 
@@ -157,7 +157,7 @@ merge4_avg <-
   relocate(state, .before = avg_mask) %>%
   select(-geo_value)
 
-state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
+state <- setNames(as.list(datasets::state.name), datasets::state.abb) %>% 
   as.tibble() %>%
   pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
 
