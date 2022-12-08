@@ -1,0 +1,95 @@
+---
+title: "Model Building"
+author: ""
+output: 
+ html_document:
+    code_folding: "hide"
+---
+
+```{r load_package, echo = FALSE, message=FALSE}
+rm(list=ls())
+library(tidyverse)
+library(purrr)
+library(geepack)
+options(tibble.print_min = 5)
+options(pillar.sigfig = 5)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 8, 
+  fig.height = 6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+```
+
+
+## Regression Analysis
+```{r import_data}
+comp_df <- read.csv("https://raw.githubusercontent.com/mingeechoi/P8105-final-project-proposal/main/Data/final_long.csv")
+
+states <- unique(comp_df$state)
+```
+
+* excluded `pr, vi, as` since they do not have any measurements.
+
+### Model Building
+
+```{r}
+analysis_df <- comp_df %>% mutate(date=as.Date(date),state=as.factor(state)) %>% arrange(state,date) %>% select(- X,everything())
+
+# test <-analysis_df %>% filter(date>=as.Date("2021-06-01") & date<=as.Date("2022-04-01"))
+
+# outcome = "admission" or "symptom"; l_date = lower bound of date written as "YYYY-MM-DD"; u_date = upper bound of date written as "YYYY-MM-DD"
+# s_state = selected state; b_nation = model scale "nation" or "state" -wide
+
+shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
+  
+  if (outcome=="admission"){
+    model_formula <- formula(admission_prop ~ maskwearing_prop + finances_prop + depression_prop)
+  }else if (outcome=="symptom"){
+    model_formula <- formula(symptom_prop ~ maskwearing_prop + finances_prop + depression_prop)
+  }
+  
+  if (b_nation=="state"){
+    temp_df<-analysis_df %>% filter(state_full %in% s_state & date>=as.Date(l_date) & date<=as.Date(u_date))
+    out_table <- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
+      broom::tidy() %>% knitr::kable(digits = 3) 
+  } else if (b_nation=="nation"){
+    temp_df<-analysis_df %>% filter(date>=as.Date(l_date) & date<=as.Date(u_date))
+    out_table <- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
+      broom::tidy() %>% knitr::kable(digits = 3) 
+  }
+
+  return(out_table)
+}
+
+ex_1<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state="Colorado", b_nation="state")
+
+
+ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state=NA, b_nation="nation")
+
+```
+
+* this model is a primitive speculative model, which we logically assume the two covariates had potentials to impact the associations. 
+
+* given exposure `maskwearing` is a continuous variable, we will be estimating the mean function of the repeated measure.
+
+  * `identity` function is used as the link function
+
+  * We assumed that the correlation among distinct observations in the same state is the same regardless of time. Therefore, we used `exchangeable` as the correlation structure.
+
+  * `state` is treated as the `id`.
+
+  * the function `shiny_input_model` was written in preparation for the shiny app deployment
+
+* If we want to model the association in `co`, the function will return the following table: `r ex_1`
+
+* If we want to model the association nationwide, the function will return the following table: `r ex_2`
+
+
