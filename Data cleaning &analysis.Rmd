@@ -147,6 +147,7 @@ merge4_avg <-
   relocate(state, .before = avg_mask) %>%
   select(-geo_value)
 
+states <- setNames(as.list(datasets::state.name), datasets::state.abb)
 
 
 ```
