@@ -41,6 +41,14 @@ o_finances <-
   group_by(state) %>%
   summarize(mean_symptom = mean(symptom))
   
+  
+avg_depression <- read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names()  %>% select (geo_value, time_value, value, sample_size, stderr) %>% 
+  group_by(geo_value) %>% summarise(avg_depression = mean(value))
+
+long_depression <- read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names()  %>% select (geo_value, time_value, value) %>% rename(depression=value) 
+  
 
 merge1 <-
   inner_join(
