@@ -1,3 +1,77 @@
+##Data Description
+```{r, message=FALSE} 
+final_long%>%
+  select(admission_prop, maskwearing_prop, symptom_prop,  finances_prop, depression_prop) %>%
+  summary()%>%
+  knitr::kable(digits = 3)
+
+```
+Our data has `r nrow(merged)` observations and `r ncol(merged)` variables and tells us about maskwearing, influenza symptoms, and admissions across the U.S. from years `r range(merged$date)[1]` to `r range(merged$date)[2]`. The average percentage of people who say they wear a mask most or all of the time when they are in public in the past 7 days is 52.87%. The average number of adult and pediatric hospital admissions with confirmed influenza occurring each day (7-day average) is 131.54, and the average percentage of people self-reporting influenza-like symptoms such as fever with cough or sore throat in the past 7 days is 1.81%. 
+
+### Overall Trends in the U.S. 2021-2022 for Participants Wearing Masks
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_maskwearing_prop = mean(as.numeric(maskwearing_prop))) %>%
+  ggplot(aes(x = date, y = avg_maskwearing_prop)) +
+  geom_line()+
+  labs(title = "Average Percentage of People Wearing Masks", x = "Date", y = "Percentage of People Wearing Masks")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+### Overall Trends in the U.S. 2021-2022 for Participants Wearing Masks
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_symptom_prop = mean(as.numeric(symptom_prop))) %>%
+  ggplot(aes(x = date, y = avg_symptom_prop)) +
+  geom_line() +
+  labs(title = "Average Percentage of Participants with Influenza Symptom", x = "Date", y = "Percentage of People with Influenza Symptom") +
+  theme(plot.title=element_text(face="bold", color="blue")) +
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+### Overall Trends in the U.S. 2021-2022 for Participants worried about finance
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %>%
+  ggplot(aes(x = date, y = avg_finances_prop)) +
+  geom_line()+
+  labs(title = "Average Percentage of Participants worried about finance", x = "Date", y = "Percentage of participants worried about finance")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+### Overall Trends in the U.S. 2021-2022 for Depressed Participants 
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %>%
+  ggplot(aes(x = date, y = avg_depression_prop)) +
+  geom_line()+
+  labs(title = "Average Percentage of depressed participants", x = "Date", y = "Percentage of depressed participants")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+### Overall Trends in the U.S. 2021-2022 for Hospital Admissions with Confirmed Influenza
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_admission_prop = mean(as.numeric(admission_prop))) %>%
+  ggplot(aes(x = date, y = avg_admission_prop)) +
+  geom_line()+
+  labs(title = "Average Number of Hospital Admissions with Confirmed Influenza", x = "Date", y = "Number of Hospital Admissions")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
 ---
 title: "Exploratory Analysis"
 output: 
