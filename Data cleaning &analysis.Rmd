@@ -28,7 +28,8 @@ read_csv("./Data/influenza_admissions.csv") %>%
   janitor:: clean_names() %>%
   select(-x1) %>%
   select (geo_value, time_value, value) %>%
-  rename(admission_prop = value, state=geo_value, date=time_value) 
+  rename(admission_prop = value, state=geo_value, date=time_value) %>%
+  mutate(admission_prop = admission_prop * 100) # per 100 people
 
 o_finances_prop <-
   read_csv("data/worried_finances.csv") %>%
@@ -97,16 +98,17 @@ read_csv("./Data/People_wearing_masks.csv") %>%
   summarize(avg_mask = mean(value))
 
 o_admission_avg <-
-read_csv("./Data/Confirmed_admission.csv") %>%
+read_csv("./Data/influenza_admissions.csv") %>%
   janitor:: clean_names() %>%
-  select (geo_value, time_value, value) %>%
+  select(geo_value, time_value, value) %>%
+  mutate(value = value * 100) %>%
   group_by(geo_value) %>%
   summarize(avg_admission = mean(value))
 
 o_symptoms_avg <-
 read_csv("./Data/Flu_like_symptoms.csv") %>%
   janitor:: clean_names() %>%
-  select (geo_value, time_value, value) %>%
+  select(geo_value, time_value, value) %>%
   group_by(geo_value) %>%
   summarize(avg_symptom = mean(value))
 
