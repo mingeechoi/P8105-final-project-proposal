@@ -7,9 +7,39 @@ output: html_document
 library(tidyverse)
 ```
 
-## Create Final Dataset - Longitudinal
+## Data Sources
 
-```{r}
+### Delphi US COVID-19 Trends and Impact Survey
+
+The Delphi US COVID-19 Trends and Impact Survey consists of individual-level data from surveys advertised through Facebook. This survey was conducted through a collaborative effort between Delphi at Carnegie Mellon University and Facebook. It ran from April 6, 2020 to June 25, 2022, with around 40,000 people in the United States participating every day. Survey questions included questions about COVID-19 testing, prior medical conditions, social distancing measures, and economic effects of COVID-19. Since participants were recruited from a random sample of Facebook users and not from a random sample from the entire United States population, unique identifiers from Facebook were used to calculate statistical weights indicating how representative each person is of the United States population. These calculations were based on demographic data available on Facebook.
+
+### U.S. Department of Health & Human Services (HHS)
+
+The U.S. Department of Health & Human Services is a department of the U.S. federal government created to enhance and protect the health of Americans. It collects data from state and territorial health departments throughout hospitals in the U.S. The dataset used here only includes adult and pediatric hospital admissions with confirmed and suspected cases of influenza or COVID-19.
+
+
+## Data Cleaning
+
+**Raw dataset:**
+All raw datasets are downloaded from CMU [CMU Delphi](https://delphi.cmu.edu/covidcast/export/) in the CSV.format. 
+
+The exposure variable `maskwearing`(“people wearing masks in the last seven days”) came from the Delphi data source. The original dataset contains 10 variables including dates, time, state name, the proportion of people wearing masks and the sample size. 
+
+The first outcome variable `symptom`(“Flu-like symptoms 7 days weighted”) also came from the Delphi data source. It contains 10 variables including dates, time, state name, the proportion of people experiencing flu-like symptoms and the sample size. The second outcome variable `admission`(“Confirmed Influenza Admissions per day per 100k people (7-day average)”) came from HHS data source. It contains 10 variables with missing sample size or standard deviation. Important variables include dates, time, state name and the proportion of people admitted due to Flu per 100k people. 
+
+The potential confounders `finance`(“proportion of people worried about their household's finances for the next month”) and `depression`(“proportion of people feeling depressed for the past 7 days”) came from Delphi dataset. There are 10 variables and 18,540 observations in each dataset. Important variables include dates, time, state name and the proportions for each confounder as well as sample size and standard error accordingly.
+
+**To perform data cleaning:**
+The unwanted variables such as the standard deviation, issue date, etc. were omitted. 
+Add dataset specific prefix to each of the proportion values for the merging purpose (eg. In the mask wearing dataset, rename the “value” variable to “mask_wearing_value”.
+Merged the exposure and the outcome variables into a single dataset using inner join function.
+
+
+
+
+### Create Final Dataset - Longitudinal
+
+```{r, message=FALSE}
 e_mask_prop <-
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor::clean_names()  %>%
@@ -86,7 +116,7 @@ write.csv(merge5,"data/final_long.csv" )
 
 ## Create Final Dataset - Annual Average
 
-```{r}
+```{r, message=FALSE}
 e_mask_avg <- 
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor:: clean_names()  %>%
