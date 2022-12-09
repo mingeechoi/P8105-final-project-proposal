@@ -11,7 +11,7 @@
 
 
 
-<title>model_building</title>
+<title>Model Building</title>
 
 <script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -30,6 +30,7 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -217,6 +218,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -268,38 +272,43 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
+
+<h1 class="title toc-ignore">Model Building</h1>
+<h4 class="author"></h4>
 
 </div>
 
 
-<div id="regression-analysis" class="section level1">
-<h1>Regression analysis</h1>
-<p>Troy Zhou</p>
-<pre><code>## Warning: package &#39;purrr&#39; was built under R version 4.2.2
-
-## Warning: package &#39;geepack&#39; was built under R version 4.2.2</code></pre>
-<div id="intro-about-the-data-from-exploratory-analysis"
-class="section level2">
-<h2>Intro about the data from exploratory analysis</h2>
-</div>
-<div id="regression-analysis-1" class="section level2">
+<div id="regression-analysis" class="section level2">
 <h2>Regression Analysis</h2>
-<pre class="r"><code>comp_df &lt;- read.csv(&quot;Data/merged.csv&quot;)
-
-ex_df&lt;-comp_df %&gt;% filter(is.na(maskwearing))
-comp_df&lt;-comp_df %&gt;% filter(!is.na(maskwearing))
-
-exclude_states &lt;- unique(ex_df$state)
-states &lt;- unique(comp_df$state)</code></pre>
+<pre class="r"><code>final_long=
+  read_csv(&quot;Data/final_long.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 18540 Columns: 9
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (2): state, state_full dbl (6): ...1, finances_prop, symptom_prop,
+## maskwearing_prop, admission_pro... date (1): date
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>states &lt;- unique(final_long$state)</code></pre>
 <ul>
-<li>excluding <code>pr, vi, as</code> since they do not have any
+<li>excluded <code>pr, vi, as</code> since they do not have any
 measurements.</li>
 </ul>
 <div id="model-building" class="section level3">
 <h3>Model Building</h3>
-<pre class="r"><code>analysis_df &lt;- comp_df %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(state,date,maskwearing,symptom,admission,everything())
+<pre class="r"><code>analysis_df &lt;- final_long %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(everything())
 
 # test &lt;-analysis_df %&gt;% filter(date&gt;=as.Date(&quot;2021-06-01&quot;) &amp; date&lt;=as.Date(&quot;2022-04-01&quot;))
 
@@ -309,32 +318,37 @@ measurements.</li>
 shiny_input_model &lt;- function(outcome, l_date, u_date, s_state, b_nation){
   
   if (outcome==&quot;admission&quot;){
-    model_formula &lt;- formula(admission ~ maskwearing)
+    model_formula &lt;- formula(admission_prop ~ maskwearing_prop + finances_prop + depression_prop)
   }else if (outcome==&quot;symptom&quot;){
-    model_formula &lt;- formula(symptom ~ maskwearing)
+    model_formula &lt;- formula(symptom_prop ~ maskwearing_prop + finances_prop + depression_prop)
   }
   
   if (b_nation==&quot;state&quot;){
-    temp_df&lt;-analysis_df %&gt;% filter(state %in% s_state &amp; date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
-    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state, family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
+    temp_df&lt;-analysis_df %&gt;% filter(state_full %in% s_state &amp; date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
+    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
       broom::tidy() %&gt;% knitr::kable(digits = 3) 
   } else if (b_nation==&quot;nation&quot;){
     temp_df&lt;-analysis_df %&gt;% filter(date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
-    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state, family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
+    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
       broom::tidy() %&gt;% knitr::kable(digits = 3) 
   }
 
   return(out_table)
 }
 
-ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=&quot;co&quot;, b_nation=&quot;state&quot;)
+ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=&quot;Colorado&quot;, b_nation=&quot;state&quot;)
+
+
 ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, b_nation=&quot;nation&quot;)</code></pre>
 <ul>
-<li><p>first, this code chunk is building a nationwide model
-incorporating all states’ date excluding the aforementioned 3.</p></li>
+<li><p>this model is a primitive speculative model, which we logically
+assume the two covariates had potentials to impact the
+associations.</p></li>
 <li><p>given exposure <code>maskwearing</code> is a continuous variable,
-we will be estimating the mean function of the repeated
-measure.</p></li>
+we will be estimating the mean function of the repeated measure.</p>
+<ul>
 <li><p><code>identity</code> function is used as the link
 function</p></li>
 <li><p>We assumed that the correlation among distinct observations in
@@ -343,8 +357,9 @@ the same state is the same regardless of time. Therefore, we used
 <li><p><code>state</code> is treated as the <code>id</code>.</p></li>
 <li><p>the function <code>shiny_input_model</code> was written in
 preparation for the shiny app deployment</p></li>
+</ul></li>
 <li><p>If we want to model the association in <code>co</code>, the
-function will retuen the following table:</p></li>
+function will return the following table:</p></li>
 </ul>
 <table>
 <thead>
@@ -359,23 +374,37 @@ function will retuen the following table:</p></li>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">19.746</td>
+<td align="right">-0.421</td>
 <td align="right">0</td>
-<td align="right">6.325771e+20</td>
+<td align="right">3.943486e+18</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">maskwearing</td>
-<td align="right">62.123</td>
+<td align="left">maskwearing_prop</td>
+<td align="right">-0.001</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop</td>
+<td align="right">0.007</td>
 <td align="right">0</td>
-<td align="right">1.070365e+21</td>
+<td align="right">4.660934e+18</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">depression_prop</td>
+<td align="right">0.019</td>
+<td align="right">0</td>
+<td align="right">1.312789e+17</td>
 <td align="right">0</td>
 </tr>
 </tbody>
 </table>
 <ul>
 <li>If we want to model the association nationwide, the function will
-retuen the following table:</li>
+return the following table:</li>
 </ul>
 <table>
 <thead>
@@ -390,21 +419,34 @@ retuen the following table:</li>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.962</td>
-<td align="right">5.120</td>
-<td align="right">0.035</td>
-<td align="right">0.851</td>
+<td align="right">-0.113</td>
+<td align="right">0.034</td>
+<td align="right">11.013</td>
+<td align="right">0.001</td>
 </tr>
 <tr class="even">
-<td align="left">maskwearing</td>
-<td align="right">81.353</td>
-<td align="right">14.022</td>
-<td align="right">33.661</td>
+<td align="left">maskwearing_prop</td>
+<td align="right">-0.001</td>
+<td align="right">0.000</td>
+<td align="right">8.971</td>
+<td align="right">0.003</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop</td>
+<td align="right">0.003</td>
+<td align="right">0.001</td>
+<td align="right">10.495</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">depression_prop</td>
+<td align="right">0.005</td>
+<td align="right">0.001</td>
+<td align="right">13.258</td>
 <td align="right">0.000</td>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 
@@ -441,6 +483,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
