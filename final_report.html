@@ -11,7 +11,7 @@
 
 
 
-<title>Model Building</title>
+<title>Final Report</title>
 
 <script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,8 +29,10 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -218,10 +220,70 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -231,6 +293,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -272,177 +344,19 @@ $(document).ready(function () {
 
 <div id="header">
 
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Model Building</h1>
-<h4 class="author"></h4>
+<h1 class="title toc-ignore">Final Report</h1>
 
 </div>
 
 
-<div id="regression-analysis" class="section level2">
-<h2>Regression Analysis</h2>
-<pre class="r"><code>comp_df &lt;- read.csv(&quot;https://raw.githubusercontent.com/mingeechoi/P8105-final-project-proposal/main/Data/final_long.csv&quot;)
-
-states &lt;- unique(comp_df$state)</code></pre>
-<ul>
-<li>excluded <code>pr, vi, as</code> since they do not have any
-measurements.</li>
-</ul>
-<div id="model-building" class="section level3">
-<h3>Model Building</h3>
-<pre class="r"><code>analysis_df &lt;- comp_df %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(- X,everything())
-
-# test &lt;-analysis_df %&gt;% filter(date&gt;=as.Date(&quot;2021-06-01&quot;) &amp; date&lt;=as.Date(&quot;2022-04-01&quot;))
-
-# outcome = &quot;admission&quot; or &quot;symptom&quot;; l_date = lower bound of date written as &quot;YYYY-MM-DD&quot;; u_date = upper bound of date written as &quot;YYYY-MM-DD&quot;
-# s_state = selected state; b_nation = model scale &quot;nation&quot; or &quot;state&quot; -wide
-
-shiny_input_model &lt;- function(outcome, l_date, u_date, s_state, b_nation){
-  
-  if (outcome==&quot;admission&quot;){
-    model_formula &lt;- formula(admission_prop ~ maskwearing_prop + finances_prop + depression_prop)
-  }else if (outcome==&quot;symptom&quot;){
-    model_formula &lt;- formula(symptom_prop ~ maskwearing_prop + finances_prop + depression_prop)
-  }
-  
-  if (b_nation==&quot;state&quot;){
-    temp_df&lt;-analysis_df %&gt;% filter(state_full %in% s_state &amp; date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
-    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
-                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
-      broom::tidy() %&gt;% knitr::kable(digits = 3) 
-  } else if (b_nation==&quot;nation&quot;){
-    temp_df&lt;-analysis_df %&gt;% filter(date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
-    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
-                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
-      broom::tidy() %&gt;% knitr::kable(digits = 3) 
-  }
-
-  return(out_table)
-}
-
-ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=&quot;Colorado&quot;, b_nation=&quot;state&quot;)
 
 
-ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, b_nation=&quot;nation&quot;)</code></pre>
-<ul>
-<li><p>this model is a primitive speculative model, which we logically
-assume the two covariates had potentials to impact the
-associations.</p></li>
-<li><p>given exposure <code>maskwearing</code> is a continuous variable,
-we will be estimating the mean function of the repeated measure.</p>
-<ul>
-<li><p><code>identity</code> function is used as the link
-function</p></li>
-<li><p>We assumed that the correlation among distinct observations in
-the same state is the same regardless of time. Therefore, we used
-<code>exchangeable</code> as the correlation structure.</p></li>
-<li><p><code>state</code> is treated as the <code>id</code>.</p></li>
-<li><p>the function <code>shiny_input_model</code> was written in
-preparation for the shiny app deployment</p></li>
-</ul></li>
-<li><p>If we want to model the association in <code>co</code>, the
-function will return the following table:</p></li>
-</ul>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">-0.421</td>
-<td align="right">0</td>
-<td align="right">3.943486e+18</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">maskwearing_prop</td>
-<td align="right">-0.001</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
-</tr>
-<tr class="odd">
-<td align="left">finances_prop</td>
-<td align="right">0.007</td>
-<td align="right">0</td>
-<td align="right">4.660934e+18</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">depression_prop</td>
-<td align="right">0.019</td>
-<td align="right">0</td>
-<td align="right">1.312789e+17</td>
-<td align="right">0</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>If we want to model the association nationwide, the function will
-return the following table:</li>
-</ul>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">-0.113</td>
-<td align="right">0.034</td>
-<td align="right">11.013</td>
-<td align="right">0.001</td>
-</tr>
-<tr class="even">
-<td align="left">maskwearing_prop</td>
-<td align="right">-0.001</td>
-<td align="right">0.000</td>
-<td align="right">8.971</td>
-<td align="right">0.003</td>
-</tr>
-<tr class="odd">
-<td align="left">finances_prop</td>
-<td align="right">0.003</td>
-<td align="right">0.001</td>
-<td align="right">10.495</td>
-<td align="right">0.001</td>
-</tr>
-<tr class="even">
-<td align="left">depression_prop</td>
-<td align="right">0.005</td>
-<td align="right">0.001</td>
-<td align="right">13.258</td>
-<td align="right">0.000</td>
-</tr>
-</tbody>
-</table>
+
+
 </div>
 </div>
-
-
-
 
 </div>
 
@@ -474,12 +388,36 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+
 <script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
 });
 </script>
-
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

@@ -251,7 +251,7 @@ $(document).ready(function () {
   <a href="Data-cleaning--analysis.html">Data Processing</a>
 </li>
 <li>
-  <a href="dashboard.html">Exploratory Analysis</a>
+  <a href="exploratory_analysis.html">Exploratory Analysis</a>
 </li>
 <li>
   <a href="dashboard.html">Interactive Map</a>
@@ -279,10 +279,10 @@ $(document).ready(function () {
 
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-## ✔ ggplot2 3.3.6      ✔ purrr   0.3.5 
+## ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
 ## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
-## ✔ tidyr   1.2.1      ✔ stringr 1.4.1 
-## ✔ readr   2.1.3      ✔ forcats 0.5.2 
+## ✔ tidyr   1.2.0      ✔ stringr 1.4.1 
+## ✔ readr   2.1.2      ✔ forcats 0.5.2 
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
@@ -321,7 +321,8 @@ read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
   select(-x1) %&gt;%
   select (geo_value, time_value, value) %&gt;%
-  rename(admission_prop = value, state=geo_value, date=time_value) </code></pre>
+  rename(admission_prop = value, state=geo_value, date=time_value) %&gt;%
+  mutate(admission_prop = admission_prop * 100) # per 100 people</code></pre>
 <pre><code>## New names:
 ## Rows: 19650 Columns: 11
 ## ── Column specification
@@ -386,8 +387,10 @@ state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;%
   as.tibble() %&gt;%
   pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
 <pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## ℹ Please use `as_tibble()` instead.
-## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
+## Please use `as_tibble()` instead.
+## The signature and semantics have changed, see `?as_tibble`.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <pre class="r"><code>merge5 &lt;- merge4 %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
@@ -413,9 +416,10 @@ read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
 <pre class="r"><code>o_admission_avg &lt;-
-read_csv(&quot;./Data/Confirmed_admission.csv&quot;) %&gt;%
+read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
-  select (geo_value, time_value, value) %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  mutate(value = value * 100) %&gt;%
   group_by(geo_value) %&gt;%
   summarize(avg_admission = mean(value))</code></pre>
 <pre><code>## New names:
@@ -430,7 +434,7 @@ read_csv(&quot;./Data/Confirmed_admission.csv&quot;) %&gt;%
 <pre class="r"><code>o_symptoms_avg &lt;-
 read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
-  select (geo_value, time_value, value) %&gt;%
+  select(geo_value, time_value, value) %&gt;%
   group_by(geo_value) %&gt;%
   summarize(avg_symptom = mean(value))</code></pre>
 <pre><code>## New names:
