@@ -321,8 +321,7 @@ read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
   select(-x1) %&gt;%
   select (geo_value, time_value, value) %&gt;%
-  rename(admission_prop = value, state=geo_value, date=time_value) %&gt;%
-  mutate(admission_prop = admission_prop * 100) # per 100 people</code></pre>
+  rename(admission_prop = value, state=geo_value, date=time_value)</code></pre>
 <pre><code>## New names:
 ## Rows: 19650 Columns: 11
 ## ── Column specification

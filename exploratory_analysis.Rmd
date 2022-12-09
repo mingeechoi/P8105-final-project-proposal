@@ -6,13 +6,6 @@ output:
     toc_float: true        
 ---
 
-```{r, message=FALSE} 
-library(tidyverse)
-library(dplyr)
-```
-
-
-
 ##Data Description
 ```{r, message=FALSE} 
 final_long=

@@ -29,9 +29,10 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 
 ## Regression Analysis
 ```{r import_data}
-comp_df <- read.csv("https://raw.githubusercontent.com/mingeechoi/P8105-final-project-proposal/main/Data/final_long.csv")
+final_long=
+  read_csv("Data/final_long.csv")
 
-states <- unique(comp_df$state)
+states <- unique(final_long$state)
 ```
 
 * excluded `pr, vi, as` since they do not have any measurements.
@@ -39,7 +40,7 @@ states <- unique(comp_df$state)
 ### Model Building
 
 ```{r}
-analysis_df <- comp_df %>% mutate(date=as.Date(date),state=as.factor(state)) %>% arrange(state,date) %>% select(- X,everything())
+analysis_df <- final_long %>% mutate(date=as.Date(date),state=as.factor(state)) %>% arrange(state,date) %>% select(everything())
 
 # test <-analysis_df %>% filter(date>=as.Date("2021-06-01") & date<=as.Date("2022-04-01"))
 
