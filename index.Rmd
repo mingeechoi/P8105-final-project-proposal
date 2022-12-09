@@ -12,7 +12,7 @@ h1, h2, h3 {
 }
 ```
 
-![](images/mask.jpg)
+![](images/mask.jpg){height=65%}
 
 <br>
 
@@ -35,7 +35,7 @@ In the United States, the flu season usually occurs in the fall and winter, mean
 
 In the [Data Processing](https://mingeechoi.github.io/P8105-final-project-proposal/Data-cleaning--analysis.html) section, you will find:
 
-*Description of the data we used
+*Description of the data 
 
 *Our data cleaning process
 
