@@ -3,10 +3,11 @@ title: "Exploratory Analysis"
 output: 
   html_document:
     toc: true                
-    toc_float: true        
+    toc_float: true 
+    code_folding: "hide"       
 ---
 
-##Data Description
+###Data Description
 ```{r, message=FALSE} 
 final_long=
   read_csv("Data/final_long.csv")
@@ -57,6 +58,7 @@ final_long%>%
   theme(plot.title=element_text(face="bold", color="blue"))+
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
+
 ### Overall Trends in the U.S. 2021-2022 for Depressed Participants 
 ```{r}
 final_long%>%
