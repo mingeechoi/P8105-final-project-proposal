@@ -5,6 +5,7 @@ output: html_document
 
 ```{r, eval = FALSE}
 library(tidyverse)
+library(dplyr)
 ```
 
 ## Data Sources
@@ -34,7 +35,27 @@ The unwanted variables such as the standard deviation, issue date, etc. were omi
 Add dataset specific prefix to each of the proportion values for the merging purpose (eg. In the mask wearing dataset, rename the “value” variable to “mask_wearing_value”.
 Merged the exposure and the outcome variables into a single dataset using inner join function.
 
+**Two final datasets are produced:**
 
+1. “Final_long” is a longitudinal dataset range from 05/01/2021 to 05/01/2022. There are eight variables and 18540 observations. 
+Important variables include:
+`state`-state name (abb.)
+`state_full`-state name (full)
+`date`-date of observation
+`maskwearing_prop`-proportion of mask wearing
+`admission_prop`-proportion of admission due to flu 
+`symptom_prop`-proportion of having flu-like symptoms 
+`finances_prop`-proportion of worrying financial status 
+`depression_prop`-proportion of feeling depressed
+
+2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. Important variables include 
+`state`-state name (abb.) 
+`state_full`- (full)
+`avg_mask`-average proportion of mask wearing 
+`avg_admission`-average proportion of admission due to Flu 
+`avg_symptom`-average proportion of having flu-like symptoms 
+`avg_finances`-average proportion of worrying financial status 
+`avg_depression`-average proportion of having depression. 
 
 
 ### Create Final Dataset - Longitudinal
