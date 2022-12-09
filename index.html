@@ -13,7 +13,7 @@
 
 <title>Mask Wearing and Influenza Admissions (2021-2022)</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -182,8 +182,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -191,16 +191,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -406,11 +399,12 @@ and influenza symptoms/admissions in 2021-2022.</p></li>
 </ul>
 <p>In the <a
 href="https://mingeechoi.github.io/P8105-final-project-proposal/dashboard.html">Map
-Building</a> section, you will find: * An interactive map showing
-confirmed influenza admissions per day across the United States.</p>
+Building</a> section, you will find:</p>
 <ul>
-<li>A second interactive map showing average mask rate across the United
-States.</li>
+<li><p>An interactive map showing confirmed influenza admissions per day
+across the United States.</p></li>
+<li><p>A second interactive map showing average mask rate across the
+United States.</p></li>
 </ul>
 <p>In the <a
 href="https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html">Model
