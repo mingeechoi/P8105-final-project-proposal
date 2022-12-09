@@ -12,7 +12,7 @@ h1, h2, h3 {
 }
 ```
 
-![](images/mask.jpg){height=65%}
+![](images/mask.jpg){height=60%}
 
 <br>
 
@@ -35,43 +35,42 @@ In the United States, the flu season usually occurs in the fall and winter, mean
 
 In the [Data Processing](https://mingeechoi.github.io/P8105-final-project-proposal/Data-cleaning--analysis.html) section, you will find:
 
-*Description of the data 
+* Description of the data 
 
-*Our data cleaning process
+* Our data cleaning process
 
 
 In the [Exploratory Analyses](https://mingeechoi.github.io/P8105-final-project-proposal/exploratory_analysis.html) section, you will find:
 
-*Descriptive statistics of variables used in this dataset
+* Descriptive statistics of variables used in this dataset
 
-*Visualization of maskwearing, influenza symptoms, hospital admissions, depression, and finance over time (2021-2022)
+* Visualization of maskwearing, influenza symptoms, hospital admissions, depression, and finance over time (2021-2022)
 
-*Description of overall trends in the U.S. regarding maskwearing and influenza symptoms/admissions in 2021-2022.
+* Description of overall trends in the U.S. regarding maskwearing and influenza symptoms/admissions in 2021-2022.
 
 
 In the [Map Building](https://mingeechoi.github.io/P8105-final-project-proposal/dashboard.html) section, you will find:
-*An interactive map showing confirmed influenza admissions per day across the United States.
+* An interactive map showing confirmed influenza admissions per day across the United States.
 
-*A second interactive map showing average mask rate across the United States.
+* A second interactive map showing average mask rate across the United States.
 
 
 In the [Model Building](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
 
-*
-
 In the [Interactive Map & Building](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
-*
 
 
 Visit the [Final Report](https://mingeechoi.github.io/P8105-final-project-proposal/final_report.html) for indepth details of our project!
 
 
+<br>
+
 ## Our Team
-Barry Chiu (pc2979)
-Junyu Qi (jq2342)
-Mingee Choi(mlc2287)
-Soungbin Yim (sy3019)
-Troy Zhou (zz2901)
+* Barry Chiu (pc2979)
+* Junyu Qi (jq2342)
+* Mingee Choi(mlc2287)
+* Soungbin Yim (sy3019)
+* Troy Zhou (zz2901)
 
 
 
