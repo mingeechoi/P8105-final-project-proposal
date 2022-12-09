@@ -304,12 +304,11 @@ $(document).ready(function () {
 <pre><code>## New names:
 ## Rows: 18540 Columns: 9
 ## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (2): state, state_full dbl (6): ...1, finances_prop,
-## symptom_prop, maskwearing_prop, admission_pro... date (1): date
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (2): state, state_full dbl (6): ...1, finances_prop, symptom_prop,
+## maskwearing_prop, admission_pro... date (1): date
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
 <pre class="r"><code>states &lt;- unique(final_long$state)</code></pre>
 <ul>
@@ -325,12 +324,13 @@ measurements.</li>
 # outcome = &quot;admission&quot; or &quot;symptom&quot;; l_date = lower bound of date written as &quot;YYYY-MM-DD&quot;; u_date = upper bound of date written as &quot;YYYY-MM-DD&quot;
 # s_state = selected state; b_nation = model scale &quot;nation&quot; or &quot;state&quot; -wide
 
-shiny_input_model &lt;- function(outcome, l_date, u_date, s_state, b_nation){
+shiny_input_model &lt;- function(outcome, l_date, u_date, s_state, s_cov, b_nation){
+  cov_in&lt;-as.character(s_cov)
   
   if (outcome==&quot;admission&quot;){
-    model_formula &lt;- formula(admission_prop ~ maskwearing_prop + finances_prop + depression_prop)
+    model_formula &lt;- formula(paste0(&quot;admission_prop ~ maskwearing_prop + &quot;,cov_in))
   }else if (outcome==&quot;symptom&quot;){
-    model_formula &lt;- formula(symptom_prop ~ maskwearing_prop + finances_prop + depression_prop)
+    model_formula &lt;- formula(paste0(&quot;symptom_prop ~ maskwearing_prop + &quot;, cov_in))
   }
   
   if (b_nation==&quot;state&quot;){
@@ -348,10 +348,10 @@ shiny_input_model &lt;- function(outcome, l_date, u_date, s_state, b_nation){
   return(out_table)
 }
 
-ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=&quot;Colorado&quot;, b_nation=&quot;state&quot;)
+ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=&quot;Colorado&quot;, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;state&quot;)
 
 
-ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, b_nation=&quot;nation&quot;)</code></pre>
+ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;nation&quot;)</code></pre>
 <ul>
 <li><p>this model is a primitive speculative model, which we logically
 assume the two covariates had potentials to impact the
@@ -372,6 +372,13 @@ preparation for the shiny app deployment</p></li>
 function will return the following table:</p></li>
 </ul>
 <table>
+<colgroup>
+<col width="42%" />
+<col width="12%" />
+<col width="14%" />
+<col width="18%" />
+<col width="11%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">term</th>
@@ -384,9 +391,9 @@ function will return the following table:</p></li>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-0.421</td>
+<td align="right">0.252</td>
 <td align="right">0</td>
-<td align="right">3.943486e+18</td>
+<td align="right">1.131016e+18</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
@@ -398,17 +405,24 @@ function will return the following table:</p></li>
 </tr>
 <tr class="odd">
 <td align="left">finances_prop</td>
-<td align="right">0.007</td>
-<td align="right">0</td>
-<td align="right">4.660934e+18</td>
-<td align="right">0</td>
+<td align="right">-0.011</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
 </tr>
 <tr class="even">
 <td align="left">depression_prop</td>
-<td align="right">0.019</td>
+<td align="right">-0.034</td>
 <td align="right">0</td>
-<td align="right">1.312789e+17</td>
+<td align="right">1.598170e+17</td>
 <td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop:depression_prop</td>
+<td align="right">0.001</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
 </tr>
 </tbody>
 </table>
@@ -417,6 +431,13 @@ function will return the following table:</p></li>
 return the following table:</li>
 </ul>
 <table>
+<colgroup>
+<col width="44%" />
+<col width="13%" />
+<col width="14%" />
+<col width="14%" />
+<col width="11%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">term</th>
@@ -429,31 +450,38 @@ return the following table:</li>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-0.113</td>
-<td align="right">0.034</td>
-<td align="right">11.013</td>
-<td align="right">0.001</td>
+<td align="right">-0.242</td>
+<td align="right">0.102</td>
+<td align="right">5.579</td>
+<td align="right">0.018</td>
 </tr>
 <tr class="even">
 <td align="left">maskwearing_prop</td>
 <td align="right">-0.001</td>
 <td align="right">0.000</td>
-<td align="right">8.971</td>
-<td align="right">0.003</td>
+<td align="right">9.526</td>
+<td align="right">0.002</td>
 </tr>
 <tr class="odd">
 <td align="left">finances_prop</td>
+<td align="right">0.007</td>
 <td align="right">0.003</td>
-<td align="right">0.001</td>
-<td align="right">10.495</td>
-<td align="right">0.001</td>
+<td align="right">5.938</td>
+<td align="right">0.015</td>
 </tr>
 <tr class="even">
 <td align="left">depression_prop</td>
-<td align="right">0.005</td>
-<td align="right">0.001</td>
-<td align="right">13.258</td>
+<td align="right">0.016</td>
+<td align="right">0.009</td>
+<td align="right">3.413</td>
+<td align="right">0.065</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop:depression_prop</td>
 <td align="right">0.000</td>
+<td align="right">0.000</td>
+<td align="right">1.557</td>
+<td align="right">0.212</td>
 </tr>
 </tbody>
 </table>

@@ -118,7 +118,16 @@ selectInput(
   choices = c("admission","symptom"), selected = "admission")
 
 selectInput(
-  "table_bin","Choose whether want National Model (takes 30s to run if inlcuded)",
+  "cov_choice","Select covariates of interest",
+  choices = c("finances_prop","finances_prop + maskwearing_prop*finances_prop",
+              "depression_prop", "depression_prop + maskwearing_prop*depression_prop",
+              "finances_prop + depression_prop",
+              "finances_prop + depression_prop + finances_prop*depression_prop",
+              "All Interactions/Full Model"), 
+  selected = "finances_prop + depression_prop")
+
+selectInput(
+  "table_bin","Choose whether want National Model (takes 30S+ to run if inlcuded)",
   choices = c("Show National Model", "Don't Show National Model"), selected = "Don't Show National Model")
 
 selectInput(
@@ -206,13 +215,15 @@ Row {data-height=350}
 
 ```{r}
 
-shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
+shiny_input_model <- function(outcome, l_date, u_date, s_state, s_cov, b_nation){
+  cov_in<-as.character(s_cov)
   
   if (outcome=="admission"){
-    model_formula <- formula(admission_prop ~ maskwearing_prop + finances_prop + depression_prop)
+    model_formula <- formula(paste0("admission_prop ~ maskwearing_prop + ",cov_in))
   }else if (outcome=="symptom"){
-    model_formula <- formula(symptom_prop ~ maskwearing_prop + finances_prop + depression_prop)
+    model_formula <- formula(paste0("symptom_prop ~ maskwearing_prop + ", cov_in))
   }
+  
   
   if (b_nation=="state"){
     temp_df<-analysis_df %>% filter(state_full %in% s_state & date>=as.Date(l_date) & date<=as.Date(u_date))
@@ -231,9 +242,10 @@ shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
 
 
 renderTable({
-
+  if (as.character(input$cov_choice) == "All Interactions/Full Model") {cov_input <- "finances_prop + depression_prop + maskwearing_prop*finances_prop + maskwearing_prop*depression_prop + finances_prop*depression_prop + maskwearing_prop*finances_prop*depression_prop"}
+  else {cov_input <- as.character(input$cov_choice)}
   
-  shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, b_nation="state")
+  shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, s_cov=cov_input, b_nation="state")
 },digits=5)
 ```
 
@@ -249,7 +261,10 @@ output$dynamic <- renderUI({
 })
 
 output$table <- renderTable({
-  shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, b_nation="nation")
+    if (as.character(input$cov_choice) == "All Interactions/Full Model") {cov_input <- "finances_prop + depression_prop + maskwearing_prop*finances_prop + maskwearing_prop*depression_prop + finances_prop*depression_prop + maskwearing_prop*finances_prop*depression_prop"}
+  else {cov_input <- as.character(input$cov_choice)}
+  
+  shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, s_cov=cov_input, b_nation="nation")
 },digits=5)
 output$text <- renderText({ "Chose not to show National Estimates. Change input selection and please wait ~30s for the table to be produced." })
 

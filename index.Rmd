@@ -64,12 +64,12 @@ In the [Model Building](https://mingeechoi.github.io/P8105-final-project-proposa
 
 * Detailed definition of the GEE model and how it was coded with specific parameter or options used.
 
-* A generic function written to output the model estimates for both multiple selected states and naiton-wide data. 
+* A generic function written to output the model estimates for both multiple selected states and nation-wide data. The model's covariates are also fully customizable besides the main exposure `maskwearing_prop`
 
   * This function was adapted for the Shiny Flexdashboard website. 
   
   * The function can also output model for either outcome variable: `admission` or `symptoms`
-
+  
 
 In the [Interactive Map & Model](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
 

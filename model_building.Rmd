@@ -46,12 +46,13 @@ analysis_df <- final_long %>% mutate(date=as.Date(date),state=as.factor(state)) 
 # outcome = "admission" or "symptom"; l_date = lower bound of date written as "YYYY-MM-DD"; u_date = upper bound of date written as "YYYY-MM-DD"
 # s_state = selected state; b_nation = model scale "nation" or "state" -wide
 
-shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
+shiny_input_model <- function(outcome, l_date, u_date, s_state, s_cov, b_nation){
+  cov_in<-as.character(s_cov)
   
   if (outcome=="admission"){
-    model_formula <- formula(admission_prop ~ maskwearing_prop + finances_prop + depression_prop)
+    model_formula <- formula(paste0("admission_prop ~ maskwearing_prop + ",cov_in))
   }else if (outcome=="symptom"){
-    model_formula <- formula(symptom_prop ~ maskwearing_prop + finances_prop + depression_prop)
+    model_formula <- formula(paste0("symptom_prop ~ maskwearing_prop + ", cov_in))
   }
   
   if (b_nation=="state"){
@@ -69,10 +70,10 @@ shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
   return(out_table)
 }
 
-ex_1<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state="Colorado", b_nation="state")
+ex_1<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state="Colorado", s_cov="finances_prop + depression_prop + finances_prop*depression_prop", b_nation="state")
 
 
-ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state=NA, b_nation="nation")
+ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state=NA, s_cov="finances_prop + depression_prop + finances_prop*depression_prop", b_nation="nation")
 
 ```
 
