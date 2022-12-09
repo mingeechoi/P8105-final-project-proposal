@@ -7,3 +7,23 @@ output:
 ---
 
 
+### Model estimatiors and discussion
+
+#### Main association
+* negative association between `maskwearing` and `admission` was observed.
+  
+  * since we cannot conclude causation from our model, we can only say that higher mask wearing rate was associated with lower hospital admissions due to severe influenza. 
+  
+  * This can be explained the protective nature of masks. People who wore masks might have had lower probability of contracting severe influenza infection, which could have been attributed to the reduced viral load due to mask filtration and less severe infection. 
+
+* positive association between `maskwearing` and `symptoms` was observed.
+
+  * since we cannot conclude causation from our model, we can only say that higher mask wearing rate was associated with higher flu-like symptoms. 
+  
+  * One possible explanation for this is that people may have become more aware of prevention for flu if they were experiencing flu-like symptoms. Therefore, people might have tended to mask if they felt like they were sick.
+  
+#### Covariate association
+
+* finance
+
+* depression

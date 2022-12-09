@@ -13,7 +13,7 @@
 
 <title>Final Report</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -182,8 +182,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -191,9 +191,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -354,7 +361,43 @@ div.tocify {
 </div>
 
 
-
+<div id="model-estimatiors-and-discussion" class="section level3">
+<h3>Model estimatiors and discussion</h3>
+<div id="main-association" class="section level4">
+<h4>Main association</h4>
+<ul>
+<li><p>negative association between <code>maskwearing</code> and
+<code>admission</code> was observed.</p>
+<ul>
+<li><p>since we cannot conclude causation from our model, we can only
+say that higher mask wearing rate was associated with lower hospital
+admissions due to severe influenza.</p></li>
+<li><p>This can be explained the protective nature of masks. People who
+wore masks might have had lower probability of contracting severe
+influenza infection, which could have been attributed to the reduced
+viral load due to mask filtration and less severe infection.</p></li>
+</ul></li>
+<li><p>positive association between <code>maskwearing</code> and
+<code>symptoms</code> was observed.</p>
+<ul>
+<li><p>since we cannot conclude causation from our model, we can only
+say that higher mask wearing rate was associated with higher flu-like
+symptoms.</p></li>
+<li><p>One possible explanation for this is that people may have become
+more aware of prevention for flu if they were experiencing flu-like
+symptoms. Therefore, people might have tended to mask if they felt like
+they were sick.</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="covariate-association" class="section level4">
+<h4>Covariate association</h4>
+<ul>
+<li><p>finance</p></li>
+<li><p>depression</p></li>
+</ul>
+</div>
+</div>
 
 
 

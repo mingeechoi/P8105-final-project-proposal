@@ -13,7 +13,7 @@
 
 <title>Mask Wearing and Influenza Admissions (2021-2022)</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -182,8 +182,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -191,9 +191,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -408,9 +415,32 @@ States.</li>
 <p>In the <a
 href="https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html">Model
 Building</a> section, you will find:</p>
+<ul>
+<li><p>The process of fitting a GEE model onto the analysis data
+set.</p></li>
+<li><p>Detailed definition of the GEE model and how it was coded with
+specific parameter or options used.</p></li>
+<li><p>A generic function written to output the model estimates for both
+multiple selected states and naiton-wide data.</p>
+<ul>
+<li><p>This function was adapted for the Shiny Flexdashboard
+website.</p></li>
+<li><p>The function can also output model for either outcome variable:
+<code>admission</code> or <code>symptoms</code></p></li>
+</ul></li>
+</ul>
 <p>In the <a
 href="https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html">Interactive
-Map &amp; Building</a> section, you will find:</p>
+Map &amp; Model</a> section, you will find:</p>
+<ul>
+<li><p>Two tabs:</p>
+<ul>
+<li><p>US map with state-level annual average of selected variable of
+interest.</p></li>
+<li><p>Estimated model with customizable inputs along with scatter plots
+for variables of interests.</p></li>
+</ul></li>
+</ul>
 <p>Visit the <a
 href="https://mingeechoi.github.io/P8105-final-project-proposal/final_report.html">Final
 Report</a> for indepth details of our project!</p>
