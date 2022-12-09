@@ -9,11 +9,11 @@ library(tidyverse)
 
 ## Data Sources
 
-### Delphi US COVID-19 Trends and Impact Survey <span style="color:blue">blue</span>
+###  <span style="color:blue">Delphi US COVID-19 Trends and Impact Survey</span>
 
 The Delphi US COVID-19 Trends and Impact Survey consists of individual-level data from surveys advertised through Facebook. This survey was conducted through a collaborative effort between Delphi at Carnegie Mellon University and Facebook. It ran from April 6, 2020 to June 25, 2022, with around 40,000 people in the United States participating every day. Survey questions included questions about COVID-19 testing, prior medical conditions, social distancing measures, and economic effects of COVID-19. Since participants were recruited from a random sample of Facebook users and not from a random sample from the entire United States population, unique identifiers from Facebook were used to calculate statistical weights indicating how representative each person is of the United States population. These calculations were based on demographic data available on Facebook.
 
-### U.S. Department of Health & Human Services (HHS) <span style="color:blue">blue</span>
+###  <span style="color:blue">U.S. Department of Health & Human Services (HHS)</span>
 
 The U.S. Department of Health & Human Services is a department of the U.S. federal government created to enhance and protect the health of Americans. It collects data from state and territorial health departments throughout hospitals in the U.S. The dataset used here only includes adult and pediatric hospital admissions with confirmed and suspected cases of influenza or COVID-19.
 
@@ -39,6 +39,7 @@ Merged the exposure and the outcome variables into a single dataset using inner 
 1. “Final_long” is a longitudinal dataset range from 05/01/2021 to 05/01/2022. There are eight variables and 18540 observations. 
 
 Important variables include:
+
 * `state`: state name (abb.)
 *  `state_full`: state name (full)
 *  `date`: date of observation
@@ -51,6 +52,7 @@ Important variables include:
 2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. 
 
 Important variables include:
+
 *  `state`: state name (abb.) 
 *  `state_full`:  (full)
 *  `avg_mask`: average proportion of mask wearing 

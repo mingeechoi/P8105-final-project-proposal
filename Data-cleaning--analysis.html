@@ -281,10 +281,10 @@ $(document).ready(function () {
 <pre class="r"><code>library(tidyverse)</code></pre>
 <div id="data-sources" class="section level2">
 <h2>Data Sources</h2>
-<div id="delphi-us-covid-19-trends-and-impact-survey-blue"
+<div id="delphi-us-covid-19-trends-and-impact-survey"
 class="section level3">
-<h3>Delphi US COVID-19 Trends and Impact Survey <span
-style="color:blue">blue</span></h3>
+<h3><span style="color:blue">Delphi US COVID-19 Trends and Impact
+Survey</span></h3>
 <p>The Delphi US COVID-19 Trends and Impact Survey consists of
 individual-level data from surveys advertised through Facebook. This
 survey was conducted through a collaborative effort between Delphi at
@@ -299,10 +299,10 @@ used to calculate statistical weights indicating how representative each
 person is of the United States population. These calculations were based
 on demographic data available on Facebook.</p>
 </div>
-<div id="u.s.-department-of-health-human-services-hhs-blue"
+<div id="u.s.-department-of-health-human-services-hhs"
 class="section level3">
-<h3>U.S. Department of Health &amp; Human Services (HHS) <span
-style="color:blue">blue</span></h3>
+<h3><span style="color:blue">U.S. Department of Health &amp; Human
+Services (HHS)</span></h3>
 <p>The U.S. Department of Health &amp; Human Services is a department of
 the U.S. federal government created to enhance and protect the health of
 Americans. It collects data from state and territorial health
@@ -313,9 +313,9 @@ suspected cases of influenza or COVID-19.</p>
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
-<p><strong>Raw dataset:</strong> All raw datasets are downloaded from
-CMU <a href="https://delphi.cmu.edu/covidcast/export/">CMU Delphi</a> in
-the CSV.format.</p>
+<p><strong>Raw dataset:</strong> All raw datasets are downloaded from <a
+href="https://delphi.cmu.edu/covidcast/export/">CMU Delphi</a> in the
+CSV.format.</p>
 <p>The exposure variable <code>maskwearing</code>(“people wearing masks
 in the last seven days”) came from the Delphi data source. The original
 dataset contains 10 variables including dates, time, state name, the
@@ -347,27 +347,39 @@ a single dataset using inner join function.</p>
 <li>“Final_long” is a longitudinal dataset range from 05/01/2021 to
 05/01/2022. There are eight variables and 18540 observations.</li>
 </ol>
-<p>Important variables include: * <code>state</code>: state name (abb.)
-* <code>state_full</code>: state name (full) * <code>date</code>: date
-of observation * <code>maskwearing_prop</code>: proportion of mask
-wearing * <code>admission_prop</code>: proportion of admission due to
-flu * <code>symptom_prop</code>: proportion of having flu-like symptoms
-* <code>finances_prop</code>: proportion of worrying financial status *
-<code>depression_prop</code>: proportion of feeling depressed</p>
+<p>Important variables include:</p>
+<ul>
+<li><code>state</code>: state name (abb.)</li>
+<li><code>state_full</code>: state name (full)</li>
+<li><code>date</code>: date of observation</li>
+<li><code>maskwearing_prop</code>: proportion of mask wearing</li>
+<li><code>admission_prop</code>: proportion of admission due to flu</li>
+<li><code>symptom_prop</code>: proportion of having flu-like
+symptoms</li>
+<li><code>finances_prop</code>: proportion of worrying financial
+status</li>
+<li><code>depression_prop</code>: proportion of feeling depressed</li>
+</ul>
 <ol start="2" style="list-style-type: decimal">
 <li>“Final_avg” is a summary dataset summarizing the state level yearly
 average proportion of each variable of interest from 05/01/2021 to
 05/01/2022. There are seven variables and 51 state-level
 observations.</li>
 </ol>
-<p>Important variables include: * <code>state</code>: state name (abb.)
-* <code>state_full</code>: (full) * <code>avg_mask</code>: average
-proportion of mask wearing * <code>avg_admission</code>: average
-proportion of admission due to Flu * <code>avg_symptom</code>: average
-proportion of having flu-like symptoms * <code>avg_finances</code>:
-average proportion of worrying financial status *
-<code>avg_depression</code>: average proportion of having
-depression.</p>
+<p>Important variables include:</p>
+<ul>
+<li><code>state</code>: state name (abb.)</li>
+<li><code>state_full</code>: (full)</li>
+<li><code>avg_mask</code>: average proportion of mask wearing</li>
+<li><code>avg_admission</code>: average proportion of admission due to
+Flu</li>
+<li><code>avg_symptom</code>: average proportion of having flu-like
+symptoms</li>
+<li><code>avg_finances</code>: average proportion of worrying financial
+status</li>
+<li><code>avg_depression</code>: average proportion of having
+depression.</li>
+</ul>
 <div id="create-final-dataset---longitudinal" class="section level3">
 <h3>Create Final Dataset - Longitudinal</h3>
 <pre class="r"><code>e_mask_prop &lt;-
