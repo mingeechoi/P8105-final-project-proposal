@@ -57,8 +57,24 @@ In the [Map Building](https://mingeechoi.github.io/P8105-final-project-proposal/
 
 In the [Model Building](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
 
-In the [Interactive Map & Building](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
+* The process of fitting a GEE model onto the analysis data set. 
 
+* Detailed definition of the GEE model and how it was coded with specific parameter or options used.
+
+* A generic function written to output the model estimates for both multiple selected states and naiton-wide data. 
+
+  * This function was adapted for the Shiny Flexdashboard website. 
+  
+  * The function can also output model for either outcome variable: `admission` or `symptoms`
+
+
+In the [Interactive Map & Model](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
+
+* Two tabs:
+
+  * US map with state-level annual average of selected variable of interest.
+  
+  * Estimated model with customizable inputs along with scatter plots for variables of interests.  
 
 Visit the [Final Report](https://mingeechoi.github.io/P8105-final-project-proposal/final_report.html) for indepth details of our project!
 
