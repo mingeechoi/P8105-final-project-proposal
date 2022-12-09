@@ -278,13 +278,13 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)
-library(dplyr)</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
 <div id="data-sources" class="section level2">
 <h2>Data Sources</h2>
-<div id="delphi-us-covid-19-trends-and-impact-survey"
+<div id="delphi-us-covid-19-trends-and-impact-survey-blue"
 class="section level3">
-<h3>Delphi US COVID-19 Trends and Impact Survey</h3>
+<h3>Delphi US COVID-19 Trends and Impact Survey <span
+style="color:blue">blue</span></h3>
 <p>The Delphi US COVID-19 Trends and Impact Survey consists of
 individual-level data from surveys advertised through Facebook. This
 survey was conducted through a collaborative effort between Delphi at
@@ -299,9 +299,10 @@ used to calculate statistical weights indicating how representative each
 person is of the United States population. These calculations were based
 on demographic data available on Facebook.</p>
 </div>
-<div id="u.s.-department-of-health-human-services-hhs"
+<div id="u.s.-department-of-health-human-services-hhs-blue"
 class="section level3">
-<h3>U.S. Department of Health &amp; Human Services (HHS)</h3>
+<h3>U.S. Department of Health &amp; Human Services (HHS) <span
+style="color:blue">blue</span></h3>
 <p>The U.S. Department of Health &amp; Human Services is a department of
 the U.S. federal government created to enhance and protect the health of
 Americans. It collects data from state and territorial health
@@ -343,26 +344,30 @@ purpose (eg. In the mask wearing dataset, rename the “value” variable to
 a single dataset using inner join function.</p>
 <p><strong>Two final datasets are produced:</strong></p>
 <ol style="list-style-type: decimal">
-<li><p>“Final_long” is a longitudinal dataset range from 05/01/2021 to
-05/01/2022. There are eight variables and 18540 observations. Important
-variables include: <code>state</code>-state name (abb.)
-<code>state_full</code>-state name (full) <code>date</code>-date of
-observation <code>maskwearing_prop</code>-proportion of mask wearing
-<code>admission_prop</code>-proportion of admission due to flu
-<code>symptom_prop</code>-proportion of having flu-like symptoms
-<code>finances_prop</code>-proportion of worrying financial status
-<code>depression_prop</code>-proportion of feeling depressed</p></li>
-<li><p>“Final_avg” is a summary dataset summarizing the state level
-yearly average proportion of each variable of interest from 05/01/2021
-to 05/01/2022. There are seven variables and 51 state-level
-observations. Important variables include <code>state</code>-state name
-(abb.) <code>state_full</code>- (full) <code>avg_mask</code>-average
-proportion of mask wearing <code>avg_admission</code>-average proportion
-of admission due to Flu <code>avg_symptom</code>-average proportion of
-having flu-like symptoms <code>avg_finances</code>-average proportion of
-worrying financial status <code>avg_depression</code>-average proportion
-of having depression.</p></li>
+<li>“Final_long” is a longitudinal dataset range from 05/01/2021 to
+05/01/2022. There are eight variables and 18540 observations.</li>
 </ol>
+<p>Important variables include: * <code>state</code>: state name (abb.)
+* <code>state_full</code>: state name (full) * <code>date</code>: date
+of observation * <code>maskwearing_prop</code>: proportion of mask
+wearing * <code>admission_prop</code>: proportion of admission due to
+flu * <code>symptom_prop</code>: proportion of having flu-like symptoms
+* <code>finances_prop</code>: proportion of worrying financial status *
+<code>depression_prop</code>: proportion of feeling depressed</p>
+<ol start="2" style="list-style-type: decimal">
+<li>“Final_avg” is a summary dataset summarizing the state level yearly
+average proportion of each variable of interest from 05/01/2021 to
+05/01/2022. There are seven variables and 51 state-level
+observations.</li>
+</ol>
+<p>Important variables include: * <code>state</code>: state name (abb.)
+* <code>state_full</code>: (full) * <code>avg_mask</code>: average
+proportion of mask wearing * <code>avg_admission</code>: average
+proportion of admission due to Flu * <code>avg_symptom</code>: average
+proportion of having flu-like symptoms * <code>avg_finances</code>:
+average proportion of worrying financial status *
+<code>avg_depression</code>: average proportion of having
+depression.</p>
 <div id="create-final-dataset---longitudinal" class="section level3">
 <h3>Create Final Dataset - Longitudinal</h3>
 <pre class="r"><code>e_mask_prop &lt;-
@@ -428,13 +433,9 @@ merge4 &lt;-
 
 state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
   as.tibble() %&gt;%
-  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
-<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## Please use `as_tibble()` instead.
-## The signature and semantics have changed, see `?as_tibble`.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code>merge5 &lt;- merge4 %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
+
+merge5 &lt;- merge4 %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))

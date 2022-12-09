@@ -5,16 +5,15 @@ output: html_document
 
 ```{r, eval = FALSE}
 library(tidyverse)
-library(dplyr)
 ```
 
 ## Data Sources
 
-### Delphi US COVID-19 Trends and Impact Survey
+### Delphi US COVID-19 Trends and Impact Survey <span style="color:blue">blue</span>
 
 The Delphi US COVID-19 Trends and Impact Survey consists of individual-level data from surveys advertised through Facebook. This survey was conducted through a collaborative effort between Delphi at Carnegie Mellon University and Facebook. It ran from April 6, 2020 to June 25, 2022, with around 40,000 people in the United States participating every day. Survey questions included questions about COVID-19 testing, prior medical conditions, social distancing measures, and economic effects of COVID-19. Since participants were recruited from a random sample of Facebook users and not from a random sample from the entire United States population, unique identifiers from Facebook were used to calculate statistical weights indicating how representative each person is of the United States population. These calculations were based on demographic data available on Facebook.
 
-### U.S. Department of Health & Human Services (HHS)
+### U.S. Department of Health & Human Services (HHS) <span style="color:blue">blue</span>
 
 The U.S. Department of Health & Human Services is a department of the U.S. federal government created to enhance and protect the health of Americans. It collects data from state and territorial health departments throughout hospitals in the U.S. The dataset used here only includes adult and pediatric hospital admissions with confirmed and suspected cases of influenza or COVID-19.
 
@@ -22,7 +21,7 @@ The U.S. Department of Health & Human Services is a department of the U.S. feder
 ## Data Cleaning
 
 **Raw dataset:**
-All raw datasets are downloaded from CMU [CMU Delphi](https://delphi.cmu.edu/covidcast/export/) in the CSV.format. 
+All raw datasets are downloaded from [CMU Delphi](https://delphi.cmu.edu/covidcast/export/) in the CSV.format. 
 
 The exposure variable `maskwearing`(“people wearing masks in the last seven days”) came from the Delphi data source. The original dataset contains 10 variables including dates, time, state name, the proportion of people wearing masks and the sample size. 
 
@@ -38,29 +37,32 @@ Merged the exposure and the outcome variables into a single dataset using inner 
 **Two final datasets are produced:**
 
 1. “Final_long” is a longitudinal dataset range from 05/01/2021 to 05/01/2022. There are eight variables and 18540 observations. 
-Important variables include:
-`state`-state name (abb.)
-`state_full`-state name (full)
-`date`-date of observation
-`maskwearing_prop`-proportion of mask wearing
-`admission_prop`-proportion of admission due to flu 
-`symptom_prop`-proportion of having flu-like symptoms 
-`finances_prop`-proportion of worrying financial status 
-`depression_prop`-proportion of feeling depressed
 
-2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. Important variables include 
-`state`-state name (abb.) 
-`state_full`- (full)
-`avg_mask`-average proportion of mask wearing 
-`avg_admission`-average proportion of admission due to Flu 
-`avg_symptom`-average proportion of having flu-like symptoms 
-`avg_finances`-average proportion of worrying financial status 
-`avg_depression`-average proportion of having depression. 
+Important variables include:
+* `state`: state name (abb.)
+*  `state_full`: state name (full)
+*  `date`: date of observation
+*  `maskwearing_prop`: proportion of mask wearing
+*  `admission_prop`: proportion of admission due to flu 
+*  `symptom_prop`: proportion of having flu-like symptoms 
+*  `finances_prop`: proportion of worrying financial status 
+*  `depression_prop`: proportion of feeling depressed
+
+2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. 
+
+Important variables include:
+*  `state`: state name (abb.) 
+*  `state_full`:  (full)
+*  `avg_mask`: average proportion of mask wearing 
+*  `avg_admission`: average proportion of admission due to Flu 
+*  `avg_symptom`: average proportion of having flu-like symptoms 
+*  `avg_finances`: average proportion of worrying financial status 
+*  `avg_depression`: average proportion of having depression. 
 
 
 ### Create Final Dataset - Longitudinal
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 e_mask_prop <-
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor::clean_names()  %>%
