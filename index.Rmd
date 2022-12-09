@@ -7,9 +7,10 @@ output:
 ---
 
 ```{css, echo = FALSE}
-h1, h2, h3 {
+h1{
   text-align: center;
 }
+
 ```
 
 ![](images/mask.jpg){height=60%}
@@ -50,6 +51,7 @@ In the [Exploratory Analyses](https://mingeechoi.github.io/P8105-final-project-p
 
 
 In the [Map Building](https://mingeechoi.github.io/P8105-final-project-proposal/dashboard.html) section, you will find:
+
 * An interactive map showing confirmed influenza admissions per day across the United States.
 
 * A second interactive map showing average mask rate across the United States.
