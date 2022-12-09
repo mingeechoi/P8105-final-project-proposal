@@ -123,11 +123,11 @@ selectInput(
               "depression_prop", "depression_prop + maskwearing_prop*depression_prop",
               "finances_prop + depression_prop",
               "finances_prop + depression_prop + finances_prop*depression_prop",
-              "All Interaction/Full Model"), 
+              "All Interactions/Full Model"), 
   selected = "finances_prop + depression_prop")
 
 selectInput(
-  "table_bin","Choose whether want National Model (takes 30s to run if inlcuded)",
+  "table_bin","Choose whether want National Model (takes 30S+ to run if inlcuded)",
   choices = c("Show National Model", "Don't Show National Model"), selected = "Don't Show National Model")
 
 selectInput(
@@ -242,7 +242,7 @@ shiny_input_model <- function(outcome, l_date, u_date, s_state, s_cov, b_nation)
 
 
 renderTable({
-  if (as.character(input$cov_choice) == "All Interaction/Full Model") {cov_input <- "finances_prop + depression_prop + maskwearing_prop*finances_prop + maskwearing_prop*depression_prop + finances_prop*depression_prop + maskwearing_prop*finances_prop*depression_prop"}
+  if (as.character(input$cov_choice) == "All Interactions/Full Model") {cov_input <- "finances_prop + depression_prop + maskwearing_prop*finances_prop + maskwearing_prop*depression_prop + finances_prop*depression_prop + maskwearing_prop*finances_prop*depression_prop"}
   else {cov_input <- as.character(input$cov_choice)}
   
   shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, s_cov=cov_input, b_nation="state")
@@ -261,6 +261,9 @@ output$dynamic <- renderUI({
 })
 
 output$table <- renderTable({
+    if (as.character(input$cov_choice) == "All Interactions/Full Model") {cov_input <- "finances_prop + depression_prop + maskwearing_prop*finances_prop + maskwearing_prop*depression_prop + finances_prop*depression_prop + maskwearing_prop*finances_prop*depression_prop"}
+  else {cov_input <- as.character(input$cov_choice)}
+  
   shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, s_cov=cov_input, b_nation="nation")
 },digits=5)
 output$text <- renderText({ "Chose not to show National Estimates. Change input selection and please wait ~30s for the table to be produced." })
