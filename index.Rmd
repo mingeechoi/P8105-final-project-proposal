@@ -12,6 +12,8 @@ h1, h2, h3 {
 }
 ```
 
+![](images/mask.jpg)
+
 <br>
 
 ***
@@ -27,10 +29,55 @@ h1, h2, h3 {
 
 ## Motivation
 
-adfasf
+In the United States, the flu season usually occurs in the fall and winter, meaning people are most vulnerable to the flu during this season. However, as Covid restrictions and policies have become less stringent, we have seen a significant decrease in the number of people wearing masks. We wanted to explore how people wearing masks has an effect on disease prevalence.
 
 ## Website Overview
 
-asdfadsf
+In the [Data Processing](https://mingeechoi.github.io/P8105-final-project-proposal/Data-cleaning--analysis.html) section, you will find:
+
+*Description of the data we used
+
+*Our data cleaning process
+
+
+In the [Exploratory Analyses](https://mingeechoi.github.io/P8105-final-project-proposal/exploratory_analysis.html) section, you will find:
+
+*Descriptive statistics of variables used in this dataset
+
+*Visualization of maskwearing, influenza symptoms, hospital admissions, depression, and finance over time (2021-2022)
+
+*Description of overall trends in the U.S. regarding maskwearing and influenza symptoms/admissions in 2021-2022.
+
+
+In the [Map Building](https://mingeechoi.github.io/P8105-final-project-proposal/dashboard.html) section, you will find:
+*An interactive map showing confirmed influenza admissions per day across the United States.
+
+*A second interactive map showing average mask rate across the United States.
+
+
+In the [Model Building](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
+
+*
+
+In the [Interactive Map & Building](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
+*
+
+
+Visit the [Final Report](https://mingeechoi.github.io/P8105-final-project-proposal/final_report.html) for indepth details of our project!
+
+
+## Our Team
+Barry Chiu (pc2979)
+Junyu Qi (jq2342)
+Mingee Choi(mlc2287)
+Soungbin Yim (sy3019)
+Troy Zhou (zz2901)
+
+
+
+
+
+
+
 
 
