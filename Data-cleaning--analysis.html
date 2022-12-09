@@ -251,7 +251,7 @@ $(document).ready(function () {
   <a href="Data-cleaning--analysis.html">Data Processing</a>
 </li>
 <li>
-  <a href="dashboard.html">Exploratory Analysis</a>
+  <a href="exploratory_analysis.html">Exploratory Analysis</a>
 </li>
 <li>
   <a href="dashboard.html">Interactive Map</a>
@@ -321,7 +321,7 @@ read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
   select(-x1) %&gt;%
   select (geo_value, time_value, value) %&gt;%
-  rename(admission_prop = value, state=geo_value, date=time_value) </code></pre>
+  rename(admission_prop = value, state=geo_value, date=time_value)</code></pre>
 <pre><code>## New names:
 ## Rows: 19650 Columns: 11
 ## ── Column specification
@@ -413,9 +413,10 @@ read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
 <pre class="r"><code>o_admission_avg &lt;-
-read_csv(&quot;./Data/Confirmed_admission.csv&quot;) %&gt;%
+read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
-  select (geo_value, time_value, value) %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  mutate(value = value * 100) %&gt;%
   group_by(geo_value) %&gt;%
   summarize(avg_admission = mean(value))</code></pre>
 <pre><code>## New names:
@@ -430,7 +431,7 @@ read_csv(&quot;./Data/Confirmed_admission.csv&quot;) %&gt;%
 <pre class="r"><code>o_symptoms_avg &lt;-
 read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
-  select (geo_value, time_value, value) %&gt;%
+  select(geo_value, time_value, value) %&gt;%
   group_by(geo_value) %&gt;%
   summarize(avg_symptom = mean(value))</code></pre>
 <pre><code>## New names:

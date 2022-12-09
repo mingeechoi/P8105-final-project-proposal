@@ -1,10 +1,10 @@
 ---
-title: "dashboard_template"
+title: "Mapping"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
-    source_code: embed
+    source_code: hide
 runtime: shiny
 ---
 
@@ -14,10 +14,7 @@ library(viridis)
 library(plotly)
 ```
 
-Import data
-
-```{r import_data}
-
+```{r import_data, include=FALSE}
 final_avg <- 
 read_csv("data/final_avg.csv") %>%
   janitor::clean_names() %>%
@@ -25,27 +22,10 @@ read_csv("data/final_avg.csv") %>%
   
 ```
 
-Column {.sidebar}
+Confirmed Influenza Admissions {data-width=500}
 -----------------------------------------------------------------------
 
-```{r}
-date <- final_avg %>% distinct(date) %>% pull()
-
-sliderInput(
-  inputId = "date",
-  label = h3("Date"),
-  min = "2021-05-01" , max = "2022-05-01" , value = "2021-05-01"
-)
-```
-
-
-
-Column {data-width=650}
------------------------------------------------------------------------
-
-### Chart A
-
-```{r}
+```{r, echo = FALSE}
 final_avg$hover1 <- with(final_avg, paste(state_full, '<br>'))
 
 # give state boundaries a white border
@@ -60,7 +40,7 @@ g1 <- list(
 
 fig1 <- plot_geo(final_avg, locationmode = 'USA-states')
 fig1 <- fig1 %>% add_trace(
-    z = ~avg_admission, text = ~hover, locations = ~state,
+    z = ~avg_admission, text = ~hover1, locations = ~state,
     color = ~avg_admission, colors = 'Blues'
   )
 fig1 <- fig1 %>% colorbar(title = "per 100k")
@@ -73,12 +53,10 @@ fig1
 
 ```
 
-Column {data-width=350}
+Mask Rate {data-width=500}
 -----------------------------------------------------------------------
 
-### Chart B
-
-```{r}
+```{r, echo = FALSE, warning = FALSE}
 final_avg$hover2 <- with(final_avg, paste(state_full, '<br>'))
 
 # give state boundaries a white border
@@ -93,21 +71,16 @@ g2 <- list(
 
 fig2 <- plot_geo(final_avg, locationmode = 'USA-states')
 fig2 <- fig2 %>% add_trace(
-    z = ~avg_mask, text = ~hover, locations = ~state,
+    z = ~avg_mask, text = ~hover2, locations = ~state,
     color = ~avg_mask, colors = 'Reds'
   )
 fig2 <- fig2 %>% colorbar(title = "Mask Rate (%)")
 fig2 <- fig2 %>% layout(
     title = 'May 2021 - May 2022 Average Mask Rate by State <br>(Hover for breakdown)',
-    geo = g2
+    geo = g2,
+    plot.title = element_text(size = 12)
   )
 
 fig2
-```
-
-### Chart C
-
-```{r}
-
 ```
 
