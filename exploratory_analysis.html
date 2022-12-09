@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -220,6 +221,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -329,10 +333,13 @@ div.tocify {
   <a href="exploratory_analysis.html">Exploratory Analysis</a>
 </li>
 <li>
-  <a href="dashboard.html">Interactive Map</a>
+  <a href="dashboard.html">Map Building</a>
 </li>
 <li>
-  <a href="dashboard.html">Model Building</a>
+  <a href="model_building.html">Model Building</a>
+</li>
+<li>
+  <a href="https://zz2901.shinyapps.io/final_shiny/#section-model-with-selected-outcome">Interactive Map &amp; Model</a>
 </li>
 <li>
   <a href="final_report.html">Final Report</a>
@@ -344,6 +351,14 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Exploratory Analysis</h1>
@@ -351,7 +366,7 @@ div.tocify {
 </div>
 
 
-<p>##Data Description</p>
+<p>###Data Description</p>
 <pre class="r"><code>final_long=
   read_csv(&quot;Data/final_long.csv&quot;)
 
@@ -484,8 +499,12 @@ finance</h3>
   labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of participants worried about finance&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" />
-### Overall Trends in the U.S. 2021-2022 for Depressed Participants</p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div
+id="overall-trends-in-the-u.s.-2021-2022-for-depressed-participants"
+class="section level3">
+<h3>Overall Trends in the U.S. 2021-2022 for Depressed Participants</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
   group_by(date)%&gt;%
@@ -549,6 +568,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {
