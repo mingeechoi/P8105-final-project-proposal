@@ -3,10 +3,12 @@ title: "Customizable Map & Model"
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
-    theme: cosmo
-    orientation: columns
+    theme: cerulean
+    orientation: rows
     vertical_layout: fill
     source_code: embed
+    navbar:
+        - { icon: "fa-home", href: "https://mingeechoi.github.io/P8105-final-project-proposal/", align: right }
 ---
   
 ```{r setup, include=FALSE}
@@ -51,7 +53,6 @@ Column
 
 
 renderPlotly({ 
-
 final_avg <- avg_df %>% select(1,2,input$var_choice)
 colnames(final_avg)[3] <- "selected_v"
   
@@ -117,27 +118,34 @@ selectInput(
   choices = c("admission","symptom"), selected = "admission")
 
 selectInput(
+  "table_bin","Choose whether want National Model (takes really long to run if inlcuded)",
+  choices = c("Show National Model", "Don't Show National Model"), selected = "Don't Show National Model")
+
+selectInput(
   "state_choice","Select states of interest",
   choices = states, selected = c("Alaska","Colorado","New York"),multiple=TRUE)
 
 dateRangeInput("input_date", "Date range",
                start = "2021-05-01",end = "2022-05-01",
                min = "2021-05-01",max = "2022-05-01")
+
+
 ```
 
 
 
-Column 
+Row {data-height=650}
 -----------------------------------------------------------------------
   
-### Scatter plot of exposure vs outcome based on input {data-height=600}
+### Scatter plot of exposure vs outcome based on input 
   
 ```{r}
+
 analysis_df <- comp_df %>% mutate(date=as.Date(date),state=as.factor(state_full)) %>% arrange(state,date) %>% 
   select(- X,- state_full,everything())
 
 renderPlotly({ 
-  
+
    plot_df =
     analysis_df %>% 
     filter(
@@ -162,7 +170,9 @@ renderPlotly({
 })
 ```
 
-### Model Estimates {data-height=400}
+Row {data-height=350}
+-----------------------------------------------------------------------
+### State Model Estimates
 
 ```{r}
 
@@ -191,6 +201,29 @@ shiny_input_model <- function(outcome, l_date, u_date, s_state, b_nation){
 
 
 renderTable({
+
+  
   shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, b_nation="state")
 },digits=5)
 ```
+
+
+### National Model Estimate
+
+```{r}
+uiOutput("dynamic")
+
+output$dynamic <- renderUI({ 
+  if (as.character(input$table_bin)=="Show National Model") tableOutput("table")
+  else textOutput("text")
+})
+
+output$table <- renderTable({
+  shiny_input_model(outcome=input$outcome_choice, l_date=input$input_date[1], u_date=input$input_date[2], s_state=input$state_choice, b_nation="nation")
+},digits=5)
+output$text <- renderText({ "Chose not to show National Estimates. Change input selection and please wait ~30s for the table to be produced." })
+
+
+```
+
+
