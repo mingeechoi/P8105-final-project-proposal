@@ -5,7 +5,7 @@ account: zz2901
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7845962
-bundleId: 6617370
+bundleId: 6617565
 url: https://zz2901.shinyapps.io/final_shiny/
-when: 1670617426.29005
-lastSyncTime: 1670617426.29007
+when: 1670620325.52327
+lastSyncTime: 1670620325.52328
