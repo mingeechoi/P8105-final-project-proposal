@@ -14,6 +14,7 @@ library(viridis)
 library(plotly)
 ```
 
+<<<<<<< HEAD
 ```{r import_data, include=FALSE}
 final_avg <- 
 read_csv("data/final_avg.csv") %>%
@@ -83,4 +84,7 @@ fig2 <- fig2 %>% layout(
 
 fig2
 ```
+=======
+Import data
+>>>>>>> e148677f957080874cd270bda700162216b881ba
 

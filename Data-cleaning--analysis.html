@@ -278,14 +278,6 @@ $(document).ready(function () {
 
 
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-## ✔ ggplot2 3.3.6      ✔ purrr   0.3.5 
-## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
-## ✔ tidyr   1.2.1      ✔ stringr 1.4.1 
-## ✔ readr   2.1.3      ✔ forcats 0.5.2 
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <div id="create-final-dataset---longitudinal" class="section level2">
 <h2>Create Final Dataset - Longitudinal</h2>
 <pre class="r"><code>e_mask_prop &lt;-
@@ -386,8 +378,10 @@ state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;%
   as.tibble() %&gt;%
   pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
 <pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## ℹ Please use `as_tibble()` instead.
-## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
+## Please use `as_tibble()` instead.
+## The signature and semantics have changed, see `?as_tibble`.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <pre class="r"><code>merge5 &lt;- merge4 %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
