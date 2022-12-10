@@ -25,6 +25,10 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 
 ```
 
+Model Selection
+* Using a GEE model for the repeated measure of `maskwearing_prop`, `finances_prop`, and `depression_prop` at the state level, we were able to observe the associations between masking wearing rate and influenza hospital admission or experiencing flu-like symptoms. 
+
+When evaluating the models at the national level, we used a backward-selection-like method. We started with the full model with all the covariates and interaction terms. Then we checked the p-value of all covariates and interaction terms with the outcome variable and found out that only`maskwearing_prop`, `finances_prop`, and `depression_prop` variables were significant, and none of the interaction terms were significant. Thus, we proceeded with the reduced model, only with `maskwearing_prop`, `finances_prop`, and `depression_prop` covariates. 
 
 ## Regression Analysis
 ```{r import_data}
