@@ -6,9 +6,68 @@ output:
     toc_float: true
 ---
 
-## Data Pre-Processing
+# Data Pre-Processing
 
-###
+
+## Data Sources
+
+
+###  <span style="color:blue">Delphi US COVID-19 Trends and Impact Survey</span>
+
+The Delphi US COVID-19 Trends and Impact Survey consists of individual-level data from surveys advertised through Facebook. This survey was conducted through a collaborative effort between Delphi at Carnegie Mellon University and Facebook. It ran from April 6, 2020 to June 25, 2022, with around 40,000 people in the United States participating every day. Survey questions included questions about COVID-19 testing, prior medical conditions, social distancing measures, and economic effects of COVID-19. Since participants were recruited from a random sample of Facebook users and not from a random sample from the entire United States population, unique identifiers from Facebook were used to calculate statistical weights indicating how representative each person is of the United States population. These calculations were based on demographic data available on Facebook.
+
+*Notes about sampling weights:
+Sampling weights are non-negative values associated with survey responses that usually exist in any publicly available survey data. Sampling weights are supposed to be inversely proportional to the selection probabilities of sample units in the target 
+population, whose main goal is to improve the representativeness of the sample with respect to a target population. Naive analyses of the data under a complex sample design are expected to result in biased estimates. For instance, unweighted inference based on CTIS data tends to overestimate vaccination rates among adult Facebook users. In the following section, we further explain why it is necessary to use the sampling weights in our statistical analysis.
+
+
+###  <span style="color:blue">U.S. Department of Health & Human Services (HHS)</span>
+
+The U.S. Department of Health & Human Services is a department of the U.S. federal government created to enhance and protect the health of Americans. It collects data from state and territorial health departments throughout hospitals in the U.S. The dataset used here only includes adult and pediatric hospital admissions with confirmed and suspected cases of influenza or COVID-19.
+
+
+## Data Cleaning
+
+**Raw dataset:**
+All raw datasets are downloaded from [CMU Delphi](https://delphi.cmu.edu/covidcast/export/) in the CSV.format. 
+
+The exposure variable `maskwearing`(“people wearing masks in the last seven days”) came from the Delphi data source. The original dataset contains 10 variables including dates, time, state name, the proportion of people wearing masks and the sample size. 
+
+The first outcome variable `symptom`(“Flu-like symptoms 7 days weighted”) also came from the Delphi data source. It contains 10 variables including dates, time, state name, the proportion of people experiencing flu-like symptoms and the sample size. The second outcome variable `admission`(“Confirmed Influenza Admissions per day per 100k people (7-day average)”) came from HHS data source. It contains 10 variables with missing sample size or standard deviation. Important variables include dates, time, state name and the proportion of people admitted due to Flu per 100k people. 
+
+The potential confounders `finance`(“proportion of people worried about their household's finances for the next month”) and `depression`(“proportion of people feeling depressed for the past 7 days”) came from Delphi dataset. There are 10 variables and 18,540 observations in each dataset. Important variables include dates, time, state name and the proportions for each confounder as well as sample size and standard error accordingly.
+
+**To perform data cleaning:**
+The unwanted variables such as the standard deviation, issue date, etc. were omitted. 
+Add dataset specific prefix to each of the proportion values for the merging purpose (eg. In the mask wearing dataset, rename the “value” variable to “mask_wearing_value”.
+Merged the exposure and the outcome variables into a single dataset using inner join function.
+
+**Two final datasets are produced:**
+
+1. “Final_long” is a longitudinal dataset range from 05/01/2021 to 05/01/2022. There are eight variables and 18540 observations. 
+
+Important variables include:
+
+* `state`: state name (abb.)
+*  `state_full`: state name (full)
+*  `date`: date of observation
+*  `maskwearing_prop`: proportion of mask wearing
+*  `admission_prop`: proportion of admission due to flu 
+*  `symptom_prop`: proportion of having flu-like symptoms 
+*  `finances_prop`: proportion of worrying financial status 
+*  `depression_prop`: proportion of feeling depressed
+
+2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. 
+
+Important variables include:
+
+*  `state`: state name (abb.) 
+*  `state_full`:  (full)
+*  `avg_mask`: average proportion of mask wearing 
+*  `avg_admission`: average proportion of admission due to Flu 
+*  `avg_symptom`: average proportion of having flu-like symptoms 
+*  `avg_finances`: average proportion of worrying financial status 
+*  `avg_depression`: average proportion of having depression. 
 
 
 ### Model estimatiors and discussion
