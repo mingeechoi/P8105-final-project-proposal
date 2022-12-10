@@ -23,7 +23,7 @@ h1{
 
 <div class="vid_container">
   <iframe 
-    src="https://www.youtube.com/watch?v=57BMVzxmXNA&feature=youtu.be"
+    src="https://www.youtube.com/embed/57BMVzxmXNA"
     frameborder="0" allowfullscreen class="video">
   </iframe>
 </div>
