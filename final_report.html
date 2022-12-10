@@ -646,9 +646,11 @@ merge4_avg &lt;-
 
 state &lt;- setNames(as.list(datasets::state.name), datasets::state.abb) %&gt;% 
   as.tibble() %&gt;%
-  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
-
-merge5_avg &lt;- merge4_avg %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
+<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
+## ℹ Please use `as_tibble()` instead.
+## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
+<pre class="r"><code>merge5_avg &lt;- merge4_avg %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
@@ -878,22 +880,6 @@ events reverted back to pre-pandemic operations.</p>
 <h1>Modeling</h1>
 <div id="model-building" class="section level2">
 <h2>Model Building</h2>
-<<<<<<< HEAD
-<pre class="r"><code>final_long=
-  read_csv(&quot;Data/final_long.csv&quot;)</code></pre>
-<pre><code>## New names:
-## Rows: 18540 Columns: 9
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (2): state, state_full dbl (6): ...1, finances_prop,
-## symptom_prop, maskwearing_prop, admission_pro... date (1): date
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>states &lt;- unique(final_long$state)</code></pre>
-=======
->>>>>>> 2c9ac6432a1bf386a994c1e102e30ec635f82045
 <ul>
 <li>excluded <code>pr, vi, as</code> since they do not have any
 measurements.</li>
