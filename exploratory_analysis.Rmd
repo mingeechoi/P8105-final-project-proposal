@@ -39,7 +39,7 @@ final_long%>%
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
 
-Based on the graph, we can see that there was a huge drop from May 2021 to July 2021. This was due to the fact that in May 2021, as the United States continued to see dramatic improvements in COVID-19 cases, federal officials announced a sweeping relaxation of face mask guidelines allowing fully vaccinated people from not wearing masks in most places, either outdoors or inside (https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic). However, mask wearing rate increased around September 2021 potentially because of a continued uptick in positive COVID-19 cases due to the Delta variant. (https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/). Lastly, we see another hugh drop starting in February 2022 as infections in the U.S. decreased by 90% from a pandemic high during, leading the states to lift the mask mandates. (https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html)
+Based on the graph, we can see that there was a huge drop from May 2021 to July 2021. This was due to the fact that in May 2021, as the United States continued to see dramatic improvements in COVID-19 cases, federal officials announced a sweeping relaxation of face mask guidelines allowing fully vaccinated people from not wearing masks in most places, either outdoors or inside [(Netburn, 2021)](https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic). However, mask wearing rate increased around September 2021 potentially because of a continued uptick in positive COVID-19 cases due to the Delta variant [("Coronavirus Update NYC", 2021)](https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/). Lastly, we see another hugh drop starting in February 2022 as infections in the U.S. decreased by 90% from a pandemic high during, leading the states to lift the mask mandates [(Kimball & Rattner, 2022)](https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html)
 
 ### Overall Trend in the U.S. for Participants with Influenza Symptoms between 2021 - 2022
 ```{r}
@@ -54,7 +54,7 @@ final_long%>%
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
 
-A surge in the percentage of people with influenza symptoms occurred between late December 2021 to January 2022 from 2% to 5%. Prior to that, we see a gradual increase from 1% to 2% between May 2021 to November 2021.  The surge during the winter months coincides with the average peak flu activity in the US from 1982 to 2022 (CDC, 2022 https://www.cdc.gov/flu/about/season/flu-season.htm),  which is between December and February. 
+A surge in the percentage of people with influenza symptoms occurred between late December 2021 to January 2022 from 2% to 5%. Prior to that, we see a gradual increase from 1% to 2% between May 2021 to November 2021.  The surge during the winter months coincides with the average peak flu activity in the US from 1982 to 2022,  which is between December and February [(CDC, 2022)](https://www.cdc.gov/flu/about/season/flu-season.htm). 
 
 
 ### Overall Trend in the U.S. for Hospital Admissions with Confirmed Influenza between 2021 - 2022
