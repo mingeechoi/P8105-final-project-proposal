@@ -13,7 +13,7 @@
 
 <title>Final Report</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -184,8 +184,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -193,9 +193,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -867,30 +874,10 @@ imporvements mental health status as more public facilities and events
 reverted back to pre-pandemic operations.</p>
 </div>
 </div>
-<div id="model-building" class="section level1">
-<h1>Model Building</h1>
-<div id="model-selection" class="section level2">
-<h2>Model Selection</h2>
-<ul>
-<li>Using a GEE model for the repeated measure of
-<code>maskwearing_prop</code>, <code>finances_prop</code>, and
-<code>depression_prop</code> at the state level, we were able to observe
-the associations between masking wearing rate and influenza hospital
-admission or experiencing flu-like symptoms.</li>
-</ul>
-<p>When evaluating the models at the national level, we used a
-backward-selection-like method. We started with the full model with all
-the covariates and interaction terms. Then we checked the p-value of all
-covariates and interaction terms with the outcome variable and found out
-that only<code>maskwearing_prop</code>, <code>finances_prop</code>, and
-<code>depression_prop</code> variables were significant, and none of the
-interaction terms were significant. Thus, we proceeded with the reduced
-model, only with <code>maskwearing_prop</code>,
-<code>finances_prop</code>, and <code>depression_prop</code>
-covariates.</p>
-</div>
-<div id="regression-analysis" class="section level2">
-<h2>Regression Analysis</h2>
+<div id="modeling" class="section level1">
+<h1>Modeling</h1>
+<div id="model-building" class="section level2">
+<h2>Model Building</h2>
 <pre class="r"><code>final_long=
   read_csv(&quot;Data/final_long.csv&quot;)</code></pre>
 <pre><code>## New names:
@@ -907,8 +894,6 @@ covariates.</p>
 <li>excluded <code>pr, vi, as</code> since they do not have any
 measurements.</li>
 </ul>
-<div id="model-building-1" class="section level3">
-<h3>Model Building</h3>
 <pre class="r"><code>analysis_df &lt;- final_long %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(everything())
 
 # test &lt;-analysis_df %&gt;% filter(date&gt;=as.Date(&quot;2021-06-01&quot;) &amp; date&lt;=as.Date(&quot;2022-04-01&quot;))
@@ -985,29 +970,29 @@ function will return the following table:</p></li>
 <td align="left">(Intercept)</td>
 <td align="right">0.252</td>
 <td align="right">0</td>
-<td align="right">6.257477e+17</td>
+<td align="right">1.131016e+18</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">maskwearing_prop</td>
 <td align="right">-0.001</td>
-<td align="right">0</td>
-<td align="right">6.917397e+16</td>
-<td align="right">0</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
 </tr>
 <tr class="odd">
 <td align="left">finances_prop</td>
 <td align="right">-0.011</td>
-<td align="right">0</td>
-<td align="right">2.764517e+18</td>
-<td align="right">0</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
 </tr>
 <tr class="even">
 <td align="left">depression_prop</td>
 <td align="right">-0.034</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
+<td align="right">0</td>
+<td align="right">1.598170e+17</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">finances_prop:depression_prop</td>
@@ -1078,9 +1063,29 @@ return the following table:</li>
 </tbody>
 </table>
 </div>
-<div id="related-final-report-section-main-association"
-class="section level3">
-<h3>Related Final Report Section: Main Association</h3>
+<div id="model-selection" class="section level2">
+<h2>Model Selection</h2>
+<ul>
+<li><p>Using a GEE model for the repeated measure of
+<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> at the state level, we were able to observe
+the associations between masking wearing rate and influenza hospital
+admission or experiencing flu-like symptoms.</p></li>
+<li><p>When evaluating the models at the national level, we used a
+backward-selection-like method. We started with the full model with all
+the covariates and interaction terms. Then we checked the p-value of all
+covariates and interaction terms with the outcome variable and found out
+that only<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> variables were significant, and none of the
+interaction terms were significant. Thus, we proceeded with the reduced
+model, only with <code>maskwearing_prop</code>,
+<code>finances_prop</code>, and <code>depression_prop</code>
+covariates.</p></li>
+</ul>
+</div>
+</div>
+<div id="main-associations-and-discussion" class="section level1">
+<h1>Main Associations and Discussion</h1>
 <p>A Significant negative association between
 <code>maskwearing_prop</code> and <code>admission_prop</code> (-
 0.00151, P &lt; 0.0001) was observed at the national level, adjusting
@@ -1115,7 +1120,22 @@ considerably smaller than those for <code>symptoms_prop</code> because
 the ceiling of <code>admission_prop</code> is much lower than that of
 <code>symptoms_prop</code>.</p>
 </div>
-</div>
+<div id="future-steps" class="section level1">
+<h1>Future Steps</h1>
+<p>Although the national level main associations provide us with
+sufficient insight on mask wearings and influenza outcomes, we observed
+contradictory associations on state level. One example of this is the
+positive association between maskwearing rate and influenza admission
+status (0.00033) in North Carolina. Therefore, there are potentially
+other variables confounding this association that were not included in
+our model. Further exploratory analysis searching for additional
+potential predictors are needed and more state level analyses should be
+conducted for thorough examination of the main association.</p>
+<p>In addition, while we are looking at the mask rate by state level,
+one outstanding trend we discovered was that States with different
+political affiliations showed different mask rates. Thus, as a next
+step, we could investigate the correlation between State’s political
+affiliation with the mask-wearing rate.</p>
 </div>
 
 
