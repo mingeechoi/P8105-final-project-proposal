@@ -298,6 +298,21 @@ $(document).ready(function () {
 </div>
 
 
+<p>Model Selection * Using a GEE model for the repeated measure of
+<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> at the state level, we were able to observe
+the associations between masking wearing rate and influenza hospital
+admission or experiencing flu-like symptoms.</p>
+<p>When evaluating the models at the national level, we used a
+backward-selection-like method. We started with the full model with all
+the covariates and interaction terms. Then we checked the p-value of all
+covariates and interaction terms with the outcome variable and found out
+that only<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> variables were significant, and none of the
+interaction terms were significant. Thus, we proceeded with the reduced
+model, only with <code>maskwearing_prop</code>,
+<code>finances_prop</code>, and <code>depression_prop</code>
+covariates.</p>
 <div id="regression-analysis" class="section level2">
 <h2>Regression Analysis</h2>
 <pre class="r"><code>final_long=
@@ -319,8 +334,6 @@ measurements.</li>
 <div id="model-building" class="section level3">
 <h3>Model Building</h3>
 <pre class="r"><code>analysis_df &lt;- final_long %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(everything())
-
-# test &lt;-analysis_df %&gt;% filter(date&gt;=as.Date(&quot;2021-06-01&quot;) &amp; date&lt;=as.Date(&quot;2022-04-01&quot;))
 
 # outcome = &quot;admission&quot; or &quot;symptom&quot;; l_date = lower bound of date written as &quot;YYYY-MM-DD&quot;; u_date = upper bound of date written as &quot;YYYY-MM-DD&quot;
 # s_state = selected state; b_nation = model scale &quot;nation&quot; or &quot;state&quot; -wide
@@ -354,10 +367,10 @@ ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-0
 
 ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;nation&quot;)</code></pre>
 <ul>
-<li><p>this model is a primitive speculative model, which we logically
+<li><p>This model is a primitive speculative model, which we logically
 assume the two covariates had potentials to impact the
 associations.</p></li>
-<li><p>given exposure <code>maskwearing</code> is a continuous variable,
+<li><p>Given exposure <code>maskwearing</code> is a continuous variable,
 we will be estimating the mean function of the repeated measure.</p>
 <ul>
 <li><p><code>identity</code> function is used as the link
@@ -394,29 +407,29 @@ function will return the following table:</p></li>
 <td align="left">(Intercept)</td>
 <td align="right">0.252</td>
 <td align="right">0</td>
-<td align="right">1.131016e+18</td>
+<td align="right">6.257477e+17</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">maskwearing_prop</td>
 <td align="right">-0.001</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
+<td align="right">0</td>
+<td align="right">6.917397e+16</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">finances_prop</td>
 <td align="right">-0.011</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
+<td align="right">0</td>
+<td align="right">2.764517e+18</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">depression_prop</td>
 <td align="right">-0.034</td>
-<td align="right">0</td>
-<td align="right">1.598170e+17</td>
-<td align="right">0</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
 </tr>
 <tr class="odd">
 <td align="left">finances_prop:depression_prop</td>
@@ -486,6 +499,43 @@ return the following table:</li>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="related-final-report-section-main-association"
+class="section level3">
+<h3>Related Final Report Section: Main Association</h3>
+<p>A Significant negative association between
+<code>maskwearing_prop</code> and <code>admission_prop</code> (-
+0.00151, P &lt; 0.0001) was observed at the national level, adjusting
+for ‘finance_prop’ and ‘depression_prop’.</p>
+<ul>
+<li><p>Since we cannot conclude causation from our model, we can only
+say that a higher mask-wearing rate was associated with lower hospital
+admissions due to severe influenza.</p></li>
+<li><p>This can be explained by the protective nature of masks. People
+who wore masks might have had a lower probability of contracting severe
+influenza infection, which could have been attributed to the reduced
+viral load due to mask filtration and less severe infection.</p></li>
+</ul>
+<p>A significant positive association between
+<code>maskwearing_prop</code> and <code>symptoms_prop</code> (0.01139, P
+&lt; 0.0001) was observed at the national level, adjusting for
+‘finance_prop’ and ‘depression_prop’.</p>
+<ul>
+<li><p>Again since causation cannot be ascertained, we could only
+conclude that a higher mask-wearing rate was associated with higher
+flu-like symptoms.</p></li>
+<li><p>One possible explanation for this is that people may have become
+more aware of prevention for the flu if they were experiencing flu-like
+symptoms. Therefore, people might have tended to wear masks if they felt
+like they were sick.</p></li>
+</ul>
+<p>The parameters for the predictors are seemingly small. However, in
+the context of the dataset where all the measurements were the
+percentages of the population, a small change could mean a huge
+variation clinically. The parameters for <code>admission_prop</code> are
+considerably smaller than those for <code>symptoms_prop</code> because
+the ceiling of <code>admission_prop</code> is much lower than that of
+<code>symptoms_prop</code>.</p>
 </div>
 </div>
 

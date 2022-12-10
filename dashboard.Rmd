@@ -77,7 +77,7 @@ fig2 <- fig2 %>% add_trace(
   )
 fig2 <- fig2 %>% colorbar(title = "Mask Rate (%)")
 fig2 <- fig2 %>% layout(
-    title = 'May 2021 - May 2022 Average Mask Rate by State <br>(Hover for breakdown)',
+    title = 'May 2021 - May 2022 Average Mask Rate by State <br> (Hover for breakdown)',
     geo = g2,
     plot.title = element_text(size = 12)
   )

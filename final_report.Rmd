@@ -6,24 +6,450 @@ output:
     toc_float: true
 ---
 
+```{r setup, include=FALSE}
+library(tidyverse)
+library(viridis)
+library(plotly)
+```
 
-### Model estimatiors and discussion
+# Data Processing
 
-#### Main association
-* negative association between `maskwearing` and `admission` was observed.
+## Data Sources
+
+###  <span style="color:blue">Delphi US COVID-19 Trends and Impact Survey</span>
+
+The Delphi US COVID-19 Trends and Impact Survey consists of individual-level data from surveys advertised through Facebook. This survey was conducted through a collaborative effort between Delphi at Carnegie Mellon University and Facebook. It ran from April 6, 2020 to June 25, 2022, with around 40,000 people in the United States participating every day. Survey questions included questions about COVID-19 testing, prior medical conditions, social distancing measures, and economic effects of COVID-19. Since participants were recruited from a random sample of Facebook users and not from a random sample from the entire United States population, unique identifiers from Facebook were used to calculate statistical weights indicating how representative each person is of the United States population. These calculations were based on demographic data available on Facebook.
+
+*Notes about sampling weights:
+Sampling weights are non-negative values associated with survey responses that usually exist in any publicly available survey data. Sampling weights are supposed to be inversely proportional to the selection probabilities of sample units in the target 
+population, whose main goal is to improve the representativeness of the sample with respect to a target population. Naive analyses of the data under a complex sample design are expected to result in biased estimates. For instance, unweighted inference based on CTIS data tends to overestimate vaccination rates among adult Facebook users. In the following section, we further explain why it is necessary to use the sampling weights in our statistical analysis.
+
+
+###  <span style="color:blue">U.S. Department of Health & Human Services (HHS)</span>
+
+The U.S. Department of Health & Human Services is a department of the U.S. federal government created to enhance and protect the health of Americans. It collects data from state and territorial health departments throughout hospitals in the U.S. The dataset used here only includes adult and pediatric hospital admissions with confirmed and suspected cases of influenza or COVID-19.
+
+
+## Data Cleaning
+
+**Raw dataset:**
+All raw datasets are downloaded from [CMU Delphi](https://delphi.cmu.edu/covidcast/export/) in the CSV.format. We used three datasets for measuring the main association between mask-wearing and flu and two datasets for testing potential confounding, mediation and effect measure modification.For each of the datasets, we selected date, state, and value. 
+
+
+**Proportion of people wearing masks most of the time in public**
+Dataset “people wearing masks in the last seven days” came from the Delphi US COVID-19 Trends and Impact Survey. The original dataset contains 10 variables and 18666 observations, ranging from 05/01/2021 to 05/01/2022 on the state-level. The estimated value in the dataset is smoothed by calculating the 7-day estimated CLI procedure (Learn more about CLI: https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/fb-survey.html#ili-and-cli-indicators).
+
+
+**Proportion of people reporting Flu-like symptoms**
+The first outcome variable “Flu-like symptoms 7-day weighted” also came from the Delphi Survey, with a similiar layout and content as the exposure dataset. In this dataset, the value variable specifies the proportion of people reporting influenza-like symptoms, such as fever and cough/sore throat. 
+
+**Proportion of confirmed Influenza Admissions per day**
+The second outcome came from the dataset “Confirmed Influenza Admissions per day per 100k people (7-day average)” from HHS. It contains 10 variables with missing sample size or standard deviation. Important variables include date, state name, and the proportion of people admitted due to Flu per 100k people. 
+
+**Proportion of people worried about finances and Proportion of people feeling depressed**
+The two covariates of interests reflect an individual’s Financial Status and Mental Health Status. Two datasets, “proportion of people worried about their household's finances for the next month” and “proportion of people feeling depressed for the past 7 days” came from Delphi dataset. There are 10 variables and 18,540 observations in each dataset, time period matches with the main datasets. Important variables include dates, time, state name and the proportions for each confounder as well as sample size and standard error accordingly.
+
+**To perform data cleaning:**
+
+  1. The uneeded variables such as the standard deviation, issue date, etc. were omitted. 
   
-  * since we cannot conclude causation from our model, we can only say that higher mask wearing rate was associated with lower hospital admissions due to severe influenza. 
+  2. Add dataset specific prefix to each of the proportion values for the merging purpose (eg. In the mask wearing dataset, rename the “value” variable to “mask_wearing_value”.
   
-  * This can be explained the protective nature of masks. People who wore masks might have had lower probability of contracting severe influenza infection, which could have been attributed to the reduced viral load due to mask filtration and less severe infection. 
+  3. Merged the exposure and the outcome variables into a single dataset using inner join function.
 
-* positive association between `maskwearing` and `symptoms` was observed.
+**Two final datasets are produced:**
 
-  * since we cannot conclude causation from our model, we can only say that higher mask wearing rate was associated with higher flu-like symptoms. 
+1. “Final_long” is a longitudinal dataset range from 05/01/2021 to 05/01/2022. There are eight variables and 18540 observations. 
+
+Important variables include:
+
+*  `state`: state name (abb.)
+*  `state_full`: state name (full)
+*  `date`: date of observation
+*  `maskwearing_prop`: proportion of mask wearing
+*  `admission_prop`: proportion of admission due to flu 
+*  `symptom_prop`: proportion of having flu-like symptoms 
+*  `finances_prop`: proportion of worrying financial status 
+*  `depression_prop`: proportion of feeling depressed
+
+```{r, message=FALSE, warning=FALSE}
+e_mask_prop <-
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor::clean_names() %>%
+  select(-x1) %>%
+  select (geo_value, time_value, value) %>%
+  rename(maskwearing_prop=value, state=geo_value, date=time_value)
+
+o_symptoms_prop <-
+read_csv("./Data/Flu_like_symptoms.csv") %>%
+  janitor:: clean_names()  %>%
+  select(-x1) %>%
+  select(geo_value, time_value, value) %>%
+  rename(symptom_prop=value,state=geo_value, date=time_value)
+
+o_admission_prop <-
+read_csv("./Data/influenza_admissions.csv") %>%
+  janitor:: clean_names() %>%
+  select(-x1) %>%
+  select (geo_value, time_value, value) %>%
+  rename(admission_prop = value, state=geo_value, date=time_value)
+
+o_finances_prop <-
+  read_csv("data/worried_finances.csv") %>%
+  janitor::clean_names() %>%
+  select(-x1) %>%
+  select(geo_value, time_value, value) %>%
+  rename(finances_prop = value, state=geo_value, date=time_value)
+
+o_depression_prop <- 
+  read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names() %>% 
+  select (geo_value, time_value, value) %>% 
+  rename(depression_prop =value, state = geo_value, date = time_value) %>%
+  mutate(date = as.Date(date))
   
-  * One possible explanation for this is that people may have become more aware of prevention for flu if they were experiencing flu-like symptoms. Therefore, people might have tended to mask if they felt like they were sick.
+merge1 <-
+  inner_join(
+  x = e_mask_prop,
+  y = o_admission_prop,
+  by = c("state", "date"),
+  all.x = TRUE) 
+
+merge2 <-
+  inner_join(
+    x = o_symptoms_prop,
+    y = merge1,
+    by = c("state", "date"),
+    all.x = TRUE)
   
-#### Covariate association
+merge3 <-
+  inner_join(
+  x = o_finances_prop,
+  y = merge2,
+  by = c("state", "date"),
+  all.x = TRUE)
 
-* finance
+merge4 <-
+  inner_join(
+    x = merge3,
+    y = o_depression_prop,
+  by = c("state", "date"),
+  all.x = TRUE) %>%
+  mutate(state = toupper(state))
 
-* depression
+state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
+  as_tibble() %>%
+  pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
+
+merge5 <- merge4 %>%
+  full_join(state, by = "state") %>%
+  relocate(state_full, .after = state) %>%
+  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full))
+
+write.csv(merge5,"data/final_long.csv" )
+
+```
+
+2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. 
+
+Important variables include:
+
+*  `state`: state name (abb.) 
+*  `state_full`:  (full)
+*  `avg_mask`: average proportion of mask wearing 
+*  `avg_admission`: average proportion of admission due to Flu 
+*  `avg_symptom`: average proportion of having flu-like symptoms 
+*  `avg_finances`: average proportion of worrying financial status 
+*  `avg_depression`: average proportion of having depression. 
+
+```{r, message=FALSE}
+e_mask_avg <- 
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor:: clean_names()  %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_mask = mean(value))
+
+o_admission_avg <-
+read_csv("./Data/influenza_admissions.csv") %>%
+  janitor:: clean_names() %>%
+  select(geo_value, time_value, value) %>%
+  mutate(value = value * 100) %>%
+  group_by(geo_value) %>%
+  summarize(avg_admission = mean(value))
+
+o_symptoms_avg <-
+read_csv("./Data/Flu_like_symptoms.csv") %>%
+  janitor:: clean_names() %>%
+  select(geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_symptom = mean(value))
+
+o_finances_avg <-
+  read_csv("data/worried_finances.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_finances = mean(value))
+
+  
+o_depression_avg <- read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names()  %>% 
+  select (geo_value, time_value, value) %>% 
+  group_by(geo_value) %>% 
+  summarize(avg_depression = mean(value))
+
+merge1_avg <-
+  inner_join(
+  x = e_mask_avg,
+  y = o_admission_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge2_avg <-
+  inner_join(
+  x = merge1_avg,
+  y = o_symptoms_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge3_avg <-
+  inner_join(
+  x = merge2_avg,
+  y = o_finances_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge4_avg <-
+  inner_join(
+  x = merge3_avg,
+  y = o_depression_avg,
+  by = c("geo_value"),
+  all.x = TRUE) %>%
+  mutate(state = toupper(geo_value)) %>%
+  relocate(state, .before = avg_mask) %>%
+  select(-geo_value)
+
+state <- setNames(as.list(datasets::state.name), datasets::state.abb) %>% 
+  as.tibble() %>%
+  pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
+
+merge5_avg <- merge4_avg %>%
+  full_join(state, by = "state") %>%
+  relocate(state_full, .after = state) %>%
+  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full))
+
+write.csv(merge5_avg,"data/final_avg.csv" )
+
+```
+
+# Exploratory Data Analysis
+
+## Data Description
+```{r, message = FALSE} 
+final_long=
+  read_csv("Data/final_long.csv")
+
+final_long %>%
+  select(admission_prop, maskwearing_prop, symptom_prop,  finances_prop, depression_prop) %>%
+  summary() %>%
+  knitr::kable(digits = 3)
+```
+
+Our data has `r nrow(final_long)` observations and `r ncol(final_long)` variables and tells us about maskwearing, influenza symptoms, and admissions across the U.S. from years `r range(final_long$date)[1]` to `r range(final_long$date)[2]`. 
+
+The average percentage of people who say they wear a mask most or all of the time when they are in public in the past 7 days is 52.75%. The average percentage of adult and pediatric hospital admissions with confirmed influenza occurring each day (7-day average) is 0.05%, the average percentage of people self-reporting influenza-like symptoms such as fever with cough or sore throat in the past 7 days is 1.81%, the average percentage of people  who reported feeling depressed for most or all of the past 7 days is 12.61%, and the average percentage of people who report being very or somewhat worried about their "household's finances for the next month" is 37.45%.
+
+## Overall Trend in the U.S.for Participants Wearing Masks between 2021 - 2022
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_maskwearing_prop = mean(as.numeric(maskwearing_prop))) %>%
+  ggplot(aes(x = date, y = avg_maskwearing_prop)) +
+  geom_line()+
+  labs(title = "Average Percentage of People Wearing Masks", x = "Date", y = "Percentage of People Wearing Masks")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+Based on the graph, we can see that there was a huge drop from May 2021 to July 2021. This was due to the fact that in May 2021, as the United States continued to see dramatic improvements in COVID-19 cases, federal officials announced a sweeping relaxation of face mask guidelines allowing fully vaccinated people from not wearing masks in most places, either outdoors or inside (https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic). However, mask wearing rate increased around September 2021 potentially because of a continued uptick in positive COVID-19 cases due to the Delta variant. (https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/). Lastly, we see another hugh drop starting in February 2022 as infections in the U.S. decreased by 90% from a pandemic high during, leading the states to lift the mask mandates. (https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html)
+
+## Overall Trend in the U.S. for Participants with Influenza Symptoms between 2021 - 2022
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_symptom_prop = mean(as.numeric(symptom_prop))) %>%
+  ggplot(aes(x = date, y = avg_symptom_prop)) +
+  geom_line() +
+  labs(title = "Average Percentage of Participants with Influenza Symptom", x = "Date", y = "Percentage of People with Influenza Symptom") +
+  theme(plot.title=element_text(face="bold", color="blue")) +
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+A surge in the percentage of people with influenza symptoms occurred between late December 2021 to January 2022 from 2% to 5%. Prior to that, we see a gradual increase from 1% to 2% between May 2021 to November 2021.  The surge during the winter months coincides with the average peak flu activity in the US from 1982 to 2022 (CDC, 2022 https://www.cdc.gov/flu/about/season/flu-season.htm),  which is between December and February. 
+
+
+## Overall Trend in the U.S. for Hospital Admissions with Confirmed Influenza between 2021 - 2022
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_admission_prop = mean(as.numeric(admission_prop))) %>%
+  ggplot(aes(x = date, y = avg_admission_prop)) +
+  geom_line()+
+  labs(title = "Average Number of Hospital Admissions with Confirmed Influenza", x = "Date", y = "Number of Hospital Admissions")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+The above-mentioned trend on Flu symptom perfectly matches with the proportion of hospital admissions which also peaked in January 2022 at approx. 0.15%, there is another peak in hospital admission later in April 2022 at approx. 0.16%. A possible explanation could be the landing of the Omicron strain in the US which started in December 2021 as well as the decreasing trend of mask-wearing as states began to loosen the mask mandate. 
+
+
+## Overall Trend in the U.S. for Participants Worried about Finances between 2021 - 2022
+```{r}
+final_long%>%
+  drop_na%>%
+  group_by(date)%>%
+  summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %>%
+  ggplot(aes(x = date, y = avg_finances_prop)) +
+  geom_line()+
+  labs(title = "Average Percentage of Participants worried about finance", x = "Date", y = "Percentage of Participants Worried about Finance")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+Overall, there is a gradually increasing trend of people worrying about their household financial status from July 2021 to March 2022. The trend peaked in March 2022 at 42% and then sharply dropped to 37% in April 2022. 
+
+## Overall Trend in the U.S. for Depressed Participants between 2021 - 2022
+```{r}
+final_long %>%
+  drop_na %>%
+  group_by(date)%>%
+  summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %>%
+  ggplot(aes(x = date, y = avg_depression_prop)) +
+  geom_line()+
+  labs(title = "Average Percentage of Depressed Participants", x = "Date", y = "Percentage of Depressed Participants")+
+  theme(plot.title=element_text(face="bold", color="blue"))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+Trend stayed flat at 11% from May to August 2021 and sharply increased to 13-15% in September and remained elevated until late January 2022. In May 2022, it decreased back to 12%. This drop is likely due to imporvements mental health status as more public facilities and events reverted back to pre-pandemic operations.
+
+# Modeling
+
+## Model Building
+
+```{r load_package, echo = FALSE, message=FALSE}
+rm(list=ls())
+library(tidyverse)
+library(purrr)
+library(geepack)
+options(tibble.print_min = 5)
+options(pillar.sigfig = 5)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 8, 
+  fig.height = 6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+```
+
+
+```{r import_data}
+final_long=
+  read_csv("Data/final_long.csv")
+
+states <- unique(final_long$state)
+```
+
+* excluded `pr, vi, as` since they do not have any measurements.
+
+
+```{r}
+analysis_df <- final_long %>% mutate(date=as.Date(date),state=as.factor(state)) %>% arrange(state,date) %>% select(everything())
+
+# outcome = "admission" or "symptom"; l_date = lower bound of date written as "YYYY-MM-DD"; u_date = upper bound of date written as "YYYY-MM-DD"
+# s_state = selected state; b_nation = model scale "nation" or "state" -wide
+
+shiny_input_model <- function(outcome, l_date, u_date, s_state, s_cov, b_nation){
+  cov_in<-as.character(s_cov)
+  
+  if (outcome=="admission"){
+    model_formula <- formula(paste0("admission_prop ~ maskwearing_prop + ",cov_in))
+  }else if (outcome=="symptom"){
+    model_formula <- formula(paste0("symptom_prop ~ maskwearing_prop + ", cov_in))
+  }
+  
+  if (b_nation=="state"){
+    temp_df<-analysis_df %>% filter(state_full %in% s_state & date>=as.Date(l_date) & date<=as.Date(u_date))
+    out_table <- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
+      broom::tidy() %>% knitr::kable(digits = 3) 
+  } else if (b_nation=="nation"){
+    temp_df<-analysis_df %>% filter(date>=as.Date(l_date) & date<=as.Date(u_date))
+    out_table <- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian("identity"),corstr="exchangeable",std.err = "san.se") %>% 
+      broom::tidy() %>% knitr::kable(digits = 3) 
+  }
+
+  return(out_table)
+}
+
+ex_1<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state="Colorado", s_cov="finances_prop + depression_prop + finances_prop*depression_prop", b_nation="state")
+
+
+ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-04-01", s_state=NA, s_cov="finances_prop + depression_prop + finances_prop*depression_prop", b_nation="nation")
+
+```
+
+* This model is a primitive speculative model, which we logically assume the two covariates had potentials to impact the associations. 
+
+* Given exposure `maskwearing` is a continuous variable, we will be estimating the mean function of the repeated measure.
+
+  * `identity` function is used as the link function
+
+  * We assumed that the correlation among distinct observations in the same state is the same regardless of time. Therefore, we used `exchangeable` as the correlation structure.
+
+  * `state` is treated as the `id`.
+
+  * the function `shiny_input_model` was written in preparation for the shiny app deployment
+
+* If we want to model the association in `co`, the function will return the following table: `r ex_1`
+
+* If we want to model the association nationwide, the function will return the following table: `r ex_2`
+
+## Model Selection
+
+* Using a GEE model for the repeated measure of `maskwearing_prop`, `finances_prop`, and `depression_prop` at the state level, we were able to observe the associations between masking wearing rate and influenza hospital admission or experiencing flu-like symptoms. 
+
+* When evaluating the models at the national level, we used a backward-selection-like method. We started with the full model with all the covariates and interaction terms. Then we checked the p-value of all covariates and interaction terms with the outcome variable and found out that only`maskwearing_prop`, `finances_prop`, and `depression_prop` variables were significant, and none of the interaction terms were significant. Thus, we proceeded with the reduced model, only with `maskwearing_prop`, `finances_prop`, and `depression_prop` covariates. 
+
+# Main Associations and Discussion
+
+A Significant negative association between `maskwearing_prop` and `admission_prop`  (- 0.00151, P < 0.0001) was observed at the national level, adjusting for ‘finance_prop’ and ‘depression_prop’.
+  
+ * Since we cannot conclude causation from our model, we can only say that a higher mask-wearing rate was associated with lower hospital admissions due to severe influenza. 
+  
+  * This can be explained by the protective nature of masks. People who wore masks might have had a lower probability of contracting severe influenza infection, which could have been attributed to the reduced viral load due to mask filtration and less severe infection. 
+
+A significant positive association between `maskwearing_prop` and `symptoms_prop` (0.01139, P < 0.0001) was observed at the national level, adjusting for ‘finance_prop’ and ‘depression_prop’.
+
+  * Again since causation cannot be ascertained, we could only conclude that a higher mask-wearing rate was associated with higher flu-like symptoms. 
+  
+  * One possible explanation for this is that people may have become more aware of prevention for the flu if they were experiencing flu-like symptoms. Therefore, people might have tended to wear masks if they felt like they were sick.
+
+The parameters for the predictors are seemingly small. However, in the context of the dataset where all the measurements were the percentages of the population, a small change could mean a huge variation clinically. The parameters for `admission_prop` are considerably smaller than those for `symptoms_prop` because the ceiling of `admission_prop` is much lower than that of `symptoms_prop`.
+
+# Future Steps
+
+Although the national level main associations provide us with sufficient insight on mask wearings and influenza outcomes, we observed contradictory associations on state level. One example of this is the positive association between maskwearing rate and influenza admission status (0.00033) in North Carolina. Therefore, there are potentially other variables confounding this association that were not included in our model. Further exploratory analysis searching for additional potential predictors are needed and more state level analyses should be conducted for thorough examination of the main association.
+
+In addition, while we are looking at the mask rate by state level, one outstanding trend we discovered was that States with different political affiliations showed different mask rates. Thus, as a next step, we could investigate the correlation between State’s political affiliation with the mask-wearing rate.  
+

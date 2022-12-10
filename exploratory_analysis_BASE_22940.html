@@ -11,7 +11,7 @@
 
 
 
-<title>Mask Wearing and Influenza Admissions (2021-2022)</title>
+<title>Exploratory Analysis</title>
 
 <script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -33,10 +33,9 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -222,6 +221,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -342,12 +344,6 @@ div.tocify {
 <li>
   <a href="final_report.html">Final Report</a>
 </li>
-<li>
-  <a href="https://github.com/mingeechoi/P8105-final-project-proposal">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -355,180 +351,188 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Mask Wearing and Influenza Admissions
-(2021-2022)</h1>
+
+<h1 class="title toc-ignore">Exploratory Analysis</h1>
 
 </div>
 
 
-<style type="text/css">
-h1{
-  text-align: center;
-}
+<div id="data-description" class="section level3">
+<h3>Data Description</h3>
+<pre class="r"><code>final_long=
+  read_csv(&quot;Data/final_long.csv&quot;)
 
-</style>
-<p><img src="images/mask.jpg" style="height:60.0%" /></p>
-<p><br></p>
-<hr />
-<div id="screencast" class="section level2">
-<h2>Screencast</h2>
-<div class="vid_container">
-<p><iframe 
-    src="https://www.youtube.com/embed/nOIp6J8Uas4"
-    frameborder="0" allowfullscreen class="video"> </iframe></p>
+final_long%&gt;%
+  select(admission_prop, maskwearing_prop, symptom_prop,  finances_prop, depression_prop) %&gt;%
+  summary()%&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<colgroup>
+<col width="3%" />
+<col width="21%" />
+<col width="20%" />
+<col width="17%" />
+<col width="17%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">admission_prop</th>
+<th align="left">maskwearing_prop</th>
+<th align="left">symptom_prop</th>
+<th align="left">finances_prop</th>
+<th align="left">depression_prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Min. :-0.024517</td>
+<td align="left">Min. : 8.563</td>
+<td align="left">Min. :0.000</td>
+<td align="left">Min. :18.94</td>
+<td align="left">Min. : 2.355</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">1st Qu.: 0.003714</td>
+<td align="left">1st Qu.:39.341</td>
+<td align="left">1st Qu.:1.034</td>
+<td align="left">1st Qu.:34.72</td>
+<td align="left">1st Qu.:11.022</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Median : 0.021168</td>
+<td align="left">Median :51.169</td>
+<td align="left">Median :1.532</td>
+<td align="left">Median :37.37</td>
+<td align="left">Median :12.479</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Mean : 0.053085</td>
+<td align="left">Mean :52.749</td>
+<td align="left">Mean :1.817</td>
+<td align="left">Mean :37.45</td>
+<td align="left">Mean :12.619</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">3rd Qu.: 0.066314</td>
+<td align="left">3rd Qu.:65.357</td>
+<td align="left">3rd Qu.:2.189</td>
+<td align="left">3rd Qu.:40.35</td>
+<td align="left">3rd Qu.:14.076</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Max. : 0.989330</td>
+<td align="left">Max. :96.657</td>
+<td align="left">Max. :7.969</td>
+<td align="left">Max. :52.46</td>
+<td align="left">Max. :25.160</td>
+</tr>
+</tbody>
+</table>
+<p>Our data has 18540 observations and 9 variables and tells us about
+maskwearing, influenza symptoms, and admissions across the U.S. from
+years 2021-05-01 to 2022-05-01. The average percentage of people who say
+they wear a mask most or all of the time when they are in public in the
+past 7 days is 52.75%. The average percentage of adult and pediatric
+hospital admissions with confirmed influenza occurring each day (7-day
+average) is 0.05%, and the average percentage of people self-reporting
+influenza-like symptoms such as fever with cough or sore throat in the
+past 7 days is 1.81%.</p>
 </div>
-<hr />
+<div
+id="overall-trends-in-the-u.s.-2021-2022-for-participants-wearing-masks"
+class="section level3">
+<h3>Overall Trends in the U.S. 2021-2022 for Participants Wearing
+Masks</h3>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_maskwearing_prop = mean(as.numeric(maskwearing_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_maskwearing_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of People Wearing Masks&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People Wearing Masks&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
-<div id="motivation" class="section level2">
-<h2>Motivation</h2>
-<p>CDC’s mask requirements have greatly evolved throughout the COVID-19
-pandemic. On Feb. 29, 2020, U.S. Surgeon General Dr. Jerome Adams
-angrily tweeted, “Seriously people–STOP BUYING MASKS!” Since then, the
-CDC has published reports that masks are protective against COVID-19 and
-released guidelines on masking in schools and local communities. By July
-2020, more than half of U.S. states had mask mandates. However, as
-vaccination rates spiked, the CDC eased masking guidelines, and by May
-2021, fully vaccinated people weren’t required to wear a mask in most
-indoor and outdoor settings.</p>
-<p>Furthermore, COVID-19 has put a great strain on hospitals and public
-health facilities in the U.S. It has worsened numerous public health
-problems such as the flu, RSV, and norovirus. Many news outlets have
-recently reported that the United States is suffering one of the worst
-flu seasons in decades. In the United States, the flu season usually
-occurs in the fall and winter, meaning people are most vulnerable to the
-flu during this season. As COVID restrictions and policies have become
-less stringent, we have seen a significant decrease in the number of
-people wearing masks. We wanted to explore how people wearing masks has
-an effect on disease prevalence.</p>
-<hr />
+<div
+id="overall-trends-in-the-u.s.-2021-2022-for-participants-wearing-masks-1"
+class="section level3">
+<h3>Overall Trends in the U.S. 2021-2022 for Participants Wearing
+Masks</h3>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_symptom_prop = mean(as.numeric(symptom_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_symptom_prop)) +
+  geom_line() +
+  labs(title = &quot;Average Percentage of Participants with Influenza Symptom&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People with Influenza Symptom&quot;) +
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;)) +
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="related-work" class="section level2">
-<h2>Related Work</h2>
-<p><strong>Efficacy and Practice of Facemask Use in General Population:
-a Systematic Review and Meta-analysis (Li et. al., 2022)</strong> Ever
-since the COVID-19 pandemic began, numerous studies on the effectiveness
-of mask-wearing have been published. In a meta-analysis that summarized
-eight RCTs on mask-wearing effectiveness, the results suggest a
-significant protective effect of mask-wearing in preventing infections
-(Li et al, 2022 ). (<a
-href="https://www.nature.com/articles/s41398-022-01814-3"
-class="uri">https://www.nature.com/articles/s41398-022-01814-3</a>)</p>
-<p><strong>Effectiveness of Face Mask or Respirator Use in Indoor Public
-Settings for Prevention of SARS-CoV-2 Infection (Andrejko et.al,
-2021)</strong> A study from CDC has reported that consistent use of mask
-or respirator in indoor settings was associated with lower odds of
-positive COVID-19 tests and recommends people to vaccinate and
-consistently wear masks or use respirators in indoor public settings.
-(<a href="https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.html"
-class="uri">https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.html</a>)</p>
-<p><strong>The Effect of Mask Use on the Spread of Influenza During a
-Pandemic (Briene et. al., 2010)</strong> This study examines the effects
-of mask efficacy and coverage on infection attack rate and basic
-reproduction number (R0). The results indicate that population-wide use
-of face masks can significantly delay the influenza pandemic and help
-reduce influenza outbreak. (<a
-href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682/"
-class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682/</a>)</p>
-<p><strong>Need for more Robust Research on the Effectiveness of Masks
-in Preventing COVID-19 transmission (Li et al, 2022)</strong> However
-more robust research is still needed since mask-wearing in public can be
-a complex public health topic that intertwines with policy-making,
-public perspectives, etc. An RCT without taking into account real-world
-data would be too preliminary for supporting and implementing such
-public health policy. (<a
-href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682//"
-class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682//</a>)</p>
-<hr />
+<div
+id="overall-trends-in-the-u.s.-2021-2022-for-participants-worried-about-finance"
+class="section level3">
+<h3>Overall Trends in the U.S. 2021-2022 for Participants worried about
+finance</h3>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_finances_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of participants worried about finance&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
-<div id="initial-questions" class="section level2">
-<h2>Initial Questions</h2>
-<p>Our initial questions are:</p>
-<ol style="list-style-type: decimal">
-<li>Would wearing a mask prevent us from getting an airborne infectious
-disease? In this case, we are specifically looking at influenza.</li>
-<li>On a broader public health aspect, is a mask mandate policy
-necessary in the midst of a pandemic? Regarding the shortage of PPE
-among healthcare workers, should the allocation of masks pivot toward
-them instead of the public?</li>
-</ol>
-<hr />
+<div
+id="overall-trends-in-the-u.s.-2021-2022-for-depressed-participants"
+class="section level3">
+<h3>Overall Trends in the U.S. 2021-2022 for Depressed Participants</h3>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_depression_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of depressed participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of depressed participants&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
-<div id="website-overview" class="section level2">
-<h2>Website Overview</h2>
-<p>In the <a
-href="https://mingeechoi.github.io/P8105-final-project-proposal/Data-cleaning--analysis.html">Data
-Processing</a> section, you will find:</p>
-<ul>
-<li><p>Description of the data</p></li>
-<li><p>Our data cleaning process</p></li>
-</ul>
-<p>In the <a
-href="https://mingeechoi.github.io/P8105-final-project-proposal/exploratory_analysis.html">Exploratory
-Analyses</a> section, you will find:</p>
-<ul>
-<li><p>Descriptive statistics of variables used in this dataset</p></li>
-<li><p>Visualization of maskwearing, influenza symptoms, hospital
-admissions, depression, and finance over time</p></li>
-<li><p>Description of overall trends in the U.S. regarding maskwearing
-and influenza symptoms/admissions</p></li>
-</ul>
-<p>In the <a
-href="https://mingeechoi.github.io/P8105-final-project-proposal/dashboard.html">Map
-Building</a> section, you will find:</p>
-<ul>
-<li><p>An interactive map showing confirmed influenza admissions per day
-across the United States.</p></li>
-<li><p>A second interactive map showing average mask rate across the
-United States.</p></li>
-</ul>
-<p>In the <a
-href="https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html">Model
-Building</a> section, you will find:</p>
-<ul>
-<li><p>The process of fitting a GEE model onto the analysis data
-set.</p></li>
-<li><p>Detailed definition of the GEE model and how it was coded with
-specific parameter or options used.</p></li>
-<li><p>A generic function written to output the model estimates for both
-multiple selected states and nation-wide data. The model’s covariates
-are also fully customizable besides the main exposure
-<code>maskwearing_prop</code></p>
-<ul>
-<li><p>This function was adapted for the Shiny Flexdashboard
-website.</p></li>
-<li><p>The function can also output model for either outcome variable:
-<code>admission</code> or <code>symptoms</code></p></li>
-</ul></li>
-</ul>
-<p>In the <a
-href="https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html">Interactive
-Map &amp; Model</a> section, you will find:</p>
-<ul>
-<li><p>Two tabs:</p>
-<ul>
-<li><p>US map with state-level annual average of selected variable of
-interest.</p></li>
-<li><p>Estimated model with customizable inputs along with scatter plots
-for variables of interests.</p></li>
-</ul></li>
-</ul>
-<p>Visit the <a
-href="https://mingeechoi.github.io/P8105-final-project-proposal/final_report.html">Final
-Report</a> for indepth details of our project!</p>
-<p><br></p>
-<hr />
-</div>
-<div id="our-team" class="section level2">
-<h2>Our Team</h2>
-<ul>
-<li>Barry Chiu (pc2979)</li>
-<li>Junyu Qi (jq2342)</li>
-<li>Mingee Choi(mlc2287)</li>
-<li>Soungbin Yim (sy3019)</li>
-<li>Troy Zhou (zz2901)</li>
-</ul>
+<div
+id="overall-trends-in-the-u.s.-2021-2022-for-hospital-admissions-with-confirmed-influenza"
+class="section level3">
+<h3>Overall Trends in the U.S. 2021-2022 for Hospital Admissions with
+Confirmed Influenza</h3>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_admission_prop = mean(as.numeric(admission_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_admission_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Number of Hospital Admissions with Confirmed Influenza&quot;, x = &quot;Date&quot;, y = &quot;Number of Hospital Admissions&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 
 
@@ -566,6 +570,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

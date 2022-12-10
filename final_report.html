@@ -13,7 +13,7 @@
 
 <title>Final Report</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -184,8 +184,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -193,9 +193,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -362,42 +369,773 @@ div.tocify {
 </div>
 
 
-<div id="model-estimatiors-and-discussion" class="section level3">
-<h3>Model estimatiors and discussion</h3>
-<div id="main-association" class="section level4">
-<h4>Main association</h4>
+<div id="data-processing" class="section level1">
+<h1>Data Processing</h1>
+<div id="data-sources" class="section level2">
+<h2>Data Sources</h2>
+<div id="delphi-us-covid-19-trends-and-impact-survey"
+class="section level3">
+<h3><span style="color:blue">Delphi US COVID-19 Trends and Impact
+Survey</span></h3>
+<p>The Delphi US COVID-19 Trends and Impact Survey consists of
+individual-level data from surveys advertised through Facebook. This
+survey was conducted through a collaborative effort between Delphi at
+Carnegie Mellon University and Facebook. It ran from April 6, 2020 to
+June 25, 2022, with around 40,000 people in the United States
+participating every day. Survey questions included questions about
+COVID-19 testing, prior medical conditions, social distancing measures,
+and economic effects of COVID-19. Since participants were recruited from
+a random sample of Facebook users and not from a random sample from the
+entire United States population, unique identifiers from Facebook were
+used to calculate statistical weights indicating how representative each
+person is of the United States population. These calculations were based
+on demographic data available on Facebook.</p>
+<p>*Notes about sampling weights: Sampling weights are non-negative
+values associated with survey responses that usually exist in any
+publicly available survey data. Sampling weights are supposed to be
+inversely proportional to the selection probabilities of sample units in
+the target population, whose main goal is to improve the
+representativeness of the sample with respect to a target population.
+Naive analyses of the data under a complex sample design are expected to
+result in biased estimates. For instance, unweighted inference based on
+CTIS data tends to overestimate vaccination rates among adult Facebook
+users. In the following section, we further explain why it is necessary
+to use the sampling weights in our statistical analysis.</p>
+</div>
+<div id="u.s.-department-of-health-human-services-hhs"
+class="section level3">
+<h3><span style="color:blue">U.S. Department of Health &amp; Human
+Services (HHS)</span></h3>
+<p>The U.S. Department of Health &amp; Human Services is a department of
+the U.S. federal government created to enhance and protect the health of
+Americans. It collects data from state and territorial health
+departments throughout hospitals in the U.S. The dataset used here only
+includes adult and pediatric hospital admissions with confirmed and
+suspected cases of influenza or COVID-19.</p>
+</div>
+</div>
+<div id="data-cleaning" class="section level2">
+<h2>Data Cleaning</h2>
+<p><strong>Raw dataset:</strong> All raw datasets are downloaded from <a
+href="https://delphi.cmu.edu/covidcast/export/">CMU Delphi</a> in the
+CSV.format. We used three datasets for measuring the main association
+between mask-wearing and flu and two datasets for testing potential
+confounding, mediation and effect measure modification.For each of the
+datasets, we selected date, state, and value.</p>
+<p><strong>Proportion of people wearing masks most of the time in
+public</strong> Dataset “people wearing masks in the last seven days”
+came from the Delphi US COVID-19 Trends and Impact Survey. The original
+dataset contains 10 variables and 18666 observations, ranging from
+05/01/2021 to 05/01/2022 on the state-level. The estimated value in the
+dataset is smoothed by calculating the 7-day estimated CLI procedure
+(Learn more about CLI: <a
+href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/fb-survey.html#ili-and-cli-indicators"
+class="uri">https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/fb-survey.html#ili-and-cli-indicators</a>).</p>
+<p><strong>Proportion of people reporting Flu-like symptoms</strong> The
+first outcome variable “Flu-like symptoms 7-day weighted” also came from
+the Delphi Survey, with a similiar layout and content as the exposure
+dataset. In this dataset, the value variable specifies the proportion of
+people reporting influenza-like symptoms, such as fever and cough/sore
+throat.</p>
+<p><strong>Proportion of confirmed Influenza Admissions per day</strong>
+The second outcome came from the dataset “Confirmed Influenza Admissions
+per day per 100k people (7-day average)” from HHS. It contains 10
+variables with missing sample size or standard deviation. Important
+variables include date, state name, and the proportion of people
+admitted due to Flu per 100k people.</p>
+<p><strong>Proportion of people worried about finances and Proportion of
+people feeling depressed</strong> The two covariates of interests
+reflect an individual’s Financial Status and Mental Health Status. Two
+datasets, “proportion of people worried about their household’s finances
+for the next month” and “proportion of people feeling depressed for the
+past 7 days” came from Delphi dataset. There are 10 variables and 18,540
+observations in each dataset, time period matches with the main
+datasets. Important variables include dates, time, state name and the
+proportions for each confounder as well as sample size and standard
+error accordingly.</p>
+<p><strong>To perform data cleaning:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>The uneeded variables such as the standard deviation, issue date,
+etc. were omitted.</p></li>
+<li><p>Add dataset specific prefix to each of the proportion values for
+the merging purpose (eg. In the mask wearing dataset, rename the “value”
+variable to “mask_wearing_value”.</p></li>
+<li><p>Merged the exposure and the outcome variables into a single
+dataset using inner join function.</p></li>
+</ol>
+<p><strong>Two final datasets are produced:</strong></p>
+<ol style="list-style-type: decimal">
+<li>“Final_long” is a longitudinal dataset range from 05/01/2021 to
+05/01/2022. There are eight variables and 18540 observations.</li>
+</ol>
+<p>Important variables include:</p>
 <ul>
-<li><p>negative association between <code>maskwearing</code> and
-<code>admission</code> was observed.</p>
+<li><code>state</code>: state name (abb.)</li>
+<li><code>state_full</code>: state name (full)</li>
+<li><code>date</code>: date of observation</li>
+<li><code>maskwearing_prop</code>: proportion of mask wearing</li>
+<li><code>admission_prop</code>: proportion of admission due to flu</li>
+<li><code>symptom_prop</code>: proportion of having flu-like
+symptoms</li>
+<li><code>finances_prop</code>: proportion of worrying financial
+status</li>
+<li><code>depression_prop</code>: proportion of feeling depressed</li>
+</ul>
+<pre class="r"><code>e_mask_prop &lt;-
+read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
+  janitor::clean_names() %&gt;%
+  select(-x1) %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  rename(maskwearing_prop=value, state=geo_value, date=time_value)
+
+o_symptoms_prop &lt;-
+read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
+  janitor:: clean_names()  %&gt;%
+  select(-x1) %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  rename(symptom_prop=value,state=geo_value, date=time_value)
+
+o_admission_prop &lt;-
+read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
+  janitor:: clean_names() %&gt;%
+  select(-x1) %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  rename(admission_prop = value, state=geo_value, date=time_value)
+
+o_finances_prop &lt;-
+  read_csv(&quot;data/worried_finances.csv&quot;) %&gt;%
+  janitor::clean_names() %&gt;%
+  select(-x1) %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  rename(finances_prop = value, state=geo_value, date=time_value)
+
+o_depression_prop &lt;- 
+  read.csv(&quot;Data/depression.csv&quot;) %&gt;% 
+  janitor:: clean_names() %&gt;% 
+  select (geo_value, time_value, value) %&gt;% 
+  rename(depression_prop =value, state = geo_value, date = time_value) %&gt;%
+  mutate(date = as.Date(date))
+  
+merge1 &lt;-
+  inner_join(
+  x = e_mask_prop,
+  y = o_admission_prop,
+  by = c(&quot;state&quot;, &quot;date&quot;),
+  all.x = TRUE) 
+
+merge2 &lt;-
+  inner_join(
+    x = o_symptoms_prop,
+    y = merge1,
+    by = c(&quot;state&quot;, &quot;date&quot;),
+    all.x = TRUE)
+  
+merge3 &lt;-
+  inner_join(
+  x = o_finances_prop,
+  y = merge2,
+  by = c(&quot;state&quot;, &quot;date&quot;),
+  all.x = TRUE)
+
+merge4 &lt;-
+  inner_join(
+    x = merge3,
+    y = o_depression_prop,
+  by = c(&quot;state&quot;, &quot;date&quot;),
+  all.x = TRUE) %&gt;%
+  mutate(state = toupper(state))
+
+state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
+  as_tibble() %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
+
+merge5 &lt;- merge4 %&gt;%
+  full_join(state, by = &quot;state&quot;) %&gt;%
+  relocate(state_full, .after = state) %&gt;%
+  mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
+
+write.csv(merge5,&quot;data/final_long.csv&quot; )</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>“Final_avg” is a summary dataset summarizing the state level yearly
+average proportion of each variable of interest from 05/01/2021 to
+05/01/2022. There are seven variables and 51 state-level
+observations.</li>
+</ol>
+<p>Important variables include:</p>
 <ul>
-<li><p>since we cannot conclude causation from our model, we can only
-say that higher mask wearing rate was associated with lower hospital
+<li><code>state</code>: state name (abb.)</li>
+<li><code>state_full</code>: (full)</li>
+<li><code>avg_mask</code>: average proportion of mask wearing</li>
+<li><code>avg_admission</code>: average proportion of admission due to
+Flu</li>
+<li><code>avg_symptom</code>: average proportion of having flu-like
+symptoms</li>
+<li><code>avg_finances</code>: average proportion of worrying financial
+status</li>
+<li><code>avg_depression</code>: average proportion of having
+depression.</li>
+</ul>
+<pre class="r"><code>e_mask_avg &lt;- 
+read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
+  janitor:: clean_names()  %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_mask = mean(value))
+
+o_admission_avg &lt;-
+read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
+  janitor:: clean_names() %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  mutate(value = value * 100) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_admission = mean(value))
+
+o_symptoms_avg &lt;-
+read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
+  janitor:: clean_names() %&gt;%
+  select(geo_value, time_value, value) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_symptom = mean(value))
+
+o_finances_avg &lt;-
+  read_csv(&quot;data/worried_finances.csv&quot;) %&gt;%
+  janitor:: clean_names() %&gt;%
+  select (geo_value, time_value, value) %&gt;%
+  group_by(geo_value) %&gt;%
+  summarize(avg_finances = mean(value))
+
+  
+o_depression_avg &lt;- read.csv(&quot;Data/depression.csv&quot;) %&gt;% 
+  janitor:: clean_names()  %&gt;% 
+  select (geo_value, time_value, value) %&gt;% 
+  group_by(geo_value) %&gt;% 
+  summarize(avg_depression = mean(value))
+
+merge1_avg &lt;-
+  inner_join(
+  x = e_mask_avg,
+  y = o_admission_avg,
+  by = c(&quot;geo_value&quot;),
+  all.x = TRUE) 
+
+merge2_avg &lt;-
+  inner_join(
+  x = merge1_avg,
+  y = o_symptoms_avg,
+  by = c(&quot;geo_value&quot;),
+  all.x = TRUE) 
+
+merge3_avg &lt;-
+  inner_join(
+  x = merge2_avg,
+  y = o_finances_avg,
+  by = c(&quot;geo_value&quot;),
+  all.x = TRUE) 
+
+merge4_avg &lt;-
+  inner_join(
+  x = merge3_avg,
+  y = o_depression_avg,
+  by = c(&quot;geo_value&quot;),
+  all.x = TRUE) %&gt;%
+  mutate(state = toupper(geo_value)) %&gt;%
+  relocate(state, .before = avg_mask) %&gt;%
+  select(-geo_value)
+
+state &lt;- setNames(as.list(datasets::state.name), datasets::state.abb) %&gt;% 
+  as.tibble() %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
+<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
+## ℹ Please use `as_tibble()` instead.
+## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
+<pre class="r"><code>merge5_avg &lt;- merge4_avg %&gt;%
+  full_join(state, by = &quot;state&quot;) %&gt;%
+  relocate(state_full, .after = state) %&gt;%
+  mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
+
+write.csv(merge5_avg,&quot;data/final_avg.csv&quot; )</code></pre>
+</div>
+</div>
+<div id="exploratory-data-analysis" class="section level1">
+<h1>Exploratory Data Analysis</h1>
+<div id="data-description" class="section level2">
+<h2>Data Description</h2>
+<pre class="r"><code>final_long=
+  read_csv(&quot;Data/final_long.csv&quot;)
+
+final_long %&gt;%
+  select(admission_prop, maskwearing_prop, symptom_prop,  finances_prop, depression_prop) %&gt;%
+  summary() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<colgroup>
+<col width="3%" />
+<col width="21%" />
+<col width="20%" />
+<col width="17%" />
+<col width="17%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">admission_prop</th>
+<th align="left">maskwearing_prop</th>
+<th align="left">symptom_prop</th>
+<th align="left">finances_prop</th>
+<th align="left">depression_prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Min. :-0.024517</td>
+<td align="left">Min. : 8.563</td>
+<td align="left">Min. :0.000</td>
+<td align="left">Min. :18.94</td>
+<td align="left">Min. : 2.355</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">1st Qu.: 0.003714</td>
+<td align="left">1st Qu.:39.341</td>
+<td align="left">1st Qu.:1.034</td>
+<td align="left">1st Qu.:34.72</td>
+<td align="left">1st Qu.:11.022</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Median : 0.021168</td>
+<td align="left">Median :51.169</td>
+<td align="left">Median :1.532</td>
+<td align="left">Median :37.37</td>
+<td align="left">Median :12.479</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Mean : 0.053085</td>
+<td align="left">Mean :52.749</td>
+<td align="left">Mean :1.817</td>
+<td align="left">Mean :37.45</td>
+<td align="left">Mean :12.619</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">3rd Qu.: 0.066314</td>
+<td align="left">3rd Qu.:65.357</td>
+<td align="left">3rd Qu.:2.189</td>
+<td align="left">3rd Qu.:40.35</td>
+<td align="left">3rd Qu.:14.076</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Max. : 0.989330</td>
+<td align="left">Max. :96.657</td>
+<td align="left">Max. :7.969</td>
+<td align="left">Max. :52.46</td>
+<td align="left">Max. :25.160</td>
+</tr>
+</tbody>
+</table>
+<p>Our data has 18540 observations and 9 variables and tells us about
+maskwearing, influenza symptoms, and admissions across the U.S. from
+years 2021-05-01 to 2022-05-01.</p>
+<p>The average percentage of people who say they wear a mask most or all
+of the time when they are in public in the past 7 days is 52.75%. The
+average percentage of adult and pediatric hospital admissions with
+confirmed influenza occurring each day (7-day average) is 0.05%, the
+average percentage of people self-reporting influenza-like symptoms such
+as fever with cough or sore throat in the past 7 days is 1.81%, the
+average percentage of people who reported feeling depressed for most or
+all of the past 7 days is 12.61%, and the average percentage of people
+who report being very or somewhat worried about their “household’s
+finances for the next month” is 37.45%.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.for-participants-wearing-masks-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S.for Participants Wearing Masks between 2021
+- 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_maskwearing_prop = mean(as.numeric(maskwearing_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_maskwearing_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of People Wearing Masks&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People Wearing Masks&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+Based on the graph, we can see that there was a huge drop from May 2021
+to July 2021. This was due to the fact that in May 2021, as the United
+States continued to see dramatic improvements in COVID-19 cases, federal
+officials announced a sweeping relaxation of face mask guidelines
+allowing fully vaccinated people from not wearing masks in most places,
+either outdoors or inside (<a
+href="https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic"
+class="uri">https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic</a>).
+However, mask wearing rate increased around September 2021 potentially
+because of a continued uptick in positive COVID-19 cases due to the
+Delta variant. (<a
+href="https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/"
+class="uri">https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/</a>).
+Lastly, we see another hugh drop starting in February 2022 as infections
+in the U.S. decreased by 90% from a pandemic high during, leading the
+states to lift the mask mandates. (<a
+href="https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html"
+class="uri">https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html</a>)</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-participants-with-influenza-symptoms-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Participants with Influenza Symptoms
+between 2021 - 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_symptom_prop = mean(as.numeric(symptom_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_symptom_prop)) +
+  geom_line() +
+  labs(title = &quot;Average Percentage of Participants with Influenza Symptom&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People with Influenza Symptom&quot;) +
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;)) +
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+A surge in the percentage of people with influenza symptoms occurred
+between late December 2021 to January 2022 from 2% to 5%. Prior to that,
+we see a gradual increase from 1% to 2% between May 2021 to November
+2021. The surge during the winter months coincides with the average peak
+flu activity in the US from 1982 to 2022 (CDC, 2022 <a
+href="https://www.cdc.gov/flu/about/season/flu-season.htm"
+class="uri">https://www.cdc.gov/flu/about/season/flu-season.htm</a>),
+which is between December and February.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-hospital-admissions-with-confirmed-influenza-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Hospital Admissions with Confirmed
+Influenza between 2021 - 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_admission_prop = mean(as.numeric(admission_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_admission_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Number of Hospital Admissions with Confirmed Influenza&quot;, x = &quot;Date&quot;, y = &quot;Number of Hospital Admissions&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+The above-mentioned trend on Flu symptom perfectly matches with the
+proportion of hospital admissions which also peaked in January 2022 at
+approx. 0.15%, there is another peak in hospital admission later in
+April 2022 at approx. 0.16%. A possible explanation could be the landing
+of the Omicron strain in the US which started in December 2021 as well
+as the decreasing trend of mask-wearing as states began to loosen the
+mask mandate.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-participants-worried-about-finances-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Participants Worried about Finances
+between 2021 - 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_finances_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Participants Worried about Finance&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+Overall, there is a gradually increasing trend of people worrying about
+their household financial status from July 2021 to March 2022. The trend
+peaked in March 2022 at 42% and then sharply dropped to 37% in April
+2022.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-depressed-participants-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Depressed Participants between 2021 -
+2022</h2>
+<pre class="r"><code>final_long %&gt;%
+  drop_na %&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_depression_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of Depressed Participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Depressed Participants&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+Trend stayed flat at 11% from May to August 2021 and sharply increased
+to 13-15% in September and remained elevated until late January 2022. In
+May 2022, it decreased back to 12%. This drop is likely due to
+imporvements mental health status as more public facilities and events
+reverted back to pre-pandemic operations.</p>
+</div>
+</div>
+<div id="modeling" class="section level1">
+<h1>Modeling</h1>
+<div id="model-building" class="section level2">
+<h2>Model Building</h2>
+<pre class="r"><code>final_long=
+  read_csv(&quot;Data/final_long.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 18540 Columns: 9
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (2): state, state_full dbl (6): ...1, finances_prop, symptom_prop,
+## maskwearing_prop, admission_pro... date (1): date
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>states &lt;- unique(final_long$state)</code></pre>
+<ul>
+<li>excluded <code>pr, vi, as</code> since they do not have any
+measurements.</li>
+</ul>
+<pre class="r"><code>analysis_df &lt;- final_long %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(everything())
+
+# test &lt;-analysis_df %&gt;% filter(date&gt;=as.Date(&quot;2021-06-01&quot;) &amp; date&lt;=as.Date(&quot;2022-04-01&quot;))
+
+# outcome = &quot;admission&quot; or &quot;symptom&quot;; l_date = lower bound of date written as &quot;YYYY-MM-DD&quot;; u_date = upper bound of date written as &quot;YYYY-MM-DD&quot;
+# s_state = selected state; b_nation = model scale &quot;nation&quot; or &quot;state&quot; -wide
+
+shiny_input_model &lt;- function(outcome, l_date, u_date, s_state, s_cov, b_nation){
+  cov_in&lt;-as.character(s_cov)
+  
+  if (outcome==&quot;admission&quot;){
+    model_formula &lt;- formula(paste0(&quot;admission_prop ~ maskwearing_prop + &quot;,cov_in))
+  }else if (outcome==&quot;symptom&quot;){
+    model_formula &lt;- formula(paste0(&quot;symptom_prop ~ maskwearing_prop + &quot;, cov_in))
+  }
+  
+  if (b_nation==&quot;state&quot;){
+    temp_df&lt;-analysis_df %&gt;% filter(state_full %in% s_state &amp; date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
+    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
+      broom::tidy() %&gt;% knitr::kable(digits = 3) 
+  } else if (b_nation==&quot;nation&quot;){
+    temp_df&lt;-analysis_df %&gt;% filter(date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
+    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
+      broom::tidy() %&gt;% knitr::kable(digits = 3) 
+  }
+
+  return(out_table)
+}
+
+ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=&quot;Colorado&quot;, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;state&quot;)
+
+
+ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;nation&quot;)</code></pre>
+<ul>
+<li><p>This model is a primitive speculative model, which we logically
+assume the two covariates had potentials to impact the
+associations.</p></li>
+<li><p>Given exposure <code>maskwearing</code> is a continuous variable,
+we will be estimating the mean function of the repeated measure.</p>
+<ul>
+<li><p><code>identity</code> function is used as the link
+function</p></li>
+<li><p>We assumed that the correlation among distinct observations in
+the same state is the same regardless of time. Therefore, we used
+<code>exchangeable</code> as the correlation structure.</p></li>
+<li><p><code>state</code> is treated as the <code>id</code>.</p></li>
+<li><p>the function <code>shiny_input_model</code> was written in
+preparation for the shiny app deployment</p></li>
+</ul></li>
+<li><p>If we want to model the association in <code>co</code>, the
+function will return the following table:</p></li>
+</ul>
+<table>
+<colgroup>
+<col width="42%" />
+<col width="12%" />
+<col width="14%" />
+<col width="18%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.252</td>
+<td align="right">0</td>
+<td align="right">1.131016e+18</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">maskwearing_prop</td>
+<td align="right">-0.001</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop</td>
+<td align="right">-0.011</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+</tr>
+<tr class="even">
+<td align="left">depression_prop</td>
+<td align="right">-0.034</td>
+<td align="right">0</td>
+<td align="right">1.598170e+17</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop:depression_prop</td>
+<td align="right">0.001</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>If we want to model the association nationwide, the function will
+return the following table:</li>
+</ul>
+<table>
+<colgroup>
+<col width="44%" />
+<col width="13%" />
+<col width="14%" />
+<col width="14%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-0.242</td>
+<td align="right">0.102</td>
+<td align="right">5.579</td>
+<td align="right">0.018</td>
+</tr>
+<tr class="even">
+<td align="left">maskwearing_prop</td>
+<td align="right">-0.001</td>
+<td align="right">0.000</td>
+<td align="right">9.526</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop</td>
+<td align="right">0.007</td>
+<td align="right">0.003</td>
+<td align="right">5.938</td>
+<td align="right">0.015</td>
+</tr>
+<tr class="even">
+<td align="left">depression_prop</td>
+<td align="right">0.016</td>
+<td align="right">0.009</td>
+<td align="right">3.413</td>
+<td align="right">0.065</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop:depression_prop</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+<td align="right">1.557</td>
+<td align="right">0.212</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="model-selection" class="section level2">
+<h2>Model Selection</h2>
+<ul>
+<li><p>Using a GEE model for the repeated measure of
+<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> at the state level, we were able to observe
+the associations between masking wearing rate and influenza hospital
+admission or experiencing flu-like symptoms.</p></li>
+<li><p>When evaluating the models at the national level, we used a
+backward-selection-like method. We started with the full model with all
+the covariates and interaction terms. Then we checked the p-value of all
+covariates and interaction terms with the outcome variable and found out
+that only<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> variables were significant, and none of the
+interaction terms were significant. Thus, we proceeded with the reduced
+model, only with <code>maskwearing_prop</code>,
+<code>finances_prop</code>, and <code>depression_prop</code>
+covariates.</p></li>
+</ul>
+</div>
+</div>
+<div id="main-associations-and-discussion" class="section level1">
+<h1>Main Associations and Discussion</h1>
+<p>A Significant negative association between
+<code>maskwearing_prop</code> and <code>admission_prop</code> (-
+0.00151, P &lt; 0.0001) was observed at the national level, adjusting
+for ‘finance_prop’ and ‘depression_prop’.</p>
+<ul>
+<li><p>Since we cannot conclude causation from our model, we can only
+say that a higher mask-wearing rate was associated with lower hospital
 admissions due to severe influenza.</p></li>
-<li><p>This can be explained the protective nature of masks. People who
-wore masks might have had lower probability of contracting severe
+<li><p>This can be explained by the protective nature of masks. People
+who wore masks might have had a lower probability of contracting severe
 influenza infection, which could have been attributed to the reduced
 viral load due to mask filtration and less severe infection.</p></li>
-</ul></li>
-<li><p>positive association between <code>maskwearing</code> and
-<code>symptoms</code> was observed.</p>
+</ul>
+<p>A significant positive association between
+<code>maskwearing_prop</code> and <code>symptoms_prop</code> (0.01139, P
+&lt; 0.0001) was observed at the national level, adjusting for
+‘finance_prop’ and ‘depression_prop’.</p>
 <ul>
-<li><p>since we cannot conclude causation from our model, we can only
-say that higher mask wearing rate was associated with higher flu-like
-symptoms.</p></li>
+<li><p>Again since causation cannot be ascertained, we could only
+conclude that a higher mask-wearing rate was associated with higher
+flu-like symptoms.</p></li>
 <li><p>One possible explanation for this is that people may have become
-more aware of prevention for flu if they were experiencing flu-like
-symptoms. Therefore, people might have tended to mask if they felt like
-they were sick.</p></li>
-</ul></li>
+more aware of prevention for the flu if they were experiencing flu-like
+symptoms. Therefore, people might have tended to wear masks if they felt
+like they were sick.</p></li>
 </ul>
+<p>The parameters for the predictors are seemingly small. However, in
+the context of the dataset where all the measurements were the
+percentages of the population, a small change could mean a huge
+variation clinically. The parameters for <code>admission_prop</code> are
+considerably smaller than those for <code>symptoms_prop</code> because
+the ceiling of <code>admission_prop</code> is much lower than that of
+<code>symptoms_prop</code>.</p>
 </div>
-<div id="covariate-association" class="section level4">
-<h4>Covariate association</h4>
-<ul>
-<li><p>finance</p></li>
-<li><p>depression</p></li>
-</ul>
-</div>
+<div id="future-steps" class="section level1">
+<h1>Future Steps</h1>
+<p>Although the national level main associations provide us with
+sufficient insight on mask wearings and influenza outcomes, we observed
+contradictory associations on state level. One example of this is the
+positive association between maskwearing rate and influenza admission
+status (0.00033) in North Carolina. Therefore, there are potentially
+other variables confounding this association that were not included in
+our model. Further exploratory analysis searching for additional
+potential predictors are needed and more state level analyses should be
+conducted for thorough examination of the main association.</p>
+<p>In addition, while we are looking at the mask rate by state level,
+one outstanding trend we discovered was that States with different
+political affiliations showed different mask rates. Thus, as a next
+step, we could investigate the correlation between State’s political
+affiliation with the mask-wearing rate.</p>
 </div>
 
 

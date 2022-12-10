@@ -25,6 +25,10 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 
 ```
 
+Model Selection
+* Using a GEE model for the repeated measure of `maskwearing_prop`, `finances_prop`, and `depression_prop` at the state level, we were able to observe the associations between masking wearing rate and influenza hospital admission or experiencing flu-like symptoms. 
+
+When evaluating the models at the national level, we used a backward-selection-like method. We started with the full model with all the covariates and interaction terms. Then we checked the p-value of all covariates and interaction terms with the outcome variable and found out that only`maskwearing_prop`, `finances_prop`, and `depression_prop` variables were significant, and none of the interaction terms were significant. Thus, we proceeded with the reduced model, only with `maskwearing_prop`, `finances_prop`, and `depression_prop` covariates. 
 
 ## Regression Analysis
 ```{r import_data}
@@ -40,8 +44,6 @@ states <- unique(final_long$state)
 
 ```{r}
 analysis_df <- final_long %>% mutate(date=as.Date(date),state=as.factor(state)) %>% arrange(state,date) %>% select(everything())
-
-# test <-analysis_df %>% filter(date>=as.Date("2021-06-01") & date<=as.Date("2022-04-01"))
 
 # outcome = "admission" or "symptom"; l_date = lower bound of date written as "YYYY-MM-DD"; u_date = upper bound of date written as "YYYY-MM-DD"
 # s_state = selected state; b_nation = model scale "nation" or "state" -wide
@@ -77,9 +79,9 @@ ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-0
 
 ```
 
-* this model is a primitive speculative model, which we logically assume the two covariates had potentials to impact the associations. 
+* This model is a primitive speculative model, which we logically assume the two covariates had potentials to impact the associations. 
 
-* given exposure `maskwearing` is a continuous variable, we will be estimating the mean function of the repeated measure.
+* Given exposure `maskwearing` is a continuous variable, we will be estimating the mean function of the repeated measure.
 
   * `identity` function is used as the link function
 
@@ -93,4 +95,20 @@ ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-0
 
 * If we want to model the association nationwide, the function will return the following table: `r ex_2`
 
+
+### Related Final Report Section: Main Association
+
+A Significant negative association between `maskwearing_prop` and `admission_prop`  (- 0.00151, P < 0.0001) was observed at the national level, adjusting for ‘finance_prop’ and ‘depression_prop’.
+  
+ * Since we cannot conclude causation from our model, we can only say that a higher mask-wearing rate was associated with lower hospital admissions due to severe influenza. 
+  
+  * This can be explained by the protective nature of masks. People who wore masks might have had a lower probability of contracting severe influenza infection, which could have been attributed to the reduced viral load due to mask filtration and less severe infection. 
+
+A significant positive association between `maskwearing_prop` and `symptoms_prop` (0.01139, P < 0.0001) was observed at the national level, adjusting for ‘finance_prop’ and ‘depression_prop’.
+
+  * Again since causation cannot be ascertained, we could only conclude that a higher mask-wearing rate was associated with higher flu-like symptoms. 
+  
+  * One possible explanation for this is that people may have become more aware of prevention for the flu if they were experiencing flu-like symptoms. Therefore, people might have tended to wear masks if they felt like they were sick.
+
+The parameters for the predictors are seemingly small. However, in the context of the dataset where all the measurements were the percentages of the population, a small change could mean a huge variation clinically. The parameters for `admission_prop` are considerably smaller than those for `symptoms_prop` because the ceiling of `admission_prop` is much lower than that of `symptoms_prop`.
 
