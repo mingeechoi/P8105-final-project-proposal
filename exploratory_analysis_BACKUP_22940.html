@@ -455,6 +455,18 @@ final_long %&gt;%
 </table>
 <p>Our data has 18540 observations and 9 variables and tells us about
 maskwearing, influenza symptoms, and admissions across the U.S. from
+<<<<<<< HEAD
+years 2021-05-01 to 2022-05-01. The average percentage of people who say
+they wear a mask most or all of the time when they are in public in the
+past 7 days is 52.75%. The average percentage of adult and pediatric
+hospital admissions with confirmed influenza occurring each day (7-day
+average) is 0.05%, the average percentage of people self-reporting
+influenza-like symptoms such as fever with cough or sore throat in the
+past 7 days is 1.81%, the average percentage of people who reported
+feeling depressed for most or all of the past 7 days is 12.61%, and the
+average percentage of people who report being very or somewhat worried
+about their “household’s finances for the next month” is 37.45%.</p>
+=======
 years 2021-05-01 to 2022-05-01.</p>
 <p>The average percentage of people who say they wear a mask most or all
 of the time when they are in public in the past 7 days is 52.75%. The
@@ -466,6 +478,7 @@ average percentage of people who reported feeling depressed for most or
 all of the past 7 days is 12.61%, and the average percentage of people
 who report being very or somewhat worried about their “household’s
 finances for the next month” is 37.45%.</p>
+>>>>>>> 9993996867683339b95214334a59899e537c0afc
 </div>
 <div
 id="overall-trend-in-the-u.s.for-participants-wearing-masks-between-2021---2022"
@@ -481,13 +494,13 @@ class="section level3">
   labs(title = &quot;Average Percentage of People Wearing Masks&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People Wearing Masks&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Based on the graph, we can see that there was a huge drop from May
-2021 to July 2021. This was due to the fact that in May 2021, as the
-United States continued to see dramatic improvements in COVID-19 cases,
-federal officials announced a sweeping relaxation of face mask
-guidelines allowing fully vaccinated people from not wearing masks in
-most places, either outdoors or inside (<a
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+Based on the graph, we can see that there was a huge drop from May 2021
+to July 2021. This was due to the fact that in May 2021, as the United
+States continued to see dramatic improvements in COVID-19 cases, federal
+officials announced a sweeping relaxation of face mask guidelines
+allowing fully vaccinated people from not wearing masks in most places,
+either outdoors or inside (<a
 href="https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic"
 class="uri">https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic</a>).
 However, mask wearing rate increased around September 2021 potentially
@@ -515,8 +528,8 @@ between 2021 - 2022</h3>
   labs(title = &quot;Average Percentage of Participants with Influenza Symptom&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People with Influenza Symptom&quot;) +
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;)) +
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>A surge in the percentage of people with influenza symptoms occurred
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+A surge in the percentage of people with influenza symptoms occurred
 between late December 2021 to January 2022 from 2% to 5%. Prior to that,
 we see a gradual increase from 1% to 2% between May 2021 to November
 2021. The surge during the winter months coincides with the average peak
@@ -539,8 +552,8 @@ Influenza between 2021 - 2022</h3>
   labs(title = &quot;Average Number of Hospital Admissions with Confirmed Influenza&quot;, x = &quot;Date&quot;, y = &quot;Number of Hospital Admissions&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>The above-mentioned trend on Flu symptom perfectly matches with the
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+The above-mentioned trend on Flu symptom perfectly matches with the
 proportion of hospital admissions which also peaked in January 2022 at
 approx. 0.15%, there is another peak in hospital admission later in
 April 2022 at approx. 0.16%. A possible explanation could be the landing
@@ -562,11 +575,11 @@ between 2021 - 2022</h3>
   labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Participants Worried about Finance&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Overall, there is a gradually increasing trend of people worrying
-about their household financial status from July 2021 to March 2022. The
-trend peaked in March 2022 at 42% and then sharply dropped to 37% in
-April 2022.</p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+Overall, there is a gradually increasing trend of people worrying about
+their household financial status from July 2021 to March 2022. The trend
+peaked in March 2022 at 42% and then sharply dropped to 37% in April
+2022.</p>
 </div>
 <div
 id="overall-trend-in-the-u.s.-for-depressed-participants-between-2021---2022"
@@ -582,12 +595,12 @@ class="section level3">
   labs(title = &quot;Average Percentage of Depressed Participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Depressed Participants&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Trend stayed flat at 11% from May to August 2021 and sharply
-increased to 13-15% in September and remained elevated until late
-January 2022. In May 2022, it decreased back to 12%. This drop is likely
-due to imporvements mental health status as more public facilities and
-events reverted back to pre-pandemic operations.</p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+Trend stayed flat at 11% from May to August 2021 and sharply increased
+to 13-15% in September and remained elevated until late January 2022. In
+May 2022, it decreased back to 12%. This drop is likely due to
+imporvements mental health status as more public facilities and events
+reverted back to pre-pandemic operations.</p>
 </div>
 
 
