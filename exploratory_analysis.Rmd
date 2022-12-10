@@ -7,20 +7,24 @@ output:
     code_folding: "hide"       
 ---
 
-###Data Description
-```{r, message=FALSE} 
+```{r, include = FALSE}
+library(tidyverse)
+```
+
+### Data Description
+```{r, message = FALSE} 
 final_long=
   read_csv("Data/final_long.csv")
 
-final_long%>%
+final_long %>%
   select(admission_prop, maskwearing_prop, symptom_prop,  finances_prop, depression_prop) %>%
-  summary()%>%
+  summary() %>%
   knitr::kable(digits = 3)
 ```
 
-Our data has `r nrow(final_long)` observations and `r ncol(final_long)` variables and tells us about maskwearing, influenza symptoms, and admissions across the U.S. from years `r range(final_long$date)[1]` to `r range(final_long$date)[2]`. The average percentage of people who say they wear a mask most or all of the time when they are in public in the past 7 days is 52.87%. The average number of adult and pediatric hospital admissions with confirmed influenza occurring each day (7-day average) is 131.54, and the average percentage of people self-reporting influenza-like symptoms such as fever with cough or sore throat in the past 7 days is 1.81%. 
+Our data has `r nrow(final_long)` observations and `r ncol(final_long)` variables and tells us about maskwearing, influenza symptoms, and admissions across the U.S. from years `r range(final_long$date)[1]` to `r range(final_long$date)[2]`. The average percentage of people who say they wear a mask most or all of the time when they are in public in the past 7 days is 52.75%. The average percentage of adult and pediatric hospital admissions with confirmed influenza occurring each day (7-day average) is 0.05%, the average percentage of people self-reporting influenza-like symptoms such as fever with cough or sore throat in the past 7 days is 1.81%, the average percentage of people  who reported feeling depressed for most or all of the past 7 days is 12.61%, and the average percentage of people who report being very or somewhat worried about their "household's finances for the next month" is 37.45%.
 
-### Overall Trends in the U.S. 2021-2022 for Participants Wearing Masks
+### Overall Trends in the U.S.for Participants Wearing Masks between 2021 - 2022
 ```{r}
 final_long%>%
   drop_na%>%
@@ -32,8 +36,9 @@ final_long%>%
   theme(plot.title=element_text(face="bold", color="blue"))+
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
+Based on the graph, we can see that there was a huge drop from May 2021 to July 2021. This was due to the fact that in May 2021, as the United States continued to see dramatic improvements in COVID-19 cases, federal officials announced a sweeping relaxation of face mask guidelines allowing fully vaccinated people from not wearing masks in most places, either outdoors or inside (https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic). However, mask wearing rate increased around September 2021 potentially because of a continued uptick in positive COVID-19 cases due to the Delta variant. (https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/). Lastly, we see another hugh drop starting in February 2022 as infections in the U.S. decreased by 90% from a pandemic high during, leading the states to lift the mask mandates (https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html). 
 
-### Overall Trends in the U.S. 2021-2022 for Participants Wearing Masks
+### Overall Trends in the U.S. for Participants Wearing Masks between 2021 - 2022
 ```{r}
 final_long%>%
   drop_na%>%
@@ -46,7 +51,7 @@ final_long%>%
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
 
-### Overall Trends in the U.S. 2021-2022 for Participants worried about finance
+### Overall Trends in the U.S. for Participants Worried about Finance between 2021 - 2022
 ```{r}
 final_long%>%
   drop_na%>%
@@ -61,8 +66,8 @@ final_long%>%
 
 ### Overall Trends in the U.S. 2021-2022 for Depressed Participants 
 ```{r}
-final_long%>%
-  drop_na%>%
+final_long %>%
+  drop_na %>%
   group_by(date)%>%
   summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %>%
   ggplot(aes(x = date, y = avg_depression_prop)) +
@@ -72,7 +77,7 @@ final_long%>%
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
 
-### Overall Trends in the U.S. 2021-2022 for Hospital Admissions with Confirmed Influenza
+### Overall Trends in the U.S. for Hospital Admissions with Confirmed Influenza between 2021 - 2022
 ```{r}
 final_long%>%
   drop_na%>%

@@ -6,6 +6,247 @@ output:
     toc_float: true
 ---
 
+```{r setup, include=FALSE}
+library(tidyverse)
+library(viridis)
+library(plotly)
+```
+
+# Data Processing
+
+## Data Sources
+
+###  <span style="color:blue">Delphi US COVID-19 Trends and Impact Survey</span>
+
+The Delphi US COVID-19 Trends and Impact Survey consists of individual-level data from surveys advertised through Facebook. This survey was conducted through a collaborative effort between Delphi at Carnegie Mellon University and Facebook. It ran from April 6, 2020 to June 25, 2022, with around 40,000 people in the United States participating every day. Survey questions included questions about COVID-19 testing, prior medical conditions, social distancing measures, and economic effects of COVID-19. Since participants were recruited from a random sample of Facebook users and not from a random sample from the entire United States population, unique identifiers from Facebook were used to calculate statistical weights indicating how representative each person is of the United States population. These calculations were based on demographic data available on Facebook.
+
+*Notes about sampling weights:
+Sampling weights are non-negative values associated with survey responses that usually exist in any publicly available survey data. Sampling weights are supposed to be inversely proportional to the selection probabilities of sample units in the target 
+population, whose main goal is to improve the representativeness of the sample with respect to a target population. Naive analyses of the data under a complex sample design are expected to result in biased estimates. For instance, unweighted inference based on CTIS data tends to overestimate vaccination rates among adult Facebook users. In the following section, we further explain why it is necessary to use the sampling weights in our statistical analysis.
+
+
+###  <span style="color:blue">U.S. Department of Health & Human Services (HHS)</span>
+
+The U.S. Department of Health & Human Services is a department of the U.S. federal government created to enhance and protect the health of Americans. It collects data from state and territorial health departments throughout hospitals in the U.S. The dataset used here only includes adult and pediatric hospital admissions with confirmed and suspected cases of influenza or COVID-19.
+
+
+## Data Cleaning
+
+**Raw dataset:**
+All raw datasets are downloaded from [CMU Delphi](https://delphi.cmu.edu/covidcast/export/) in the CSV.format. We used three datasets for measuring the main association between mask-wearing and flu and two datasets for testing potential confounding, mediation and effect measure modification.For each of the datasets, we selected date, state, and value. 
+
+
+**Proportion of people wearing masks most of the time in public**
+Dataset “people wearing masks in the last seven days” came from the Delphi US COVID-19 Trends and Impact Survey. The original dataset contains 10 variables and 18666 observations, ranging from 05/01/2021 to 05/01/2022 on the state-level. The estimated value in the dataset is smoothed by calculating the 7-day estimated CLI procedure (Learn more about CLI: https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/fb-survey.html#ili-and-cli-indicators).
+
+
+**Proportion of people reporting Flu-like symptoms**
+The first outcome variable “Flu-like symptoms 7-day weighted” also came from the Delphi Survey, with a similiar layout and content as the exposure dataset. In this dataset, the value variable specifies the proportion of people reporting influenza-like symptoms, such as fever and cough/sore throat. 
+
+**Proportion of confirmed Influenza Admissions per day**
+The second outcome came from the dataset “Confirmed Influenza Admissions per day per 100k people (7-day average)” from HHS. It contains 10 variables with missing sample size or standard deviation. Important variables include date, state name, and the proportion of people admitted due to Flu per 100k people. 
+
+**Proportion of people worried about finances and Proportion of people feeling depressed**
+The two covariates of interests reflect an individual’s Financial Status and Mental Health Status. Two datasets, “proportion of people worried about their household's finances for the next month” and “proportion of people feeling depressed for the past 7 days” came from Delphi dataset. There are 10 variables and 18,540 observations in each dataset, time period matches with the main datasets. Important variables include dates, time, state name and the proportions for each confounder as well as sample size and standard error accordingly.
+
+**To perform data cleaning:**
+
+  1. The uneeded variables such as the standard deviation, issue date, etc. were omitted. 
+  
+  2. Add dataset specific prefix to each of the proportion values for the merging purpose (eg. In the mask wearing dataset, rename the “value” variable to “mask_wearing_value”.
+  
+  3. Merged the exposure and the outcome variables into a single dataset using inner join function.
+
+**Two final datasets are produced:**
+
+1. “Final_long” is a longitudinal dataset range from 05/01/2021 to 05/01/2022. There are eight variables and 18540 observations. 
+
+Important variables include:
+
+*  `state`: state name (abb.)
+*  `state_full`: state name (full)
+*  `date`: date of observation
+*  `maskwearing_prop`: proportion of mask wearing
+*  `admission_prop`: proportion of admission due to flu 
+*  `symptom_prop`: proportion of having flu-like symptoms 
+*  `finances_prop`: proportion of worrying financial status 
+*  `depression_prop`: proportion of feeling depressed
+
+```{r, message=FALSE, warning=FALSE}
+e_mask_prop <-
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor::clean_names() %>%
+  select(-x1) %>%
+  select (geo_value, time_value, value) %>%
+  rename(maskwearing_prop=value, state=geo_value, date=time_value)
+
+o_symptoms_prop <-
+read_csv("./Data/Flu_like_symptoms.csv") %>%
+  janitor:: clean_names()  %>%
+  select(-x1) %>%
+  select(geo_value, time_value, value) %>%
+  rename(symptom_prop=value,state=geo_value, date=time_value)
+
+o_admission_prop <-
+read_csv("./Data/influenza_admissions.csv") %>%
+  janitor:: clean_names() %>%
+  select(-x1) %>%
+  select (geo_value, time_value, value) %>%
+  rename(admission_prop = value, state=geo_value, date=time_value)
+
+o_finances_prop <-
+  read_csv("data/worried_finances.csv") %>%
+  janitor::clean_names() %>%
+  select(-x1) %>%
+  select(geo_value, time_value, value) %>%
+  rename(finances_prop = value, state=geo_value, date=time_value)
+
+o_depression_prop <- 
+  read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names() %>% 
+  select (geo_value, time_value, value) %>% 
+  rename(depression_prop =value, state = geo_value, date = time_value) %>%
+  mutate(date = as.Date(date))
+  
+merge1 <-
+  inner_join(
+  x = e_mask_prop,
+  y = o_admission_prop,
+  by = c("state", "date"),
+  all.x = TRUE) 
+
+merge2 <-
+  inner_join(
+    x = o_symptoms_prop,
+    y = merge1,
+    by = c("state", "date"),
+    all.x = TRUE)
+  
+merge3 <-
+  inner_join(
+  x = o_finances_prop,
+  y = merge2,
+  by = c("state", "date"),
+  all.x = TRUE)
+
+merge4 <-
+  inner_join(
+    x = merge3,
+    y = o_depression_prop,
+  by = c("state", "date"),
+  all.x = TRUE) %>%
+  mutate(state = toupper(state))
+
+state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
+  as_tibble() %>%
+  pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
+
+merge5 <- merge4 %>%
+  full_join(state, by = "state") %>%
+  relocate(state_full, .after = state) %>%
+  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full))
+
+write.csv(merge5,"data/final_long.csv" )
+
+```
+
+2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. 
+
+Important variables include:
+
+*  `state`: state name (abb.) 
+*  `state_full`:  (full)
+*  `avg_mask`: average proportion of mask wearing 
+*  `avg_admission`: average proportion of admission due to Flu 
+*  `avg_symptom`: average proportion of having flu-like symptoms 
+*  `avg_finances`: average proportion of worrying financial status 
+*  `avg_depression`: average proportion of having depression. 
+
+```{r, message=FALSE}
+e_mask_avg <- 
+read_csv("./Data/People_wearing_masks.csv") %>%
+  janitor:: clean_names()  %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_mask = mean(value))
+
+o_admission_avg <-
+read_csv("./Data/influenza_admissions.csv") %>%
+  janitor:: clean_names() %>%
+  select(geo_value, time_value, value) %>%
+  mutate(value = value * 100) %>%
+  group_by(geo_value) %>%
+  summarize(avg_admission = mean(value))
+
+o_symptoms_avg <-
+read_csv("./Data/Flu_like_symptoms.csv") %>%
+  janitor:: clean_names() %>%
+  select(geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_symptom = mean(value))
+
+o_finances_avg <-
+  read_csv("data/worried_finances.csv") %>%
+  janitor:: clean_names() %>%
+  select (geo_value, time_value, value) %>%
+  group_by(geo_value) %>%
+  summarize(avg_finances = mean(value))
+
+  
+o_depression_avg <- read.csv("Data/depression.csv") %>% 
+  janitor:: clean_names()  %>% 
+  select (geo_value, time_value, value) %>% 
+  group_by(geo_value) %>% 
+  summarize(avg_depression = mean(value))
+
+merge1_avg <-
+  inner_join(
+  x = e_mask_avg,
+  y = o_admission_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge2_avg <-
+  inner_join(
+  x = merge1_avg,
+  y = o_symptoms_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge3_avg <-
+  inner_join(
+  x = merge2_avg,
+  y = o_finances_avg,
+  by = c("geo_value"),
+  all.x = TRUE) 
+
+merge4_avg <-
+  inner_join(
+  x = merge3_avg,
+  y = o_depression_avg,
+  by = c("geo_value"),
+  all.x = TRUE) %>%
+  mutate(state = toupper(geo_value)) %>%
+  relocate(state, .before = avg_mask) %>%
+  select(-geo_value)
+
+state <- setNames(as.list(datasets::state.name), datasets::state.abb) %>% 
+  as.tibble() %>%
+  pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
+
+merge5_avg <- merge4_avg %>%
+  full_join(state, by = "state") %>%
+  relocate(state_full, .after = state) %>%
+  mutate(state_full = ifelse(is.na(state_full), "District of Columbia", state_full))
+
+write.csv(merge5_avg,"data/final_avg.csv" )
+
+```
+
+# Exploratory Data Analysis
+
+
+
 
 ### Model estimatiors and discussion
 

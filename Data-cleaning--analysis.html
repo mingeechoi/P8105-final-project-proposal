@@ -13,7 +13,7 @@
 
 <title>Data Processing</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -32,6 +32,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -179,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -188,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -271,6 +266,12 @@ $(document).ready(function () {
 <li>
   <a href="final_report.html">Final Report</a>
 </li>
+<li>
+  <a href="https://github.com/mingeechoi/P8105-final-project-proposal">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -285,73 +286,150 @@ $(document).ready(function () {
 </div>
 
 
+<div id="data-sources" class="section level2">
+<h2>Data Sources</h2>
+<div id="delphi-us-covid-19-trends-and-impact-survey"
+class="section level3">
+<h3><span style="color:blue">Delphi US COVID-19 Trends and Impact
+Survey</span></h3>
+<p>The Delphi US COVID-19 Trends and Impact Survey consists of
+individual-level data from surveys advertised through Facebook. This
+survey was conducted through a collaborative effort between Delphi at
+Carnegie Mellon University and Facebook. It ran from April 6, 2020 to
+June 25, 2022, with around 40,000 people in the United States
+participating every day. Survey questions included questions about
+COVID-19 testing, prior medical conditions, social distancing measures,
+and economic effects of COVID-19. Since participants were recruited from
+a random sample of Facebook users and not from a random sample from the
+entire United States population, unique identifiers from Facebook were
+used to calculate statistical weights indicating how representative each
+person is of the United States population. These calculations were based
+on demographic data available on Facebook.</p>
+<p>*Notes about sampling weights: Sampling weights are non-negative
+values associated with survey responses that usually exist in any
+publicly available survey data. Sampling weights are supposed to be
+inversely proportional to the selection probabilities of sample units in
+the target population, whose main goal is to improve the
+representativeness of the sample with respect to a target population.
+Naive analyses of the data under a complex sample design are expected to
+result in biased estimates. For instance, unweighted inference based on
+CTIS data tends to overestimate vaccination rates among adult Facebook
+users. In the following section, we further explain why it is necessary
+to use the sampling weights in our statistical analysis.</p>
+</div>
+<div id="u.s.-department-of-health-human-services-hhs"
+class="section level3">
+<h3><span style="color:blue">U.S. Department of Health &amp; Human
+Services (HHS)</span></h3>
+<p>The U.S. Department of Health &amp; Human Services is a department of
+the U.S. federal government created to enhance and protect the health of
+Americans. It collects data from state and territorial health
+departments throughout hospitals in the U.S. The dataset used here only
+includes adult and pediatric hospital admissions with confirmed and
+suspected cases of influenza or COVID-19.</p>
+</div>
+</div>
+<div id="data-cleaning" class="section level2">
+<h2>Data Cleaning</h2>
+<p><strong>Raw dataset:</strong> All raw datasets are downloaded from <a
+href="https://delphi.cmu.edu/covidcast/export/">CMU Delphi</a> in the
+CSV.format.</p>
+<p>The exposure variable <code>maskwearing</code>(“people wearing masks
+in the last seven days”) came from the Delphi data source. The original
+dataset contains 10 variables including dates, time, state name, the
+proportion of people wearing masks and the sample size.</p>
+<p>The first outcome variable <code>symptom</code>(“Flu-like symptoms 7
+days weighted”) also came from the Delphi data source. It contains 10
+variables including dates, time, state name, the proportion of people
+experiencing flu-like symptoms and the sample size. The second outcome
+variable <code>admission</code>(“Confirmed Influenza Admissions per day
+per 100k people (7-day average)”) came from HHS data source. It contains
+10 variables with missing sample size or standard deviation. Important
+variables include dates, time, state name and the proportion of people
+admitted due to Flu per 100k people.</p>
+<p>The potential confounders <code>finance</code>(“proportion of people
+worried about their household’s finances for the next month”) and
+<code>depression</code>(“proportion of people feeling depressed for the
+past 7 days”) came from Delphi dataset. There are 10 variables and
+18,540 observations in each dataset. Important variables include dates,
+time, state name and the proportions for each confounder as well as
+sample size and standard error accordingly.</p>
+<p><strong>To perform data cleaning:</strong> The unwanted variables
+such as the standard deviation, issue date, etc. were omitted. Add
+dataset specific prefix to each of the proportion values for the merging
+purpose (eg. In the mask wearing dataset, rename the “value” variable to
+“mask_wearing_value”. Merged the exposure and the outcome variables into
+a single dataset using inner join function.</p>
+<p><strong>Two final datasets are produced:</strong></p>
+<ol style="list-style-type: decimal">
+<li>“Final_long” is a longitudinal dataset range from 05/01/2021 to
+05/01/2022. There are eight variables and 18540 observations.</li>
+</ol>
+<p>Important variables include:</p>
+<ul>
+<li><code>state</code>: state name (abb.)</li>
+<li><code>state_full</code>: state name (full)</li>
+<li><code>date</code>: date of observation</li>
+<li><code>maskwearing_prop</code>: proportion of mask wearing</li>
+<li><code>admission_prop</code>: proportion of admission due to flu</li>
+<li><code>symptom_prop</code>: proportion of having flu-like
+symptoms</li>
+<li><code>finances_prop</code>: proportion of worrying financial
+status</li>
+<li><code>depression_prop</code>: proportion of feeling depressed</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>“Final_avg” is a summary dataset summarizing the state level yearly
+average proportion of each variable of interest from 05/01/2021 to
+05/01/2022. There are seven variables and 51 state-level
+observations.</li>
+</ol>
+<p>Important variables include:</p>
+<ul>
+<li><code>state</code>: state name (abb.)</li>
+<li><code>state_full</code>: (full)</li>
+<li><code>avg_mask</code>: average proportion of mask wearing</li>
+<li><code>avg_admission</code>: average proportion of admission due to
+Flu</li>
+<li><code>avg_symptom</code>: average proportion of having flu-like
+symptoms</li>
+<li><code>avg_finances</code>: average proportion of worrying financial
+status</li>
+<li><code>avg_depression</code>: average proportion of having
+depression.</li>
+</ul>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<div id="create-final-dataset---longitudinal" class="section level2">
-<h2>Create Final Dataset - Longitudinal</h2>
+<div id="create-final-dataset---longitudinal" class="section level3">
+<h3>Create Final Dataset - Longitudinal</h3>
 <pre class="r"><code>e_mask_prop &lt;-
 read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
   janitor::clean_names()  %&gt;%
+  select(-x1) %&gt;%
   select (geo_value, time_value, value) %&gt;%
-  rename(maskwearing_prop=value, state=geo_value, date=time_value)</code></pre>
-<pre><code>## New names:
-## Rows: 18666 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (5): ...1,
-## lag, value, stderr, sample_size date (2): time_value, issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_symptoms_prop &lt;-
+  rename(maskwearing_prop=value, state=geo_value, date=time_value)
+
+o_symptoms_prop &lt;-
 read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
   janitor:: clean_names()  %&gt;%
+  select(-x1) %&gt;%
   select(geo_value, time_value, value) %&gt;%
-  rename(symptom_prop=value,state=geo_value, date=time_value)</code></pre>
-<pre><code>## New names:
-## Rows: 18666 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (5): ...1,
-## lag, value, stderr, sample_size date (2): time_value, issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_admission_prop &lt;-
+  rename(symptom_prop=value,state=geo_value, date=time_value)
+
+o_admission_prop &lt;-
 read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
   select(-x1) %&gt;%
   select (geo_value, time_value, value) %&gt;%
-  rename(admission_prop = value, state=geo_value, date=time_value)</code></pre>
-<pre><code>## New names:
-## Rows: 19650 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (3): ...1,
-## lag, value lgl (2): stderr, sample_size date (2): time_value,
-## issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_finances_prop &lt;-
+  rename(admission_prop = value, state=geo_value, date=time_value)
+
+o_finances_prop &lt;-
   read_csv(&quot;data/worried_finances.csv&quot;) %&gt;%
   janitor::clean_names() %&gt;%
   select(-x1) %&gt;%
   select(geo_value, time_value, value) %&gt;%
-  rename(finances_prop = value, state=geo_value, date=time_value)</code></pre>
-<pre><code>## New names:
-## Rows: 18743 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (5): ...1,
-## lag, value, stderr, sample_size date (2): time_value, issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_depression_prop &lt;- 
+  rename(finances_prop = value, state=geo_value, date=time_value)
+
+o_depression_prop &lt;- 
   read.csv(&quot;Data/depression.csv&quot;) %&gt;% 
   janitor:: clean_names() %&gt;% 
   select (geo_value, time_value, value) %&gt;% 
@@ -388,17 +466,16 @@ merge4 &lt;-
   mutate(state = toupper(state))
 
 state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
-  as.tibble() %&gt;%
-  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
-<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## ℹ Please use `as_tibble()` instead.
-## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
-<pre class="r"><code>merge5 &lt;- merge4 %&gt;%
+  as_tibble() %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
+
+merge5 &lt;- merge4 %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
 
 write.csv(merge5,&quot;data/final_long.csv&quot; )</code></pre>
+</div>
 </div>
 <div id="create-final-dataset---annual-average" class="section level2">
 <h2>Create Final Dataset - Annual Average</h2>
@@ -407,68 +484,32 @@ read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
   janitor:: clean_names()  %&gt;%
   select (geo_value, time_value, value) %&gt;%
   group_by(geo_value) %&gt;%
-  summarize(avg_mask = mean(value))</code></pre>
-<pre><code>## New names:
-## Rows: 18666 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (5): ...1,
-## lag, value, stderr, sample_size date (2): time_value, issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_admission_avg &lt;-
+  summarize(avg_mask = mean(value))
+
+o_admission_avg &lt;-
 read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
   select(geo_value, time_value, value) %&gt;%
   mutate(value = value * 100) %&gt;%
   group_by(geo_value) %&gt;%
-  summarize(avg_admission = mean(value))</code></pre>
-<pre><code>## New names:
-## Rows: 19650 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (3): ...1,
-## lag, value lgl (2): stderr, sample_size date (2): time_value,
-## issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_symptoms_avg &lt;-
+  summarize(avg_admission = mean(value))
+
+o_symptoms_avg &lt;-
 read_csv(&quot;./Data/Flu_like_symptoms.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
   select(geo_value, time_value, value) %&gt;%
   group_by(geo_value) %&gt;%
-  summarize(avg_symptom = mean(value))</code></pre>
-<pre><code>## New names:
-## Rows: 18666 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (5): ...1,
-## lag, value, stderr, sample_size date (2): time_value, issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_finances_avg &lt;-
+  summarize(avg_symptom = mean(value))
+
+o_finances_avg &lt;-
   read_csv(&quot;data/worried_finances.csv&quot;) %&gt;%
   janitor:: clean_names() %&gt;%
   select (geo_value, time_value, value) %&gt;%
   group_by(geo_value) %&gt;%
-  summarize(avg_finances = mean(value))</code></pre>
-<pre><code>## New names:
-## Rows: 18743 Columns: 11
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (4): geo_value, signal, geo_type, data_source dbl (5): ...1,
-## lag, value, stderr, sample_size date (2): time_value, issue
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>o_depression_avg &lt;- read.csv(&quot;Data/depression.csv&quot;) %&gt;% 
+  summarize(avg_finances = mean(value))
+
+  
+o_depression_avg &lt;- read.csv(&quot;Data/depression.csv&quot;) %&gt;% 
   janitor:: clean_names()  %&gt;% 
   select (geo_value, time_value, value) %&gt;% 
   group_by(geo_value) %&gt;% 
@@ -507,9 +548,11 @@ merge4_avg &lt;-
 
 state &lt;- setNames(as.list(datasets::state.name), datasets::state.abb) %&gt;% 
   as.tibble() %&gt;%
-  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
-
-merge5_avg &lt;- merge4_avg %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
+<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
+## ℹ Please use `as_tibble()` instead.
+## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
+<pre class="r"><code>merge5_avg &lt;- merge4_avg %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
