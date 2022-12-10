@@ -90,13 +90,6 @@ In the [Exploratory Analyses](https://mingeechoi.github.io/P8105-final-project-p
 * Description of overall trends in the U.S. regarding maskwearing and influenza symptoms/admissions 
 
 
-In the [Map Building](https://mingeechoi.github.io/P8105-final-project-proposal/dashboard.html) section, you will find:
-
-* An interactive map showing confirmed influenza admissions per day across the United States.
-
-* A second interactive map showing average mask rate across the United States.
-
-
 In the [Model Building](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
 
 * The process of fitting a GEE model onto the analysis data set. 
