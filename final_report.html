@@ -865,42 +865,255 @@ to 13-15% in September and remained elevated until late January 2022. In
 May 2022, it decreased back to 12%. This drop is likely due to
 imporvements mental health status as more public facilities and events
 reverted back to pre-pandemic operations.</p>
-<div id="model-estimatiors-and-discussion" class="section level3">
-<h3>Model estimatiors and discussion</h3>
-<div id="main-association" class="section level4">
-<h4>Main association</h4>
+</div>
+</div>
+<div id="model-building" class="section level1">
+<h1>Model Building</h1>
+<div id="model-selection" class="section level2">
+<h2>Model Selection</h2>
 <ul>
-<li><p>negative association between <code>maskwearing</code> and
-<code>admission</code> was observed.</p>
+<li>Using a GEE model for the repeated measure of
+<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> at the state level, we were able to observe
+the associations between masking wearing rate and influenza hospital
+admission or experiencing flu-like symptoms.</li>
+</ul>
+<p>When evaluating the models at the national level, we used a
+backward-selection-like method. We started with the full model with all
+the covariates and interaction terms. Then we checked the p-value of all
+covariates and interaction terms with the outcome variable and found out
+that only<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> variables were significant, and none of the
+interaction terms were significant. Thus, we proceeded with the reduced
+model, only with <code>maskwearing_prop</code>,
+<code>finances_prop</code>, and <code>depression_prop</code>
+covariates.</p>
+</div>
+<div id="regression-analysis" class="section level2">
+<h2>Regression Analysis</h2>
+<pre class="r"><code>final_long=
+  read_csv(&quot;Data/final_long.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 18540 Columns: 9
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (2): state, state_full dbl (6): ...1, finances_prop, symptom_prop,
+## maskwearing_prop, admission_pro... date (1): date
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>states &lt;- unique(final_long$state)</code></pre>
 <ul>
-<li><p>since we cannot conclude causation from our model, we can only
-say that higher mask wearing rate was associated with lower hospital
+<li>excluded <code>pr, vi, as</code> since they do not have any
+measurements.</li>
+</ul>
+<div id="model-building-1" class="section level3">
+<h3>Model Building</h3>
+<pre class="r"><code>analysis_df &lt;- final_long %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(everything())
+
+# test &lt;-analysis_df %&gt;% filter(date&gt;=as.Date(&quot;2021-06-01&quot;) &amp; date&lt;=as.Date(&quot;2022-04-01&quot;))
+
+# outcome = &quot;admission&quot; or &quot;symptom&quot;; l_date = lower bound of date written as &quot;YYYY-MM-DD&quot;; u_date = upper bound of date written as &quot;YYYY-MM-DD&quot;
+# s_state = selected state; b_nation = model scale &quot;nation&quot; or &quot;state&quot; -wide
+
+shiny_input_model &lt;- function(outcome, l_date, u_date, s_state, s_cov, b_nation){
+  cov_in&lt;-as.character(s_cov)
+  
+  if (outcome==&quot;admission&quot;){
+    model_formula &lt;- formula(paste0(&quot;admission_prop ~ maskwearing_prop + &quot;,cov_in))
+  }else if (outcome==&quot;symptom&quot;){
+    model_formula &lt;- formula(paste0(&quot;symptom_prop ~ maskwearing_prop + &quot;, cov_in))
+  }
+  
+  if (b_nation==&quot;state&quot;){
+    temp_df&lt;-analysis_df %&gt;% filter(state_full %in% s_state &amp; date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
+    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
+      broom::tidy() %&gt;% knitr::kable(digits = 3) 
+  } else if (b_nation==&quot;nation&quot;){
+    temp_df&lt;-analysis_df %&gt;% filter(date&gt;=as.Date(l_date) &amp; date&lt;=as.Date(u_date))
+    out_table &lt;- geeglm(formula=model_formula, data=temp_df, id=state,
+                        family=gaussian(&quot;identity&quot;),corstr=&quot;exchangeable&quot;,std.err = &quot;san.se&quot;) %&gt;% 
+      broom::tidy() %&gt;% knitr::kable(digits = 3) 
+  }
+
+  return(out_table)
+}
+
+ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=&quot;Colorado&quot;, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;state&quot;)
+
+
+ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;nation&quot;)</code></pre>
+<ul>
+<li><p>This model is a primitive speculative model, which we logically
+assume the two covariates had potentials to impact the
+associations.</p></li>
+<li><p>Given exposure <code>maskwearing</code> is a continuous variable,
+we will be estimating the mean function of the repeated measure.</p>
+<ul>
+<li><p><code>identity</code> function is used as the link
+function</p></li>
+<li><p>We assumed that the correlation among distinct observations in
+the same state is the same regardless of time. Therefore, we used
+<code>exchangeable</code> as the correlation structure.</p></li>
+<li><p><code>state</code> is treated as the <code>id</code>.</p></li>
+<li><p>the function <code>shiny_input_model</code> was written in
+preparation for the shiny app deployment</p></li>
+</ul></li>
+<li><p>If we want to model the association in <code>co</code>, the
+function will return the following table:</p></li>
+</ul>
+<table>
+<colgroup>
+<col width="42%" />
+<col width="12%" />
+<col width="14%" />
+<col width="18%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.252</td>
+<td align="right">0</td>
+<td align="right">6.257477e+17</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">maskwearing_prop</td>
+<td align="right">-0.001</td>
+<td align="right">0</td>
+<td align="right">6.917397e+16</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop</td>
+<td align="right">-0.011</td>
+<td align="right">0</td>
+<td align="right">2.764517e+18</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">depression_prop</td>
+<td align="right">-0.034</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop:depression_prop</td>
+<td align="right">0.001</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>If we want to model the association nationwide, the function will
+return the following table:</li>
+</ul>
+<table>
+<colgroup>
+<col width="44%" />
+<col width="13%" />
+<col width="14%" />
+<col width="14%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-0.242</td>
+<td align="right">0.102</td>
+<td align="right">5.579</td>
+<td align="right">0.018</td>
+</tr>
+<tr class="even">
+<td align="left">maskwearing_prop</td>
+<td align="right">-0.001</td>
+<td align="right">0.000</td>
+<td align="right">9.526</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop</td>
+<td align="right">0.007</td>
+<td align="right">0.003</td>
+<td align="right">5.938</td>
+<td align="right">0.015</td>
+</tr>
+<tr class="even">
+<td align="left">depression_prop</td>
+<td align="right">0.016</td>
+<td align="right">0.009</td>
+<td align="right">3.413</td>
+<td align="right">0.065</td>
+</tr>
+<tr class="odd">
+<td align="left">finances_prop:depression_prop</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+<td align="right">1.557</td>
+<td align="right">0.212</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="related-final-report-section-main-association"
+class="section level3">
+<h3>Related Final Report Section: Main Association</h3>
+<p>A Significant negative association between
+<code>maskwearing_prop</code> and <code>admission_prop</code> (-
+0.00151, P &lt; 0.0001) was observed at the national level, adjusting
+for ‘finance_prop’ and ‘depression_prop’.</p>
+<ul>
+<li><p>Since we cannot conclude causation from our model, we can only
+say that a higher mask-wearing rate was associated with lower hospital
 admissions due to severe influenza.</p></li>
-<li><p>This can be explained the protective nature of masks. People who
-wore masks might have had lower probability of contracting severe
+<li><p>This can be explained by the protective nature of masks. People
+who wore masks might have had a lower probability of contracting severe
 influenza infection, which could have been attributed to the reduced
 viral load due to mask filtration and less severe infection.</p></li>
-</ul></li>
-<li><p>positive association between <code>maskwearing</code> and
-<code>symptoms</code> was observed.</p>
+</ul>
+<p>A significant positive association between
+<code>maskwearing_prop</code> and <code>symptoms_prop</code> (0.01139, P
+&lt; 0.0001) was observed at the national level, adjusting for
+‘finance_prop’ and ‘depression_prop’.</p>
 <ul>
-<li><p>since we cannot conclude causation from our model, we can only
-say that higher mask wearing rate was associated with higher flu-like
-symptoms.</p></li>
+<li><p>Again since causation cannot be ascertained, we could only
+conclude that a higher mask-wearing rate was associated with higher
+flu-like symptoms.</p></li>
 <li><p>One possible explanation for this is that people may have become
-more aware of prevention for flu if they were experiencing flu-like
-symptoms. Therefore, people might have tended to mask if they felt like
-they were sick.</p></li>
-</ul></li>
+more aware of prevention for the flu if they were experiencing flu-like
+symptoms. Therefore, people might have tended to wear masks if they felt
+like they were sick.</p></li>
 </ul>
-</div>
-<div id="covariate-association" class="section level4">
-<h4>Covariate association</h4>
-<ul>
-<li><p>finance</p></li>
-<li><p>depression</p></li>
-</ul>
-</div>
+<p>The parameters for the predictors are seemingly small. However, in
+the context of the dataset where all the measurements were the
+percentages of the population, a small change could mean a huge
+variation clinically. The parameters for <code>admission_prop</code> are
+considerably smaller than those for <code>symptoms_prop</code> because
+the ceiling of <code>admission_prop</code> is much lower than that of
+<code>symptoms_prop</code>.</p>
 </div>
 </div>
 </div>
