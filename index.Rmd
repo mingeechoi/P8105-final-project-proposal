@@ -103,7 +103,7 @@ In the [Model Building](https://mingeechoi.github.io/P8105-final-project-proposa
   * The function can also output model for either outcome variable: `admission` or `symptoms`
   
 
-In the [Interactive Map & Model](https://mingeechoi.github.io/P8105-final-project-proposal/model_building.html) section, you will find:
+In the [Interactive Map & Model](https://zz2901.shinyapps.io/final_shiny/) section, you will find:
 
 * Two tabs:
 
