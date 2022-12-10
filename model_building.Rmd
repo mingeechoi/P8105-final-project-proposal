@@ -81,9 +81,9 @@ ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-0
 
 ```
 
-* this model is a primitive speculative model, which we logically assume the two covariates had potentials to impact the associations. 
+* This model is a primitive speculative model, which we logically assume the two covariates had potentials to impact the associations. 
 
-* given exposure `maskwearing` is a continuous variable, we will be estimating the mean function of the repeated measure.
+* Given exposure `maskwearing` is a continuous variable, we will be estimating the mean function of the repeated measure.
 
   * `identity` function is used as the link function
 
@@ -98,7 +98,7 @@ ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-0
 * If we want to model the association nationwide, the function will return the following table: `r ex_2`
 
 
-Main Association
+### Related Final Report Section: Main Association
 
 A Significant negative association between `maskwearing_prop` and `admission_prop`  (- 0.00151, P < 0.0001) was observed at the national level, adjusting for ‘finance_prop’ and ‘depression_prop’.
   

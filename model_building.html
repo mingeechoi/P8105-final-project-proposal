@@ -13,7 +13,7 @@
 
 <title>Model Building</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -33,6 +33,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -180,8 +182,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -189,9 +191,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -268,6 +277,12 @@ $(document).ready(function () {
 <li>
   <a href="final_report.html">Final Report</a>
 </li>
+<li>
+  <a href="https://github.com/mingeechoi/P8105-final-project-proposal">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -290,6 +305,21 @@ $(document).ready(function () {
 </div>
 
 
+<p>Model Selection * Using a GEE model for the repeated measure of
+<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> at the state level, we were able to observe
+the associations between masking wearing rate and influenza hospital
+admission or experiencing flu-like symptoms.</p>
+<p>When evaluating the models at the national level, we used a
+backward-selection-like method. We started with the full model with all
+the covariates and interaction terms. Then we checked the p-value of all
+covariates and interaction terms with the outcome variable and found out
+that only<code>maskwearing_prop</code>, <code>finances_prop</code>, and
+<code>depression_prop</code> variables were significant, and none of the
+interaction terms were significant. Thus, we proceeded with the reduced
+model, only with <code>maskwearing_prop</code>,
+<code>finances_prop</code>, and <code>depression_prop</code>
+covariates.</p>
 <div id="regression-analysis" class="section level2">
 <h2>Regression Analysis</h2>
 <pre class="r"><code>final_long=
@@ -346,10 +376,10 @@ ex_1&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-0
 
 ex_2&lt;-shiny_input_model(outcome=&quot;admission&quot;, l_date=&quot;2021-06-01&quot;, u_date=&quot;2022-04-01&quot;, s_state=NA, s_cov=&quot;finances_prop + depression_prop + finances_prop*depression_prop&quot;, b_nation=&quot;nation&quot;)</code></pre>
 <ul>
-<li><p>this model is a primitive speculative model, which we logically
+<li><p>This model is a primitive speculative model, which we logically
 assume the two covariates had potentials to impact the
 associations.</p></li>
-<li><p>given exposure <code>maskwearing</code> is a continuous variable,
+<li><p>Given exposure <code>maskwearing</code> is a continuous variable,
 we will be estimating the mean function of the repeated measure.</p>
 <ul>
 <li><p><code>identity</code> function is used as the link
@@ -478,6 +508,43 @@ return the following table:</li>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="related-final-report-section-main-association"
+class="section level3">
+<h3>Related Final Report Section: Main Association</h3>
+<p>A Significant negative association between
+<code>maskwearing_prop</code> and <code>admission_prop</code> (-
+0.00151, P &lt; 0.0001) was observed at the national level, adjusting
+for ‘finance_prop’ and ‘depression_prop’.</p>
+<ul>
+<li><p>Since we cannot conclude causation from our model, we can only
+say that a higher mask-wearing rate was associated with lower hospital
+admissions due to severe influenza.</p></li>
+<li><p>This can be explained by the protective nature of masks. People
+who wore masks might have had a lower probability of contracting severe
+influenza infection, which could have been attributed to the reduced
+viral load due to mask filtration and less severe infection.</p></li>
+</ul>
+<p>A significant positive association between
+<code>maskwearing_prop</code> and <code>symptoms_prop</code> (0.01139, P
+&lt; 0.0001) was observed at the national level, adjusting for
+‘finance_prop’ and ‘depression_prop’.</p>
+<ul>
+<li><p>Again since causation cannot be ascertained, we could only
+conclude that a higher mask-wearing rate was associated with higher
+flu-like symptoms.</p></li>
+<li><p>One possible explanation for this is that people may have become
+more aware of prevention for the flu if they were experiencing flu-like
+symptoms. Therefore, people might have tended to wear masks if they felt
+like they were sick.</p></li>
+</ul>
+<p>The parameters for the predictors are seemingly small. However, in
+the context of the dataset where all the measurements were the
+percentages of the population, a small change could mean a huge
+variation clinically. The parameters for <code>admission_prop</code> are
+considerably smaller than those for <code>symptoms_prop</code> because
+the ceiling of <code>admission_prop</code> is much lower than that of
+<code>symptoms_prop</code>.</p>
 </div>
 </div>
 
