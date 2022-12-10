@@ -98,3 +98,19 @@ ex_2<-shiny_input_model(outcome="admission", l_date="2021-06-01", u_date="2022-0
 * If we want to model the association nationwide, the function will return the following table: `r ex_2`
 
 
+Main Association
+
+A Significant negative association between `maskwearing_prop` and `admission_prop`  (- 0.00151, P < 0.0001) was observed at the national level, adjusting for ‘finance_prop’ and ‘depression_prop’.
+  
+ * Since we cannot conclude causation from our model, we can only say that a higher mask-wearing rate was associated with lower hospital admissions due to severe influenza. 
+  
+  * This can be explained by the protective nature of masks. People who wore masks might have had a lower probability of contracting severe influenza infection, which could have been attributed to the reduced viral load due to mask filtration and less severe infection. 
+
+A significant positive association between `maskwearing_prop` and `symptoms_prop` (0.01139, P < 0.0001) was observed at the national level, adjusting for ‘finance_prop’ and ‘depression_prop’.
+
+  * Again since causation cannot be ascertained, we could only conclude that a higher mask-wearing rate was associated with higher flu-like symptoms. 
+  
+  * One possible explanation for this is that people may have become more aware of prevention for the flu if they were experiencing flu-like symptoms. Therefore, people might have tended to wear masks if they felt like they were sick.
+
+The parameters for the predictors are seemingly small. However, in the context of the dataset where all the measurements were the percentages of the population, a small change could mean a huge variation clinically. The parameters for `admission_prop` are considerably smaller than those for `symptoms_prop` because the ceiling of `admission_prop` is much lower than that of `symptoms_prop`.
+
