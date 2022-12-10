@@ -3,10 +3,6 @@ title: "Data Processing"
 output: html_document
 ---
 
-```{r, message = FALSE}
-library(tidyverse)
-```
-
 ## Data Sources
 
 ###  <span style="color:blue">Delphi US COVID-19 Trends and Impact Survey</span>
@@ -35,11 +31,20 @@ The first outcome variable `symptom`(“Flu-like symptoms 7 days weighted”) al
 The potential confounders `finance`(“proportion of people worried about their household's finances for the next month”) and `depression`(“proportion of people feeling depressed for the past 7 days”) came from Delphi dataset. There are 10 variables and 18,540 observations in each dataset. Important variables include dates, time, state name and the proportions for each confounder as well as sample size and standard error accordingly.
 
 **To perform data cleaning:**
-The unwanted variables such as the standard deviation, issue date, etc. were omitted. 
-Add dataset specific prefix to each of the proportion values for the merging purpose (eg. In the mask wearing dataset, rename the “value” variable to “mask_wearing_value”.
-Merged the exposure and the outcome variables into a single dataset using inner join function.
+
+  1. The unwanted variables such as the standard deviation, issue date, etc. were omitted. 
+  
+  2. Add dataset specific prefix to each of the proportion values for the merging purpose (eg. In the mask wearing dataset, rename the “value” variable to “mask_wearing_value”.
+  
+  3. Merged the exposure and the outcome variables into a single dataset using inner join function.
 
 **Two final datasets are produced:**
+
+```{r, include = FALSE}
+library(tidyverse)
+```
+
+### Create Final Dataset - Longitudinal
 
 1. “Final_long” is a longitudinal dataset range from 05/01/2021 to 05/01/2022. There are eight variables and 18540 observations. 
 
@@ -53,21 +58,6 @@ Important variables include:
 *  `symptom_prop`: proportion of having flu-like symptoms 
 *  `finances_prop`: proportion of worrying financial status 
 *  `depression_prop`: proportion of feeling depressed
-
-2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. 
-
-Important variables include:
-
-*  `state`: state name (abb.) 
-*  `state_full`:  (full)
-*  `avg_mask`: average proportion of mask wearing 
-*  `avg_admission`: average proportion of admission due to Flu 
-*  `avg_symptom`: average proportion of having flu-like symptoms 
-*  `avg_finances`: average proportion of worrying financial status 
-*  `avg_depression`: average proportion of having depression. 
-
-
-### Create Final Dataset - Longitudinal
 
 ```{r, message=FALSE, warning=FALSE}
 e_mask_prop <-
@@ -135,7 +125,7 @@ merge4 <-
   mutate(state = toupper(state))
 
 state <- setNames(as.list(datasets::state.name),datasets::state.abb) %>% 
-  as.tibble() %>%
+  as_tibble() %>%
   pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
 
 merge5 <- merge4 %>%
@@ -148,6 +138,19 @@ write.csv(merge5,"data/final_long.csv" )
 ```
 
 ## Create Final Dataset - Annual Average
+
+2. “Final_avg” is a summary dataset summarizing the state level yearly average proportion of each variable of interest from 05/01/2021 to 05/01/2022. There are seven variables and 51 state-level observations. 
+
+Important variables include:
+
+*  `state`: state name (abb.) 
+*  `state_full`:  (full)
+*  `avg_mask`: average proportion of mask wearing 
+*  `avg_admission`: average proportion of admission due to Flu 
+*  `avg_symptom`: average proportion of having flu-like symptoms 
+*  `avg_finances`: average proportion of worrying financial status 
+*  `avg_depression`: average proportion of having depression. 
+
 
 ```{r, message=FALSE}
 e_mask_avg <- 

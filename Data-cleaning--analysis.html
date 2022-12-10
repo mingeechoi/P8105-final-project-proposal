@@ -286,7 +286,6 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
 <div id="data-sources" class="section level2">
 <h2>Data Sources</h2>
 <div id="delphi-us-covid-19-trends-and-impact-survey"
@@ -399,6 +398,7 @@ status</li>
 <li><code>avg_depression</code>: average proportion of having
 depression.</li>
 </ul>
+<pre class="r"><code>library(tidyverse)</code></pre>
 <div id="create-final-dataset---longitudinal" class="section level3">
 <h3>Create Final Dataset - Longitudinal</h3>
 <pre class="r"><code>e_mask_prop &lt;-
@@ -421,6 +421,7 @@ read_csv(&quot;./Data/influenza_admissions.csv&quot;) %&gt;%
   select(-x1) %&gt;%
   select (geo_value, time_value, value) %&gt;%
   rename(admission_prop = value, state=geo_value, date=time_value)
+
 o_finances_prop &lt;-
   read_csv(&quot;data/worried_finances.csv&quot;) %&gt;%
   janitor::clean_names() %&gt;%
@@ -465,7 +466,7 @@ merge4 &lt;-
   mutate(state = toupper(state))
 
 state &lt;- setNames(as.list(datasets::state.name),datasets::state.abb) %&gt;% 
-  as.tibble() %&gt;%
+  as_tibble() %&gt;%
   pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
 
 merge5 &lt;- merge4 %&gt;%
@@ -547,9 +548,11 @@ merge4_avg &lt;-
 
 state &lt;- setNames(as.list(datasets::state.name), datasets::state.abb) %&gt;% 
   as.tibble() %&gt;%
-  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
-
-merge5_avg &lt;- merge4_avg %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
+<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
+## ℹ Please use `as_tibble()` instead.
+## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
+<pre class="r"><code>merge5_avg &lt;- merge4_avg %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))

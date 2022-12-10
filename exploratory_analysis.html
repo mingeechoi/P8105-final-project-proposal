@@ -36,6 +36,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -344,6 +346,12 @@ div.tocify {
 <li>
   <a href="final_report.html">Final Report</a>
 </li>
+<li>
+  <a href="https://github.com/mingeechoi/P8105-final-project-proposal">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -371,9 +379,9 @@ div.tocify {
 <pre class="r"><code>final_long=
   read_csv(&quot;Data/final_long.csv&quot;)
 
-final_long%&gt;%
+final_long %&gt;%
   select(admission_prop, maskwearing_prop, symptom_prop,  finances_prop, depression_prop) %&gt;%
-  summary()%&gt;%
+  summary() %&gt;%
   knitr::kable(digits = 3)</code></pre>
 <table>
 <colgroup>
@@ -451,15 +459,18 @@ years 2021-05-01 to 2022-05-01. The average percentage of people who say
 they wear a mask most or all of the time when they are in public in the
 past 7 days is 52.75%. The average percentage of adult and pediatric
 hospital admissions with confirmed influenza occurring each day (7-day
-average) is 0.05%, and the average percentage of people self-reporting
+average) is 0.05%, the average percentage of people self-reporting
 influenza-like symptoms such as fever with cough or sore throat in the
-past 7 days is 1.81%.</p>
+past 7 days is 1.81%, the average percentage of people who reported
+feeling depressed for most or all of the past 7 days is 12.61%, and the
+average percentage of people who report being very or somewhat worried
+about their “household’s finances for the next month” is 37.45%.</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-2021-2022-for-participants-wearing-masks"
+id="overall-trends-in-the-u.s.for-participants-wearing-masks-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. 2021-2022 for Participants Wearing
-Masks</h3>
+<h3>Overall Trends in the U.S.for Participants Wearing Masks between
+2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
   group_by(date)%&gt;%
@@ -469,13 +480,31 @@ Masks</h3>
   labs(title = &quot;Average Percentage of People Wearing Masks&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People Wearing Masks&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+Based on the graph, we can see that there was a huge drop from May 2021
+to July 2021. This was due to the fact that in May 2021, as the United
+States continued to see dramatic improvements in COVID-19 cases, federal
+officials announced a sweeping relaxation of face mask guidelines
+allowing fully vaccinated people from not wearing masks in most places,
+either outdoors or inside (<a
+href="https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic"
+class="uri">https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic</a>).
+However, mask wearing rate increased around September 2021 potentially
+because of a continued uptick in positive COVID-19 cases due to the
+Delta variant. (<a
+href="https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/"
+class="uri">https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/</a>).
+Lastly, we see another hugh drop starting in February 2022 as infections
+in the U.S. decreased by 90% from a pandemic high during, leading the
+states to lift the mask mandates (<a
+href="https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html"
+class="uri">https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html</a>).</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-2021-2022-for-participants-wearing-masks-1"
+id="overall-trends-in-the-u.s.-for-participants-wearing-masks-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. 2021-2022 for Participants Wearing
-Masks</h3>
+<h3>Overall Trends in the U.S. for Participants Wearing Masks between
+2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
   group_by(date)%&gt;%
@@ -485,13 +514,13 @@ Masks</h3>
   labs(title = &quot;Average Percentage of Participants with Influenza Symptom&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People with Influenza Symptom&quot;) +
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;)) +
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-2021-2022-for-participants-worried-about-finance"
+id="overall-trends-in-the-u.s.-for-participants-worried-about-finance-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. 2021-2022 for Participants worried about
-finance</h3>
+<h3>Overall Trends in the U.S. for Participants Worried about Finance
+between 2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
   group_by(date)%&gt;%
@@ -501,14 +530,14 @@ finance</h3>
   labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of participants worried about finance&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div
 id="overall-trends-in-the-u.s.-2021-2022-for-depressed-participants"
 class="section level3">
 <h3>Overall Trends in the U.S. 2021-2022 for Depressed Participants</h3>
-<pre class="r"><code>final_long%&gt;%
-  drop_na%&gt;%
+<pre class="r"><code>final_long %&gt;%
+  drop_na %&gt;%
   group_by(date)%&gt;%
   summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %&gt;%
   ggplot(aes(x = date, y = avg_depression_prop)) +
@@ -516,13 +545,13 @@ class="section level3">
   labs(title = &quot;Average Percentage of depressed participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of depressed participants&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-2021-2022-for-hospital-admissions-with-confirmed-influenza"
+id="overall-trends-in-the-u.s.-for-hospital-admissions-with-confirmed-influenza-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. 2021-2022 for Hospital Admissions with
-Confirmed Influenza</h3>
+<h3>Overall Trends in the U.S. for Hospital Admissions with Confirmed
+Influenza between 2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
   group_by(date)%&gt;%
@@ -532,7 +561,7 @@ Confirmed Influenza</h3>
   labs(title = &quot;Average Number of Hospital Admissions with Confirmed Influenza&quot;, x = &quot;Date&quot;, y = &quot;Number of Hospital Admissions&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 
 
