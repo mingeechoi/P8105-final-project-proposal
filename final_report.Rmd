@@ -363,7 +363,7 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 ```
 
 
-```{r import_data}
+```{r import_data, warning = FALSE, include = FALSE}
 final_long=
   read_csv("Data/final_long.csv")
 
@@ -371,7 +371,6 @@ states <- unique(final_long$state)
 ```
 
 * excluded `pr, vi, as` since they do not have any measurements.
-
 
 ```{r}
 analysis_df <- final_long %>% mutate(date=as.Date(date),state=as.factor(state)) %>% arrange(state,date) %>% select(everything())
