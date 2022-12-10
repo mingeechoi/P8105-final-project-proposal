@@ -13,7 +13,7 @@
 
 <title>Data Processing</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -181,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -190,9 +190,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -256,9 +263,6 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="dashboard.html">Map Building</a>
-</li>
-<li>
-  <a href="model_building.html">Model Building</a>
 </li>
 <li>
   <a href="https://zz2901.shinyapps.io/final_shiny/#section-model-with-selected-outcome">Interactive Map &amp; Model</a>
@@ -354,13 +358,19 @@ past 7 days”) came from Delphi dataset. There are 10 variables and
 18,540 observations in each dataset. Important variables include dates,
 time, state name and the proportions for each confounder as well as
 sample size and standard error accordingly.</p>
-<p><strong>To perform data cleaning:</strong> The unwanted variables
-such as the standard deviation, issue date, etc. were omitted. Add
-dataset specific prefix to each of the proportion values for the merging
-purpose (eg. In the mask wearing dataset, rename the “value” variable to
-“mask_wearing_value”. Merged the exposure and the outcome variables into
-a single dataset using inner join function.</p>
+<p><strong>To perform data cleaning:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>The unwanted variables such as the standard deviation, issue
+date, etc. were omitted.</p></li>
+<li><p>Add dataset specific prefix to each of the proportion values for
+the merging purpose (eg. In the mask wearing dataset, rename the “value”
+variable to “mask_wearing_value”.</p></li>
+<li><p>Merged the exposure and the outcome variables into a single
+dataset using inner join function.</p></li>
+</ol>
 <p><strong>Two final datasets are produced:</strong></p>
+<div id="create-final-dataset---longitudinal" class="section level3">
+<h3>Create Final Dataset - Longitudinal</h3>
 <ol style="list-style-type: decimal">
 <li>“Final_long” is a longitudinal dataset range from 05/01/2021 to
 05/01/2022. There are eight variables and 18540 observations.</li>
@@ -378,29 +388,6 @@ symptoms</li>
 status</li>
 <li><code>depression_prop</code>: proportion of feeling depressed</li>
 </ul>
-<ol start="2" style="list-style-type: decimal">
-<li>“Final_avg” is a summary dataset summarizing the state level yearly
-average proportion of each variable of interest from 05/01/2021 to
-05/01/2022. There are seven variables and 51 state-level
-observations.</li>
-</ol>
-<p>Important variables include:</p>
-<ul>
-<li><code>state</code>: state name (abb.)</li>
-<li><code>state_full</code>: (full)</li>
-<li><code>avg_mask</code>: average proportion of mask wearing</li>
-<li><code>avg_admission</code>: average proportion of admission due to
-Flu</li>
-<li><code>avg_symptom</code>: average proportion of having flu-like
-symptoms</li>
-<li><code>avg_finances</code>: average proportion of worrying financial
-status</li>
-<li><code>avg_depression</code>: average proportion of having
-depression.</li>
-</ul>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<div id="create-final-dataset---longitudinal" class="section level3">
-<h3>Create Final Dataset - Longitudinal</h3>
 <pre class="r"><code>e_mask_prop &lt;-
 read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
   janitor::clean_names()  %&gt;%
@@ -479,6 +466,26 @@ write.csv(merge5,&quot;data/final_long.csv&quot; )</code></pre>
 </div>
 <div id="create-final-dataset---annual-average" class="section level2">
 <h2>Create Final Dataset - Annual Average</h2>
+<ol start="2" style="list-style-type: decimal">
+<li>“Final_avg” is a summary dataset summarizing the state level yearly
+average proportion of each variable of interest from 05/01/2021 to
+05/01/2022. There are seven variables and 51 state-level
+observations.</li>
+</ol>
+<p>Important variables include:</p>
+<ul>
+<li><code>state</code>: state name (abb.)</li>
+<li><code>state_full</code>: (full)</li>
+<li><code>avg_mask</code>: average proportion of mask wearing</li>
+<li><code>avg_admission</code>: average proportion of admission due to
+Flu</li>
+<li><code>avg_symptom</code>: average proportion of having flu-like
+symptoms</li>
+<li><code>avg_finances</code>: average proportion of worrying financial
+status</li>
+<li><code>avg_depression</code>: average proportion of having
+depression.</li>
+</ul>
 <pre class="r"><code>e_mask_avg &lt;- 
 read_csv(&quot;./Data/People_wearing_masks.csv&quot;) %&gt;%
   janitor:: clean_names()  %&gt;%
