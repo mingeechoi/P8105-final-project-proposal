@@ -42,22 +42,22 @@ Furthermore, COVID-19 has put a great strain on hospitals and public health faci
 
 **Efficacy and Practice of Facemask Use in General Population: a Systematic Review and Meta-analysis (Li et. al., 2022)**
 Ever since the COVID-19 pandemic began, numerous studies on the effectiveness of mask-wearing have been published. In a meta-analysis that summarized eight RCTs on mask-wearing effectiveness, the results suggest a significant protective effect of mask-wearing in preventing infections (Li et al, 2022  ). 
-(https://www.nature.com/articles/s41398-022-01814-3)
+[[Reference](https://www.nature.com/articles/s41398-022-01814-3)]
 
 
 **Effectiveness of Face Mask or Respirator Use in Indoor Public Settings for Prevention of SARS-CoV-2 Infection (Andrejko et.al, 2021)**
 A study from CDC has reported that consistent use of mask or respirator in indoor settings was associated with lower odds of positive COVID-19 tests and recommends people to vaccinate and consistently wear masks or use respirators in indoor public settings.
-(https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.html)
+[[Reference](https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.html)]
 
  
 
 **The Effect of Mask Use on the Spread of Influenza During a Pandemic (Briene et. al., 2010)**
 This study examines the effects of mask efficacy and coverage on infection attack rate and basic reproduction number (R0). The results indicate that population-wide use of face masks can significantly delay the influenza pandemic and help reduce influenza outbreak. 
-(https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682/)
+[[Reference](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682/)]
 
 **Need for more Robust Research on the Effectiveness of Masks in Preventing COVID-19 transmission (Li et al, 2022)**
 However more robust research is still needed since mask-wearing in public can be a complex public health topic that intertwines with policy-making, public perspectives, etc. An RCT without taking into account real-world data would be too preliminary for supporting and implementing such public health policy. 
-(https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682//)
+[[Reference](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682//)]
 
 ***
 
