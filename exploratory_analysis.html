@@ -468,10 +468,10 @@ who report being very or somewhat worried about their “household’s
 finances for the next month” is 37.45%.</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.for-participants-wearing-masks-between-2021---2022"
+id="overall-trend-in-the-u.s.for-participants-wearing-masks-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S.for Participants Wearing Masks between
-2021 - 2022</h3>
+<h3>Overall Trend in the U.S.for Participants Wearing Masks between 2021
+- 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
   group_by(date)%&gt;%
@@ -502,9 +502,9 @@ href="https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us
 class="uri">https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html</a>)</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-for-participants-with-influenza-symptoms-between-2021---2022"
+id="overall-trend-in-the-u.s.-for-participants-with-influenza-symptoms-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. for Participants with Influenza Symptoms
+<h3>Overall Trend in the U.S. for Participants with Influenza Symptoms
 between 2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
@@ -526,9 +526,9 @@ class="uri">https://www.cdc.gov/flu/about/season/flu-season.htm</a>),
 which is between December and February.</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-for-hospital-admissions-with-confirmed-influenza-between-2021---2022"
+id="overall-trend-in-the-u.s.-for-hospital-admissions-with-confirmed-influenza-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. for Hospital Admissions with Confirmed
+<h3>Overall Trend in the U.S. for Hospital Admissions with Confirmed
 Influenza between 2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
@@ -549,9 +549,9 @@ as the decreasing trend of mask-wearing as states began to loosen the
 mask mandate.</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-for-participants-worried-about-finances-between-2021---2022"
+id="overall-trend-in-the-u.s.-for-participants-worried-about-finances-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. for Participants Worried about Finances
+<h3>Overall Trend in the U.S. for Participants Worried about Finances
 between 2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
@@ -559,25 +559,35 @@ between 2021 - 2022</h3>
   summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %&gt;%
   ggplot(aes(x = date, y = avg_finances_prop)) +
   geom_line()+
-  labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of participants worried about finance&quot;)+
+  labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Participants Worried about Finance&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+Overall, there is a gradually increasing trend of people worrying about
+their household financial status from July 2021 to March 2022. The trend
+peaked in March 2022 at 42% and then sharply dropped to 37% in April
+2022.</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-2021-2022-for-depressed-participants"
+id="overall-trend-in-the-u.s.-for-depressed-participants-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. 2021-2022 for Depressed Participants</h3>
+<h3>Overall Trend in the U.S. for Depressed Participants between 2021 -
+2022</h3>
 <pre class="r"><code>final_long %&gt;%
   drop_na %&gt;%
   group_by(date)%&gt;%
   summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %&gt;%
   ggplot(aes(x = date, y = avg_depression_prop)) +
   geom_line()+
-  labs(title = &quot;Average Percentage of depressed participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of depressed participants&quot;)+
+  labs(title = &quot;Average Percentage of Depressed Participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Depressed Participants&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+Trend stayed flat at 11% from May to August 2021 and sharply increased
+to 13-15% in September and remained elevated until late January 2022. In
+May 2022, it decreased back to 12%. This drop is likely due to
+imporvements mental health status as more public facilities and events
+reverted back to pre-pandemic operations.</p>
 </div>
 
 

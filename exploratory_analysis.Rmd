@@ -96,7 +96,6 @@ final_long %>%
   theme(plot.title=element_text(face="bold", color="blue"))+
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
-
-Trend stayed flat at 11% from May to August 2021 and sharply increased to 13-15% in September and remained high up till Late January 2022. Then it decreased back to 12% in  May 2022. It Is likely due to the improved mental health status as more public facilities and events are back into regular operations in order to let the public leave the quarantine stages. 
+Trend stayed flat at 11% from May to August 2021 and sharply increased to 13-15% in September and remained elevated until late January 2022. In May 2022, it decreased back to 12%. This drop is likely due to imporvements mental health status as more public facilities and events reverted back to pre-pandemic operations.
 
 
