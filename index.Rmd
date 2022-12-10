@@ -65,7 +65,7 @@ However more robust research is still needed since mask-wearing in public can be
 
 Our initial questions are: 
 
-  1. Would wearing a mask prevent us from getting an airborne infectious disease? In this case, we are specifically looking at influenza. 
+  1. Would wearing a mask prevent us from getting influenza?
   2. On a broader public health aspect, is a mask mandate policy necessary in the midst of a pandemic? Regarding the shortage of PPE among healthcare workers, should the allocation of masks pivot toward them instead of the public?
 
 

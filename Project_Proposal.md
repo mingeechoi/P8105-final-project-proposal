@@ -6,78 +6,82 @@ Yim (sy3019), Troy Zhou (zz2901)
 
 # Tentative project title
 
-- The association between decrease in mask-wearing and the prevalence of
-  seasonal influenza in 2022
+-   The association between decrease in mask-wearing and the prevalence
+    of seasonal influenza in 2022
 
 # Motivation for this project
 
-- In the United States, the flu season usually occurs in the fall and
-  winter, meaning people are most vulnerable to the flu during this
-  season. However, as Covid restrictions and policies have become less
-  stringent, we have seen a significant decrease in the number of people
-  wearing masks. We wanted to explore how people wearing masks has an
-  effect on disease prevalence.
+-   In the United States, the flu season usually occurs in the fall and
+    winter, meaning people are most vulnerable to the flu during this
+    season. However, as Covid restrictions and policies have become less
+    stringent, we have seen a significant decrease in the number of
+    people wearing masks. We wanted to explore how people wearing masks
+    has an effect on disease prevalence.
 
-- The results from Froses et al. paper showed that several combinations
-  of mask efficacy and prevalence could substantially reduce the burden
-  of seasonal influenza, suggesting that mask-wearing may be a viable
-  alternative or complement to influenza vaccinations. Thus, we want to
-  investigate whether the current trend of decrease in wearing masks is
-  associated with the prevalence of influenza in 2022.
+-   The results from Froses et al. paper showed that several
+    combinations of mask efficacy and prevalence could substantially
+    reduce the burden of seasonal influenza, suggesting that
+    mask-wearing may be a viable alternative or complement to influenza
+    vaccinations. Thus, we want to investigate whether the current trend
+    of decrease in wearing masks is associated with the prevalence of
+    influenza in 2022.
 
-  - Froese, H., & Prempeh, A. G. (2022). Mask use to curtail influenza
-    in a post–COVID-19 world: modeling study. JMIRx Med, 3(2), e31955.
+    -   Froese, H., & Prempeh, A. G. (2022). Mask use to curtail
+        influenza in a post–COVID-19 world: modeling study. JMIRx Med,
+        3(2), e31955.
 
 # Intended final products
 
-- Website detailing motivation behind analysis, overview of data,
-  dashboard visualizing mask-wearing trends and influenza prevalence
-  over time, statistical analysis of association between mask wearing
-  and influenza cases
+-   Website detailing motivation behind analysis, overview of data,
+    dashboard visualizing mask-wearing trends and influenza prevalence
+    over time, statistical analysis of association between mask wearing
+    and influenza cases
 
 # Anticipated data sources
 
-- ‘Covidcast’
-  <https://delphi.cmu.edu/covidcast/indicator/?date=20210324&sensor=fb-survey-smoothed_wwearing_mask_7d>
-- <https://www.tableau.com/learn/articles/free-public-data-sets>
+-   ‘Covidcast’
+    <https://delphi.cmu.edu/covidcast/indicator/?date=20210324&sensor=fb-survey-smoothed_wwearing_mask_7d>
+-   <https://www.tableau.com/learn/articles/free-public-data-sets>
 
 # Planned analyses/visualizations/coding challenges
 
-- Analysis
+-   Analysis
 
-  - Logistic regression analysis with mask-wearing as the main
-    exposure/predictor and the influenza cases will be the main outcome
-    of interest. Temporal comparison of influenza cases vs mask wearing
-    trends between period of mask-mandate and period after mask-mandate
+    -   Logistic regression analysis with mask-wearing as the main
+        exposure/predictor and the influenza cases will be the main
+        outcome of interest. Temporal comparison of influenza cases vs
+        mask wearing trends between period of mask-mandate and period
+        after mask-mandate
 
-- Visualization
+-   Visualization
 
-  - Sample Demographic Characteristics Table
+    -   Sample Demographic Characteristics Table
 
-  - Exploratory analysis of trends of the main outcome of interest, the
-    influenza cases, by various covariates in NYC(e.g., race, age, etc)
+    -   Exploratory analysis of trends of the main outcome of interest,
+        the influenza cases, by various covariates in NYC(e.g., race,
+        age, etc)
 
-  - Interactive maps of mask wearing rate by various covariates in NYC
-    (e.g., race, age, etc)
+    -   Interactive maps of mask wearing rate by various covariates in
+        NYC (e.g., race, age, etc)
 
-- Coding challenges:
+-   Coding challenges:
 
-  - Data set cleaning will be messy since dealing with nationwide
-    longitudinal data
+    -   Data set cleaning will be messy since dealing with nationwide
+        longitudinal data
 
-  - Missing data could also be challenging as some regions could be
-    missing observations for some time periods
+    -   Missing data could also be challenging as some regions could be
+        missing observations for some time periods
 
-  - Merging datasets of the disease outcome with the masking rate
-    dataset could be complex due to difficulties in finding appropriate
-    matching variables
+    -   Merging datasets of the disease outcome with the masking rate
+        dataset could be complex due to difficulties in finding
+        appropriate matching variables
 
 # Planned timeline
 
-- 11/15 - 11/18: project review meeting
-- 11/19 - 11/23: data collection and clearing
-- 11/24 - 11/30: data analysis & Graphics Output
-- 12/1 - 12/5: producing Written Report
-- 12/6 - 12/9: producing screencast video
-- 12/10: Written report & webpage and screencast; peer assessment DUE
-- 12/15: in class discussion
+-   11/15 - 11/18: project review meeting
+-   11/19 - 11/23: data collection and clearing
+-   11/24 - 11/30: data analysis & Graphics Output
+-   12/1 - 12/5: producing Written Report
+-   12/6 - 12/9: producing screencast video
+-   12/10: Written report & webpage and screencast; peer assessment DUE
+-   12/15: in class discussion

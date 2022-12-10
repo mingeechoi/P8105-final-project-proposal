@@ -255,11 +255,7 @@ $(document).ready(function () {
   <a href="exploratory_analysis.html">Exploratory Analysis</a>
 </li>
 <li>
-<<<<<<< HEAD
-  <a href="dashboard.html">Map Building</a>
-=======
   <a href="model_building.html">Model Building</a>
->>>>>>> 9f1203f2c2f6884c1a24562470bbaa1b3e43edb1
 </li>
 <li>
   <a href="https://zz2901.shinyapps.io/final_shiny/#section-model-with-selected-outcome">Interactive Map &amp; Model</a>
@@ -472,11 +468,7 @@ observations.</li>
 <p>Important variables include:</p>
 <ul>
 <li><code>state</code>: state name (abb.)</li>
-<<<<<<< HEAD
 <li><code>state_full</code>: state name (full)</li>
-=======
-<li><code>state_full</code>: (full)</li>
->>>>>>> 9f1203f2c2f6884c1a24562470bbaa1b3e43edb1
 <li><code>avg_mask</code>: average proportion of mask wearing</li>
 <li><code>avg_admission</code>: average proportion of admission due to
 Flu</li>
@@ -555,21 +547,10 @@ merge4_avg &lt;-
   select(-geo_value)
 
 state &lt;- setNames(as.list(datasets::state.name), datasets::state.abb) %&gt;% 
-<<<<<<< HEAD
-  as.tibble() %&gt;%
-  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
-<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## Please use `as_tibble()` instead.
-## The signature and semantics have changed, see `?as_tibble`.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code>merge5_avg &lt;- merge4_avg %&gt;%
-=======
   as_tibble() %&gt;%
   pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
 
 merge5_avg &lt;- merge4_avg %&gt;%
->>>>>>> 9f1203f2c2f6884c1a24562470bbaa1b3e43edb1
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))
