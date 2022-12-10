@@ -13,7 +13,7 @@
 
 <title>Final Report</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -185,8 +185,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -194,16 +194,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -343,9 +336,6 @@ div.tocify {
 </li>
 <li>
   <a href="dashboard.html">Map Building</a>
-</li>
-<li>
-  <a href="model_building.html">Model Building</a>
 </li>
 <li>
   <a href="https://zz2901.shinyapps.io/final_shiny/#section-model-with-selected-outcome">Interactive Map &amp; Model</a>
@@ -576,7 +566,7 @@ observations.</li>
 <p>Important variables include:</p>
 <ul>
 <li><code>state</code>: state name (abb.)</li>
-<li><code>state_full</code>: (full)</li>
+<li><code>state_full</code>: state name (full)</li>
 <li><code>avg_mask</code>: average proportion of mask wearing</li>
 <li><code>avg_admission</code>: average proportion of admission due to
 Flu</li>
@@ -656,11 +646,9 @@ merge4_avg &lt;-
 
 state &lt;- setNames(as.list(datasets::state.name), datasets::state.abb) %&gt;% 
   as.tibble() %&gt;%
-  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)</code></pre>
-<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## ℹ Please use `as_tibble()` instead.
-## ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
-<pre class="r"><code>merge5_avg &lt;- merge4_avg %&gt;%
+  pivot_longer(AL:WY, names_to = &quot;state&quot;, values_to = &quot;state_full&quot;)
+
+merge5_avg &lt;- merge4_avg %&gt;%
   full_join(state, by = &quot;state&quot;) %&gt;%
   relocate(state_full, .after = state) %&gt;%
   mutate(state_full = ifelse(is.na(state_full), &quot;District of Columbia&quot;, state_full))

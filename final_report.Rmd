@@ -156,14 +156,14 @@ write.csv(merge5,"data/final_long.csv" )
 Important variables include:
 
 *  `state`: state name (abb.) 
-*  `state_full`:  (full)
+*  `state_full`: state name (full)
 *  `avg_mask`: average proportion of mask wearing 
 *  `avg_admission`: average proportion of admission due to Flu 
 *  `avg_symptom`: average proportion of having flu-like symptoms 
 *  `avg_finances`: average proportion of worrying financial status 
 *  `avg_depression`: average proportion of having depression. 
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 e_mask_avg <- 
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor:: clean_names()  %>%
@@ -247,7 +247,7 @@ write.csv(merge5_avg,"data/final_avg.csv" )
 # Exploratory Data Analysis
 
 ## Data Description
-```{r, message = FALSE} 
+```{r, message = FALSE, warning=FALSE} 
 final_long=
   read_csv("Data/final_long.csv")
 
