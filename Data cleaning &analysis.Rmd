@@ -3,7 +3,7 @@ title: "Data Processing"
 output: html_document
 ---
 
-```{r, eval = FALSE}
+```{r, message = FALSE}
 library(tidyverse)
 ```
 
@@ -12,6 +12,11 @@ library(tidyverse)
 ###  <span style="color:blue">Delphi US COVID-19 Trends and Impact Survey</span>
 
 The Delphi US COVID-19 Trends and Impact Survey consists of individual-level data from surveys advertised through Facebook. This survey was conducted through a collaborative effort between Delphi at Carnegie Mellon University and Facebook. It ran from April 6, 2020 to June 25, 2022, with around 40,000 people in the United States participating every day. Survey questions included questions about COVID-19 testing, prior medical conditions, social distancing measures, and economic effects of COVID-19. Since participants were recruited from a random sample of Facebook users and not from a random sample from the entire United States population, unique identifiers from Facebook were used to calculate statistical weights indicating how representative each person is of the United States population. These calculations were based on demographic data available on Facebook.
+
+*Notes about sampling weights:
+Sampling weights are non-negative values associated with survey responses that usually exist in any publicly available survey data. Sampling weights are supposed to be inversely proportional to the selection probabilities of sample units in the target 
+population, whose main goal is to improve the representativeness of the sample with respect to a target population. Naive analyses of the data under a complex sample design are expected to result in biased estimates. For instance, unweighted inference based on CTIS data tends to overestimate vaccination rates among adult Facebook users. In the following section, we further explain why it is necessary to use the sampling weights in our statistical analysis.
+
 
 ###  <span style="color:blue">U.S. Department of Health & Human Services (HHS)</span>
 
@@ -68,12 +73,14 @@ Important variables include:
 e_mask_prop <-
 read_csv("./Data/People_wearing_masks.csv") %>%
   janitor::clean_names()  %>%
+  select(-x1) %>%
   select (geo_value, time_value, value) %>%
   rename(maskwearing_prop=value, state=geo_value, date=time_value)
 
 o_symptoms_prop <-
 read_csv("./Data/Flu_like_symptoms.csv") %>%
   janitor:: clean_names()  %>%
+  select(-x1) %>%
   select(geo_value, time_value, value) %>%
   rename(symptom_prop=value,state=geo_value, date=time_value)
 
@@ -83,6 +90,7 @@ read_csv("./Data/influenza_admissions.csv") %>%
   select(-x1) %>%
   select (geo_value, time_value, value) %>%
   rename(admission_prop = value, state=geo_value, date=time_value)
+
 o_finances_prop <-
   read_csv("data/worried_finances.csv") %>%
   janitor::clean_names() %>%
