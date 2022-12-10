@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -229,6 +230,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -361,6 +365,14 @@ div.tocify {
 </div><!--/.navbar -->
 
 <div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
 
@@ -765,13 +777,13 @@ class="section level2">
   labs(title = &quot;Average Percentage of People Wearing Masks&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People Wearing Masks&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="final_report_files/figure-html/unnamed-chunk-4-1.png" width="672" />
-Based on the graph, we can see that there was a huge drop from May 2021
-to July 2021. This was due to the fact that in May 2021, as the United
-States continued to see dramatic improvements in COVID-19 cases, federal
-officials announced a sweeping relaxation of face mask guidelines
-allowing fully vaccinated people from not wearing masks in most places,
-either outdoors or inside (<a
+<p><img src="final_report_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Based on the graph, we can see that there was a huge drop from May
+2021 to July 2021. This was due to the fact that in May 2021, as the
+United States continued to see dramatic improvements in COVID-19 cases,
+federal officials announced a sweeping relaxation of face mask
+guidelines allowing fully vaccinated people from not wearing masks in
+most places, either outdoors or inside (<a
 href="https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic"
 class="uri">https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic</a>).
 However, mask wearing rate increased around September 2021 potentially
@@ -799,8 +811,8 @@ between 2021 - 2022</h2>
   labs(title = &quot;Average Percentage of Participants with Influenza Symptom&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People with Influenza Symptom&quot;) +
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;)) +
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="final_report_files/figure-html/unnamed-chunk-5-1.png" width="672" />
-A surge in the percentage of people with influenza symptoms occurred
+<p><img src="final_report_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>A surge in the percentage of people with influenza symptoms occurred
 between late December 2021 to January 2022 from 2% to 5%. Prior to that,
 we see a gradual increase from 1% to 2% between May 2021 to November
 2021. The surge during the winter months coincides with the average peak
@@ -823,8 +835,8 @@ Influenza between 2021 - 2022</h2>
   labs(title = &quot;Average Number of Hospital Admissions with Confirmed Influenza&quot;, x = &quot;Date&quot;, y = &quot;Number of Hospital Admissions&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="final_report_files/figure-html/unnamed-chunk-6-1.png" width="672" />
-The above-mentioned trend on Flu symptom perfectly matches with the
+<p><img src="final_report_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>The above-mentioned trend on Flu symptom perfectly matches with the
 proportion of hospital admissions which also peaked in January 2022 at
 approx. 0.15%, there is another peak in hospital admission later in
 April 2022 at approx. 0.16%. A possible explanation could be the landing
@@ -846,11 +858,11 @@ between 2021 - 2022</h2>
   labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Participants Worried about Finance&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="final_report_files/figure-html/unnamed-chunk-7-1.png" width="672" />
-Overall, there is a gradually increasing trend of people worrying about
-their household financial status from July 2021 to March 2022. The trend
-peaked in March 2022 at 42% and then sharply dropped to 37% in April
-2022.</p>
+<p><img src="final_report_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Overall, there is a gradually increasing trend of people worrying
+about their household financial status from July 2021 to March 2022. The
+trend peaked in March 2022 at 42% and then sharply dropped to 37% in
+April 2022.</p>
 </div>
 <div
 id="overall-trend-in-the-u.s.-for-depressed-participants-between-2021---2022"
@@ -866,12 +878,12 @@ class="section level2">
   labs(title = &quot;Average Percentage of Depressed Participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Depressed Participants&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="final_report_files/figure-html/unnamed-chunk-8-1.png" width="672" />
-Trend stayed flat at 11% from May to August 2021 and sharply increased
-to 13-15% in September and remained elevated until late January 2022. In
-May 2022, it decreased back to 12%. This drop is likely due to
-imporvements mental health status as more public facilities and events
-reverted back to pre-pandemic operations.</p>
+<p><img src="final_report_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Trend stayed flat at 11% from May to August 2021 and sharply
+increased to 13-15% in September and remained elevated until late
+January 2022. In May 2022, it decreased back to 12%. This drop is likely
+due to imporvements mental health status as more public facilities and
+events reverted back to pre-pandemic operations.</p>
 </div>
 </div>
 <div id="modeling" class="section level1">
@@ -895,8 +907,6 @@ reverted back to pre-pandemic operations.</p>
 measurements.</li>
 </ul>
 <pre class="r"><code>analysis_df &lt;- final_long %&gt;% mutate(date=as.Date(date),state=as.factor(state)) %&gt;% arrange(state,date) %&gt;% select(everything())
-
-# test &lt;-analysis_df %&gt;% filter(date&gt;=as.Date(&quot;2021-06-01&quot;) &amp; date&lt;=as.Date(&quot;2022-04-01&quot;))
 
 # outcome = &quot;admission&quot; or &quot;symptom&quot;; l_date = lower bound of date written as &quot;YYYY-MM-DD&quot;; u_date = upper bound of date written as &quot;YYYY-MM-DD&quot;
 # s_state = selected state; b_nation = model scale &quot;nation&quot; or &quot;state&quot; -wide
@@ -1173,6 +1183,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {
