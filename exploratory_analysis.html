@@ -455,16 +455,17 @@ final_long %&gt;%
 </table>
 <p>Our data has 18540 observations and 9 variables and tells us about
 maskwearing, influenza symptoms, and admissions across the U.S. from
-years 2021-05-01 to 2022-05-01. The average percentage of people who say
-they wear a mask most or all of the time when they are in public in the
-past 7 days is 52.75%. The average percentage of adult and pediatric
-hospital admissions with confirmed influenza occurring each day (7-day
-average) is 0.05%, the average percentage of people self-reporting
-influenza-like symptoms such as fever with cough or sore throat in the
-past 7 days is 1.81%, the average percentage of people who reported
-feeling depressed for most or all of the past 7 days is 12.61%, and the
-average percentage of people who report being very or somewhat worried
-about their “household’s finances for the next month” is 37.45%.</p>
+years 2021-05-01 to 2022-05-01.</p>
+<p>The average percentage of people who say they wear a mask most or all
+of the time when they are in public in the past 7 days is 52.75%. The
+average percentage of adult and pediatric hospital admissions with
+confirmed influenza occurring each day (7-day average) is 0.05%, the
+average percentage of people self-reporting influenza-like symptoms such
+as fever with cough or sore throat in the past 7 days is 1.81%, the
+average percentage of people who reported feeling depressed for most or
+all of the past 7 days is 12.61%, and the average percentage of people
+who report being very or somewhat worried about their “household’s
+finances for the next month” is 37.45%.</p>
 </div>
 <div
 id="overall-trends-in-the-u.s.for-participants-wearing-masks-between-2021---2022"
@@ -496,15 +497,15 @@ href="https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-dann
 class="uri">https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/</a>).
 Lastly, we see another hugh drop starting in February 2022 as infections
 in the U.S. decreased by 90% from a pandemic high during, leading the
-states to lift the mask mandates (<a
+states to lift the mask mandates. (<a
 href="https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html"
-class="uri">https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html</a>).</p>
+class="uri">https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html</a>)</p>
 </div>
 <div
-id="overall-trends-in-the-u.s.-for-participants-wearing-masks-between-2021---2022"
+id="overall-trends-in-the-u.s.-for-participants-with-influenza-symptoms-between-2021---2022"
 class="section level3">
-<h3>Overall Trends in the U.S. for Participants Wearing Masks between
-2021 - 2022</h3>
+<h3>Overall Trends in the U.S. for Participants with Influenza Symptoms
+between 2021 - 2022</h3>
 <pre class="r"><code>final_long%&gt;%
   drop_na%&gt;%
   group_by(date)%&gt;%
@@ -514,38 +515,15 @@ class="section level3">
   labs(title = &quot;Average Percentage of Participants with Influenza Symptom&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People with Influenza Symptom&quot;) +
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;)) +
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-</div>
-<div
-id="overall-trends-in-the-u.s.-for-participants-worried-about-finance-between-2021---2022"
-class="section level3">
-<h3>Overall Trends in the U.S. for Participants Worried about Finance
-between 2021 - 2022</h3>
-<pre class="r"><code>final_long%&gt;%
-  drop_na%&gt;%
-  group_by(date)%&gt;%
-  summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %&gt;%
-  ggplot(aes(x = date, y = avg_finances_prop)) +
-  geom_line()+
-  labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of participants worried about finance&quot;)+
-  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
-  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-</div>
-<div
-id="overall-trends-in-the-u.s.-2021-2022-for-depressed-participants"
-class="section level3">
-<h3>Overall Trends in the U.S. 2021-2022 for Depressed Participants</h3>
-<pre class="r"><code>final_long %&gt;%
-  drop_na %&gt;%
-  group_by(date)%&gt;%
-  summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %&gt;%
-  ggplot(aes(x = date, y = avg_depression_prop)) +
-  geom_line()+
-  labs(title = &quot;Average Percentage of depressed participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of depressed participants&quot;)+
-  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
-  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+A surge in the percentage of people with influenza symptoms occurred
+between late December 2021 to January 2022 from 2% to 5%. Prior to that,
+we see a gradual increase from 1% to 2% between May 2021 to November
+2021. The surge during the winter months coincides with the average peak
+flu activity in the US from 1982 to 2022 (CDC, 2022 <a
+href="https://www.cdc.gov/flu/about/season/flu-season.htm"
+class="uri">https://www.cdc.gov/flu/about/season/flu-season.htm</a>),
+which is between December and February.</p>
 </div>
 <div
 id="overall-trends-in-the-u.s.-for-hospital-admissions-with-confirmed-influenza-between-2021---2022"
@@ -559,6 +537,44 @@ Influenza between 2021 - 2022</h3>
   ggplot(aes(x = date, y = avg_admission_prop)) +
   geom_line()+
   labs(title = &quot;Average Number of Hospital Admissions with Confirmed Influenza&quot;, x = &quot;Date&quot;, y = &quot;Number of Hospital Admissions&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+The above-mentioned trend on Flu symptom perfectly matches with the
+proportion of hospital admissions which also peaked in January 2022 at
+approx. 0.15%, there is another peak in hospital admission later in
+April 2022 at approx. 0.16%. A possible explanation could be the landing
+of the Omicron strain in the US which started in December 2021 as well
+as the decreasing trend of mask-wearing as states began to loosen the
+mask mandate.</p>
+</div>
+<div
+id="overall-trends-in-the-u.s.-for-participants-worried-about-finances-between-2021---2022"
+class="section level3">
+<h3>Overall Trends in the U.S. for Participants Worried about Finances
+between 2021 - 2022</h3>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_finances_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of participants worried about finance&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div
+id="overall-trends-in-the-u.s.-2021-2022-for-depressed-participants"
+class="section level3">
+<h3>Overall Trends in the U.S. 2021-2022 for Depressed Participants</h3>
+<pre class="r"><code>final_long %&gt;%
+  drop_na %&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_depression_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of depressed participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of depressed participants&quot;)+
   theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
   theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
