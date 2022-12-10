@@ -320,18 +320,9 @@ covariates.</p>
 <div id="regression-analysis" class="section level2">
 <h2>Regression Analysis</h2>
 <pre class="r"><code>final_long=
-  read_csv(&quot;Data/final_long.csv&quot;)</code></pre>
-<pre><code>## New names:
-## Rows: 18540 Columns: 9
-## ── Column specification
-## ──────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (2): state, state_full dbl (6): ...1, finances_prop,
-## symptom_prop, maskwearing_prop, admission_pro... date (1): date
-## ℹ Use `spec()` to retrieve the full column specification for
-## this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>states &lt;- unique(final_long$state)</code></pre>
+  read_csv(&quot;Data/final_long.csv&quot;)
+
+states &lt;- unique(final_long$state)</code></pre>
 <ul>
 <li>excluded <code>pr, vi, as</code> since they do not have any
 measurements.</li>
