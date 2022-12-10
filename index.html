@@ -13,7 +13,7 @@
 
 <title>Mask Wearing and Influenza Admissions (2021-2022)</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -184,8 +184,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -193,16 +193,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -390,12 +383,76 @@ h1{
 </div>
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
-<p>In the United States, the flu season usually occurs in the fall and
-winter, meaning people are most vulnerable to the flu during this
-season. However, as COVID restrictions and policies have become less
-stringent, we have seen a significant decrease in the number of people
-wearing masks. We wanted to explore how people wearing masks has an
-effect on disease prevalence.</p>
+<p>CDC’s mask requirements have greatly evolved throughout the COVID-19
+pandemic. On Feb. 29, 2020, U.S. Surgeon General Dr. Jerome Adams
+angrily tweeted, “Seriously people–STOP BUYING MASKS!” Since then, the
+CDC has published reports that masks are protective against COVID-19 and
+released guidelines on masking in schools and local communities. By July
+2020, more than half of U.S. states had mask mandates. However, as
+vaccination rates spiked, the CDC eased masking guidelines, and by May
+2021, fully vaccinated people weren’t required to wear a mask in most
+indoor and outdoor settings.</p>
+<p>Furthermore, COVID-19 has put a great strain on hospitals and public
+health facilities in the U.S. It has worsened numerous public health
+problems such as the flu, RSV, and norovirus. Many news outlets have
+recently reported that the United States is suffering one of the worst
+flu seasons in decades. In the United States, the flu season usually
+occurs in the fall and winter, meaning people are most vulnerable to the
+flu during this season. As COVID restrictions and policies have become
+less stringent, we have seen a significant decrease in the number of
+people wearing masks. We wanted to explore how people wearing masks has
+an effect on disease prevalence.</p>
+<hr />
+</div>
+<div id="related-work" class="section level2">
+<h2>Related Work</h2>
+<p><strong>Efficacy and Practice of Facemask Use in General Population:
+a Systematic Review and Meta-analysis (Li et. al., 2022)</strong> Ever
+since the COVID-19 pandemic began, numerous studies on the effectiveness
+of mask-wearing have been published. In a meta-analysis that summarized
+eight RCTs on mask-wearing effectiveness, the results suggest a
+significant protective effect of mask-wearing in preventing infections
+(Li et al, 2022 ). (<a
+href="https://www.nature.com/articles/s41398-022-01814-3"
+class="uri">https://www.nature.com/articles/s41398-022-01814-3</a>)</p>
+<p><strong>Effectiveness of Face Mask or Respirator Use in Indoor Public
+Settings for Prevention of SARS-CoV-2 Infection (Andrejko et.al,
+2021)</strong> A study from CDC has reported that consistent use of mask
+or respirator in indoor settings was associated with lower odds of
+positive COVID-19 tests and recommends people to vaccinate and
+consistently wear masks or use respirators in indoor public settings.
+(<a href="https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.html"
+class="uri">https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.html</a>)</p>
+<p><strong>The Effect of Mask Use on the Spread of Influenza During a
+Pandemic (Briene et. al., 2010)</strong> This study examines the effects
+of mask efficacy and coverage on infection attack rate and basic
+reproduction number (R0). The results indicate that population-wide use
+of face masks can significantly delay the influenza pandemic and help
+reduce influenza outbreak. (<a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682/"
+class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682/</a>)</p>
+<p><strong>Need for more Robust Research on the Effectiveness of Masks
+in Preventing COVID-19 transmission (Li et al, 2022)</strong> However
+more robust research is still needed since mask-wearing in public can be
+a complex public health topic that intertwines with policy-making,
+public perspectives, etc. An RCT without taking into account real-world
+data would be too preliminary for supporting and implementing such
+public health policy. (<a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682//"
+class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9017682//</a>)</p>
+<hr />
+</div>
+<div id="initial-questions" class="section level2">
+<h2>Initial Questions</h2>
+<p>Our initial questions are:</p>
+<ol style="list-style-type: decimal">
+<li>Would wearing a mask prevent us from getting an airborne infectious
+disease? In this case, we are specifically looking at influenza.</li>
+<li>On a broader public health aspect, is a mask mandate policy
+necessary in the midst of a pandemic? Regarding the shortage of PPE
+among healthcare workers, should the allocation of masks pivot toward
+them instead of the public?</li>
+</ol>
 <hr />
 </div>
 <div id="website-overview" class="section level2">
