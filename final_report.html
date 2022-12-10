@@ -651,6 +651,220 @@ write.csv(merge5_avg,&quot;data/final_avg.csv&quot; )</code></pre>
 </div>
 <div id="exploratory-data-analysis" class="section level1">
 <h1>Exploratory Data Analysis</h1>
+<div id="data-description" class="section level2">
+<h2>Data Description</h2>
+<pre class="r"><code>final_long=
+  read_csv(&quot;Data/final_long.csv&quot;)
+
+final_long %&gt;%
+  select(admission_prop, maskwearing_prop, symptom_prop,  finances_prop, depression_prop) %&gt;%
+  summary() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<colgroup>
+<col width="3%" />
+<col width="21%" />
+<col width="20%" />
+<col width="17%" />
+<col width="17%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">admission_prop</th>
+<th align="left">maskwearing_prop</th>
+<th align="left">symptom_prop</th>
+<th align="left">finances_prop</th>
+<th align="left">depression_prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Min. :-0.024517</td>
+<td align="left">Min. : 8.563</td>
+<td align="left">Min. :0.000</td>
+<td align="left">Min. :18.94</td>
+<td align="left">Min. : 2.355</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">1st Qu.: 0.003714</td>
+<td align="left">1st Qu.:39.341</td>
+<td align="left">1st Qu.:1.034</td>
+<td align="left">1st Qu.:34.72</td>
+<td align="left">1st Qu.:11.022</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Median : 0.021168</td>
+<td align="left">Median :51.169</td>
+<td align="left">Median :1.532</td>
+<td align="left">Median :37.37</td>
+<td align="left">Median :12.479</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Mean : 0.053085</td>
+<td align="left">Mean :52.749</td>
+<td align="left">Mean :1.817</td>
+<td align="left">Mean :37.45</td>
+<td align="left">Mean :12.619</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">3rd Qu.: 0.066314</td>
+<td align="left">3rd Qu.:65.357</td>
+<td align="left">3rd Qu.:2.189</td>
+<td align="left">3rd Qu.:40.35</td>
+<td align="left">3rd Qu.:14.076</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Max. : 0.989330</td>
+<td align="left">Max. :96.657</td>
+<td align="left">Max. :7.969</td>
+<td align="left">Max. :52.46</td>
+<td align="left">Max. :25.160</td>
+</tr>
+</tbody>
+</table>
+<p>Our data has 18540 observations and 9 variables and tells us about
+maskwearing, influenza symptoms, and admissions across the U.S. from
+years 2021-05-01 to 2022-05-01.</p>
+<p>The average percentage of people who say they wear a mask most or all
+of the time when they are in public in the past 7 days is 52.75%. The
+average percentage of adult and pediatric hospital admissions with
+confirmed influenza occurring each day (7-day average) is 0.05%, the
+average percentage of people self-reporting influenza-like symptoms such
+as fever with cough or sore throat in the past 7 days is 1.81%, the
+average percentage of people who reported feeling depressed for most or
+all of the past 7 days is 12.61%, and the average percentage of people
+who report being very or somewhat worried about their “household’s
+finances for the next month” is 37.45%.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.for-participants-wearing-masks-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S.for Participants Wearing Masks between 2021
+- 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_maskwearing_prop = mean(as.numeric(maskwearing_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_maskwearing_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of People Wearing Masks&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People Wearing Masks&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+Based on the graph, we can see that there was a huge drop from May 2021
+to July 2021. This was due to the fact that in May 2021, as the United
+States continued to see dramatic improvements in COVID-19 cases, federal
+officials announced a sweeping relaxation of face mask guidelines
+allowing fully vaccinated people from not wearing masks in most places,
+either outdoors or inside (<a
+href="https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic"
+class="uri">https://www.latimes.com/science/story/2021-07-27/timeline-cdc-mask-guidance-during-covid-19-pandemic</a>).
+However, mask wearing rate increased around September 2021 potentially
+because of a continued uptick in positive COVID-19 cases due to the
+Delta variant. (<a
+href="https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/"
+class="uri">https://abc7ny.com/nyc-face-mask-guidance-restaurants-vaccine-mandate-danny-meyer-delta-variant/10924328/</a>).
+Lastly, we see another hugh drop starting in February 2022 as infections
+in the U.S. decreased by 90% from a pandemic high during, leading the
+states to lift the mask mandates. (<a
+href="https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html"
+class="uri">https://www.cnbc.com/2022/02/22/covid-infections-plummet-90percent-from-us-pandemic-high-states-lift-mask-mandates.html</a>)</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-participants-with-influenza-symptoms-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Participants with Influenza Symptoms
+between 2021 - 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_symptom_prop = mean(as.numeric(symptom_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_symptom_prop)) +
+  geom_line() +
+  labs(title = &quot;Average Percentage of Participants with Influenza Symptom&quot;, x = &quot;Date&quot;, y = &quot;Percentage of People with Influenza Symptom&quot;) +
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;)) +
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+A surge in the percentage of people with influenza symptoms occurred
+between late December 2021 to January 2022 from 2% to 5%. Prior to that,
+we see a gradual increase from 1% to 2% between May 2021 to November
+2021. The surge during the winter months coincides with the average peak
+flu activity in the US from 1982 to 2022 (CDC, 2022 <a
+href="https://www.cdc.gov/flu/about/season/flu-season.htm"
+class="uri">https://www.cdc.gov/flu/about/season/flu-season.htm</a>),
+which is between December and February.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-hospital-admissions-with-confirmed-influenza-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Hospital Admissions with Confirmed
+Influenza between 2021 - 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_admission_prop = mean(as.numeric(admission_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_admission_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Number of Hospital Admissions with Confirmed Influenza&quot;, x = &quot;Date&quot;, y = &quot;Number of Hospital Admissions&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+The above-mentioned trend on Flu symptom perfectly matches with the
+proportion of hospital admissions which also peaked in January 2022 at
+approx. 0.15%, there is another peak in hospital admission later in
+April 2022 at approx. 0.16%. A possible explanation could be the landing
+of the Omicron strain in the US which started in December 2021 as well
+as the decreasing trend of mask-wearing as states began to loosen the
+mask mandate.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-participants-worried-about-finances-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Participants Worried about Finances
+between 2021 - 2022</h2>
+<pre class="r"><code>final_long%&gt;%
+  drop_na%&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_finances_prop = mean(as.numeric(finances_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_finances_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of Participants worried about finance&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Participants Worried about Finance&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+Overall, there is a gradually increasing trend of people worrying about
+their household financial status from July 2021 to March 2022. The trend
+peaked in March 2022 at 42% and then sharply dropped to 37% in April
+2022.</p>
+</div>
+<div
+id="overall-trend-in-the-u.s.-for-depressed-participants-between-2021---2022"
+class="section level2">
+<h2>Overall Trend in the U.S. for Depressed Participants between 2021 -
+2022</h2>
+<pre class="r"><code>final_long %&gt;%
+  drop_na %&gt;%
+  group_by(date)%&gt;%
+  summarize(avg_depression_prop = mean(as.numeric(depression_prop))) %&gt;%
+  ggplot(aes(x = date, y = avg_depression_prop)) +
+  geom_line()+
+  labs(title = &quot;Average Percentage of Depressed Participants&quot;, x = &quot;Date&quot;, y = &quot;Percentage of Depressed Participants&quot;)+
+  theme(plot.title=element_text(face=&quot;bold&quot;, color=&quot;blue&quot;))+
+  theme(axis.text.x = element_text(angle=80, hjust=1))</code></pre>
+<p><img src="final_report_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+Trend stayed flat at 11% from May to August 2021 and sharply increased
+to 13-15% in September and remained elevated until late January 2022. In
+May 2022, it decreased back to 12%. This drop is likely due to
+imporvements mental health status as more public facilities and events
+reverted back to pre-pandemic operations.</p>
 <div id="model-estimatiors-and-discussion" class="section level3">
 <h3>Model estimatiors and discussion</h3>
 <div id="main-association" class="section level4">
@@ -686,6 +900,7 @@ they were sick.</p></li>
 <li><p>finance</p></li>
 <li><p>depression</p></li>
 </ul>
+</div>
 </div>
 </div>
 </div>
