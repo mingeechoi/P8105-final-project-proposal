@@ -221,7 +221,7 @@ merge4_avg <-
   select(-geo_value)
 
 state <- setNames(as.list(datasets::state.name), datasets::state.abb) %>% 
-  as.tibble() %>%
+  as_tibble() %>%
   pivot_longer(AL:WY, names_to = "state", values_to = "state_full")
 
 merge5_avg <- merge4_avg %>%

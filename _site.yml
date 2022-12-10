@@ -7,8 +7,8 @@ navbar:
       href: Data-cleaning--analysis.html
     - text: "Exploratory Analysis"
       href: exploratory_analysis.html
-    - text: "Map Building"
-      href: dashboard.html
+    - text: "Model Building"
+      href: model_building.html
     - text: "Interactive Map & Model"
       href: https://zz2901.shinyapps.io/final_shiny/#section-model-with-selected-outcome
     - text: "Final Report"

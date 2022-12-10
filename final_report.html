@@ -335,7 +335,11 @@ div.tocify {
   <a href="exploratory_analysis.html">Exploratory Analysis</a>
 </li>
 <li>
+<<<<<<< HEAD
   <a href="dashboard.html">Map Building</a>
+=======
+  <a href="model_building.html">Model Building</a>
+>>>>>>> 9f1203f2c2f6884c1a24562470bbaa1b3e43edb1
 </li>
 <li>
   <a href="https://zz2901.shinyapps.io/final_shiny/#section-model-with-selected-outcome">Interactive Map &amp; Model</a>
@@ -878,18 +882,6 @@ events reverted back to pre-pandemic operations.</p>
 <h1>Modeling</h1>
 <div id="model-building" class="section level2">
 <h2>Model Building</h2>
-<pre class="r"><code>final_long=
-  read_csv(&quot;Data/final_long.csv&quot;)</code></pre>
-<pre><code>## New names:
-## Rows: 18540 Columns: 9
-## ── Column specification
-## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (2): state, state_full dbl (6): ...1, finances_prop, symptom_prop,
-## maskwearing_prop, admission_pro... date (1): date
-## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>states &lt;- unique(final_long$state)</code></pre>
 <ul>
 <li>excluded <code>pr, vi, as</code> since they do not have any
 measurements.</li>
